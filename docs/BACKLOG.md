@@ -1,13 +1,13 @@
 # Backlog implementasi dan batas demo
 
-Status: **D0-01 selesai dan diuji lokal**. D0-02 dan seterusnya belum selesai. Halaman fondasi merupakan pemeriksaan teknis sementara, bukan dashboard data bisnis D0-03. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
+Status: **D0-01 dan D0-02 selesai serta diuji lokal**. D0-03 dan seterusnya belum selesai. Halaman akses akun sementara belum menjadi dashboard data bisnis. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
 
 ## D0 — demo alur utama, dikerjakan dahulu
 
 | Urutan | Pekerjaan | Bergantung | Penerimaan |
 | --- | --- | --- | --- |
 | D0-01 ✅ | Bootstrap Vue/Vite JavaScript + Express dan MongoDB; kunci versi stable | Cek environment lokal | Selesai 9 November: dua lockfile, build, 8 tes, health/readiness dan ping MongoDB lokal berhasil. Detail DEVELOPMENT_LOG. |
-| D0-02 | Seed dummy, akun Camp/Transport/ICT dan admin; sesi login dan akses server | D0-01 | Login divisi/admin, 401 tanpa login, admin endpoint ditolak untuk divisi |
+| D0-02 ✅ | Seed dummy, akun Camp/Transport/ICT dan admin; sesi login dan akses server | D0-01 | Selesai 9 November: 4 akun dummy, Argon2id, sesi MongoDB, CSRF/Origin, 401 anonim/403 admin bagi divisi, 26 tes lulus dan login browser diuji. |
 | D0-03 | Kerangka merah/biru, sidebar/header/avatar, dashboard pembuka | D0-02 | Identitas akun benar; kartu status bersumber data backend, label demo terlihat |
 | D0-04 | Daftar dan filter multi-divisi dengan hitungan unik | D0-03 | Temuan bersama muncul sekali; angka mengikuti filter; pencarian dasar berfungsi |
 | D0-05 | Tambah/detail/koreksi, progres, status, target kosong, prioritas | D0-04 | Awal Diproses, Tertunda wajib alasan, Selesai tanpa foto, data bertahan setelah refresh |
@@ -39,11 +39,11 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 | O-04 | UAT dummy dan presentasi leader | D1 yang dibutuhkan demo | Daftar masalah/prioritas, keputusan persetujuan dicatat manual di dokumen |
 | O-05 | Evaluasi hosting/data nyata dan rencana pilot | Persetujuan leader | Izin, pemilik operasi, jadwal, data dan backup disepakati sebelum operasional |
 
-## Status dokumentasi tahap 01
+## Status dokumentasi dan cakupan saat ini
 
-README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes aturan bisnis/autentikasi belum ada karena fiturnya belum ditulis. D0-03 juga belum selesai: halaman fondasi belum memiliki akun login atau statistik temuan backend.
+README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes autentikasi tersedia, tes aturan bisnis temuan menyusul. D0-03 belum selesai: identitas login sudah nyata, tetapi statistik temuan backend belum ada.
 
-Tahap berikutnya: **D0-02**, seed dummy dan akun bersama divisi/admin, hashing sandi, sesi MongoDB, login/logout, CSRF, dan pengujian akses server. Tidak perlu deployment atau data nyata untuk mengerjakannya.
+Tahap berikutnya: **D0-03**, dashboard pembuka dan kerangka navigasi setelah login, dengan ringkasan yang bersumber backend. Seed D0-02 hanya akun/divisi; seed temuan diperlukan pada tahap data berikutnya. UI membuat/reset/nonaktifkan akun tetap M-06; tes revokasi D0-02 mengubah status/sessionVersion langsung di database test, bukan klaim endpoint reset sudah tersedia.
 
 ## Definition of Done
 

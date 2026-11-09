@@ -3,6 +3,8 @@ import { createServer } from 'node:http';
 import { loadConfig } from './config/env.js';
 import { connectDatabase } from './lib/database.js';
 import { createApp } from './app.js';
+import { prepareAuthStore } from './auth/store.js';
+import { createAuthRouter } from './auth/router.js';
 
 let server;
 let client;
@@ -21,7 +23,9 @@ try {
   const config = loadConfig();
   const connection = await connectDatabase(config);
   client = connection.client;
-  const app = createApp({ config, checkDatabase: async () => {
+  await prepareAuthStore(connection.database);
+  const authRouter = await createAuthRouter({ database: connection.database, config });
+  const app = createApp({ config, authRouter, checkDatabase: async () => {
     const result = await connection.database.command({ ping: 1 }, { timeoutMS: 2000 });
     return result.ok === 1;
   } });

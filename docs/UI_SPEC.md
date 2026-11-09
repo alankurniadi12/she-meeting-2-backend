@@ -2,11 +2,13 @@
 
 Nama sementara pilihan pengguna: **SHE Meeting**. Warna dominan merah dan biru. Dashboard halaman pembuka; sidebar kiri dan header berisi Home, status login/nama akun, avatar dan keluar. Referensi logo, kode warna resmi, perangkat kantor dan resolusi proyektor belum diberikan; gunakan placeholder tanpa mengarang identitas perusahaan.
 
-## Implementasi saat ini — tahap 01
+## Implementasi saat ini — tahap 02
 
-Route `/` menampilkan halaman fondasi sementara, bukan dashboard temuan. Halaman memiliki kerangka merah/biru, sidebar/header, identitas Belum login, health check backend nyata dan penanda belum ada temuan. Daftar/Akun diberi label Nanti sebagai teks, bukan tombol fungsi semu. Tidak ada angka bisnis yang direkayasa. Style memakai font sistem lokal.
+Route `/` adalah layar akses sementara: form username/sandi bila anonim, identitas/peran akun serta daftar divisi aktif dari backend setelah login. Dashboard sebagai halaman pembuka tetap target D0-03; tabel route berikut belum berarti route sudah tersedia. Sidebar menandai Dashboard/Daftar temuan/Kelola akun sebagai Nanti, tanpa tombol sukses semu atau statistik rekaan.
 
-Layout diperiksa pada 1440px dan 390px; drawer HP dan tombol pemeriksaan koneksi diuji. Dashboard/sidebar/header operasional pada spesifikasi berikut tetap target tahap selanjutnya. Halaman teknis sementara akan diganti saat login dan data bisnis siap.
+Form memiliki label, autocomplete, status sedang memproses, galat kredensial/koneksi, dan membersihkan sandi setelah percobaan. Header/avatar mengambil nama akun backend; akun divisi bersama dibedakan dari Admin ICT. Logout kembali ke form, me memulihkan sesi setelah refresh, timer/fokus menangani sesi yang berakhir. Sesi/token tidak disimpan di localStorage.
+
+Diuji browser desktop serta 390px: login salah/benar Camp, refresh, logout, login Admin ICT via Enter, drawer buka/tutup, tanpa overflow horizontal pada login/halaman akun. Header cookie Secure/CSRF diuji HTTP terpisah; domain hosting/proyektor kantor belum diuji.
 
 ## Peta halaman
 

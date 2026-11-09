@@ -7,6 +7,8 @@ Untuk memulihkan layout workspace pada mesin baru:
 1. Clone frontend sebagai `she-meeting-frontend` dan backend sebagai `she-meeting-backend` di folder induk yang sama.
 2. Salin `package.json` dari folder ini ke folder induk, serta `scripts/` dari sini ke `scripts/` pada folder induk. Jangan menimpa file lokal yang sudah dimodifikasi.
 3. Instal dependency di masing-masing repo dengan npm ci.
-4. Dari folder induk, jalankan npm run db:dev di satu terminal dan npm run dev di terminal lain.
+4. Dari folder induk, jalankan npm run db:dev di satu terminal, lalu npm --prefix she-meeting-backend run seed:demo sekali untuk akun dummy, dan npm run dev di terminal lain.
+
+Kredensial acak lokal berada pada she-meeting-backend/.local/demo-accounts.json; jangan commit file ini. Seed ulang tidak mereset akun. D0-02 menambahkan login/logout/sesi; dashboard/temuan belum tersedia. Petunjuk uji integrasi dan konfigurasi cookie ada di README backend.
 
 Kedua aplikasi juga dapat dijalankan mandiri; lihat README repo masing-masing. Dokumentasi kanonis ada di `../docs/`. Salinan launcher di sini perlu diselaraskan jika launcher di folder induk berubah.

@@ -2,7 +2,7 @@
 
 Versi 0.3 · 9 November 2026 · hasil wawancara putaran 1–3.
 
-Status implementasi: D0-01/fondasi lokal selesai; D0-02 dan fitur bisnis masih rencana. Lihat [catatan pengembangan](DEVELOPMENT_LOG.md). Kebutuhan produk cukup untuk melanjutkan demo dummy. Rincian teknis menggunakan asumsi prototipe pada [catatan keputusan](DECISIONS.md). Belum disetujui perusahaan untuk data operasional.
+Status implementasi: D0-01/fondasi dan D0-02/autentikasi selesai serta diuji lokal; dashboard dan fitur bisnis temuan masih rencana. Lihat [catatan pengembangan](DEVELOPMENT_LOG.md). Kebutuhan produk cukup untuk melanjutkan demo dummy. Rincian teknis menggunakan asumsi prototipe pada [catatan keputusan](DECISIONS.md). Belum disetujui perusahaan untuk data operasional.
 
 ## 1. Masalah dan tujuan
 

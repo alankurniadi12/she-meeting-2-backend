@@ -1,14 +1,15 @@
 # Model data dan kamus kolom
 
-Rancangan teknis untuk MongoDB; skema/collection bisnis belum diimplementasikan pada tahap 01. Fondasi baru menghubungkan driver dan mem-ping database development; belum ada seed temuan/akun. Semua ID API berupa string ObjectId; ID internal MongoDB tetap ObjectId. Tanggal kalender menggunakan YYYY-MM-DD, timestamp UTC ISO 8601. Zona tampilan/asumsi bisnis Asia/Jakarta; zona lokasi perusahaan belum dikonfirmasi.
+Rancangan teknis untuk MongoDB. D0-02 mengimplementasikan accounts, divisions, sessions, loginAttempts dan seed akun/divisi dummy. Collection findings serta audit/mutasi bisnis belum diimplementasikan. Seed tidak membuat temuan. ID entitas API berupa string ObjectId; ID entitas internal tetap ObjectId. Pengecualian internal: sessions/loginAttempts memakai ID hash string dan tidak diekspos sebagai entitas API. Tanggal kalender menggunakan YYYY-MM-DD, timestamp UTC ISO 8601. Zona tampilan/asumsi bisnis Asia/Jakarta; zona lokasi perusahaan belum dikonfirmasi.
 
 ## Entitas
 
 | Collection | Kolom utama | Aturan |
 | --- | --- | --- |
 | divisions | _id, code, name, active, version, audit[], createdAt, updatedAt | code/nama ternormalisasi unik; nama dapat diubah dengan audit; nonaktif tidak menghapus histori |
-| accounts | _id, username, displayName, divisionId, role, passwordHash, active, sessionVersion, audit[], timestamps | role DIVISION atau ADMIN; satu akun aktif DIVISION per divisi; admin boleh tanpa divisionId; tidak ada nama pribadi wajib |
-| sessions | _id, accountId, sessionVersion, expiresAt, lastSeenAt | Hanya diakses server, TTL expiresAt; periksa kedaluwarsa eksplisit sebelum melayani permintaan |
+| accounts | _id, username, displayName, divisionId, role, passwordHash, active, sessionVersion, version, audit[], timestamps | role DIVISION atau ADMIN; satu akun aktif DIVISION per divisi; admin boleh tanpa divisionId; tidak ada nama pribadi wajib |
+| sessions | _id (SHA-256 token cookie), accountId, sessionVersion, csrfToken, createdAt, expiresAt | Hanya diakses server, TTL expiresAt; kedaluwarsa eksplisit, absolut 12 jam; tidak menyimpan token cookie mentah |
+| loginAttempts | _id (hash window+IP/username), count, expiresAt | Counter fixed window 15 menit, TTL; hanya server, bukan audit pengguna |
 | findings | Data temuan, version, progressEntries[], attachments[], audit[] | Status/progres dan audit diperbarui atomik dalam dokumen yang sama |
 
 Tidak ada tabel persetujuan, supervisor, meeting scheduling, atau status per divisi. Master lokasi sementara teks bebas; autocomplete dari nilai terdahulu dapat ditunda.

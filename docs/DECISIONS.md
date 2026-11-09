@@ -100,3 +100,10 @@ Instruksi D-038 juga ditambahkan pada AGENTS.md agar mengikuti tahap berikutnya.
 ## Rancangan Git dan lokasi dokumen
 
 Dokumen bersama memakai satu sumber di backend/docs; jalur docs dan PROJECT_CONTEXT.md induk dipertahankan sebagai symlink. Setiap aplikasi memiliki file pendukung untuk clone mandiri. Root launcher disalin ke backend/workspace agar dapat dipulihkan. Branch prod pada checkpoint awal berisi fondasi yang sama dengan dev, bukan bukti kesiapan produksi/deployment.
+
+
+## Realisasi tahap 02 dan asumsi teknis tambahan
+
+D0-02 selesai diuji lokal pada 9 November 2026. Argon2id 64 MiB/3 iterasi/parallelism 1; sesi MongoDB opaque tanpa JWT/signing secret; cookie mentah hanya browser, SHA-256 pada store. CSRF terikat sesi dan Origin wajib untuk login/mutasi. Login dibatasi fixed window MongoDB 15 menit (10/username, 30/IP), termasuk login sukses/input salah; parameter prototipe ini dapat ditinjau ketika pilot, bukan aturan perusahaan. Tidak mempercayai forwarded IP sebelum reverse proxy diperiksa.
+
+Seed hanya MongoDB development loopback; sandi acak disimpan lokal privat 0600 dan tidak dipublikasikan/di-hardcode. Seed ulang tidak mereset akun. Akun Admin ICT terpisah dari ICT. UI `/` sementara untuk login/identitas sebelum dashboard D0-03; tidak menambah route bisnis palsu. Mutasi admin/audit tetap M-06; tes revokasi mengubah sessionVersion/status di DB test. Pengguna kembali menegaskan commit setiap perubahan pada branch yang disepakati; checkpoint D0-02 di dev kedua repo, tanpa promosi prod/deployment.

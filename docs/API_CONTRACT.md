@@ -1,6 +1,6 @@
 # Kontrak API MVP
 
-Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi tahap 01 hanya GET `/health`, GET `/ready` internal, dan respons 401 penutup namespace `/api/v1/*`.** Endpoint autentikasi/data/admin pada tabel masih rencana; jangan menganggap placeholder 401 sebagai login yang berfungsi. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
+Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi D0-02:** GET `/health`, GET `/ready` internal, POST `/auth/login`, GET `/auth/me`, POST `/auth/logout`, GET `/divisions`, dan GET `/admin/accounts` tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. Endpoint temuan/dashboard/ekspor dan mutasi admin masih rencana. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
 
 ## Konvensi
 
@@ -44,6 +44,16 @@ Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi tahap 01 hanya GET `/health
 | GET /ready | Tidak ada | Internal/proxy ops saja, koneksi DB; bukan endpoint data publik |
 
 Daftarkan route statis `/findings/summary` sebelum `/:id` untuk menghindari tertangkap sebagai ID. Tidak ada DELETE finding/audit, approve, reject, register publik, atau reopen kejadian lama.
+
+## Rincian autentikasi D0-02
+
+- Login menerima hanya `{ username, password }`; username dinormalisasi trim/lowercase, format 3–64 karakter `a-z0-9._-`; sandi string 1–128 karakter. Seed membuat sandi acak 24 karakter; batas login bukan aturan pembuatan sandi admin M-06.
+- Login/me: `{ data: { account: { id, username, displayName, role, active, division: { id, code, name } | null }, csrfToken, expiresAt } }`. Tidak mengirim hash sandi, sessionVersion, atau token cookie dalam JSON.
+- Cookie lokal `she_session_dev`; demo HTTPS `__Host-she_session`, host-only, HttpOnly, Path=/, SameSite=Lax, Secure saat demo. Masa absolut 12 jam, tanpa sliding renewal. Login ulang dengan cookie lama mencabut sesi lama; perangkat lain tetap aktif.
+- Logout mewajibkan Origin allowlist dan `X-CSRF-Token` sesi tersebut, menghapus sesi dan cookie lalu 204. Semua mutasi setelah login melalui guard yang sama. Login memerlukan Origin allowlist, tanpa CSRF pra-login.
+- Batas login fixed window 15 menit: 10 percobaan/username dan 30/IP (termasuk sukses/input tidak valid); 429 `LOGIN_RATE_LIMITED` + `Retry-After`. Counter MongoDB tetap berlaku setelah API restart; batas dapat mencapai dua kali kuota di sekitar pergantian window. Tidak mempercayai X-Forwarded-For; proxy hosting belum dikonfigurasi.
+- GET divisions hanya menerima `activeOnly=true|false`; default true. GET admin/accounts hanya `page`/`pageSize` (default 1/20, maksimal 100), tanpa rahasia. Query lain 400.
+- Akun nonaktif/sessionVersion tidak cocok/expired selalu 401 meskipun TTL belum membersihkan record. Endpoint reset/nonaktif/ubah peran beserta auditnya masih M-06.
 
 ## Filter bersama
 

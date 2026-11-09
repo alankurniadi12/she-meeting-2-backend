@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import { randomUUID } from 'node:crypto';
 
-export function createApp({ config, checkDatabase }) {
+export function createApp({ config, checkDatabase, authRouter }) {
   const app = express();
   app.disable('x-powered-by');
   app.set('trust proxy', false);
@@ -35,14 +35,17 @@ export function createApp({ config, checkDatabase }) {
       res.status(503).json({ error: { code: 'NOT_READY', message: 'Layanan belum siap.', requestId: req.requestId } });
     }
   });
-  // Authentication and business routes are delivered in the next development stage.
-  // Keep the entire data namespace closed until session authentication is implemented.
-  app.use('/api/v1', (req, res) => res.status(401).json({ error: {
-    code: 'UNAUTHENTICATED', message: 'Login diperlukan. Layanan akun belum tersedia pada tahap fondasi.', requestId: req.requestId,
+  if (authRouter) app.use('/api/v1', authRouter);
+  // Without a store (e.g. isolated foundation tests), fail closed.
+  app.use('/api/v1', (req, res) => res.status(req.auth ? 404 : 401).json({ error: {
+    code: req.auth ? 'NOT_FOUND' : 'UNAUTHENTICATED', message: req.auth ? 'Endpoint belum tersedia.' : 'Login diperlukan.', requestId: req.requestId,
   } }));
   app.use((req, res) => res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Endpoint tidak ditemukan.', requestId: req.requestId } }));
   app.use((error, req, res, _next) => {
-    let status = [400, 403, 413].includes(error.status) ? error.status : 500;
+    const status = [400, 401, 403, 413, 422, 429].includes(error.status) ? error.status : 500;
+    if (error.publicMessage && status !== 500) {
+      return res.status(status).json({ error: { code: error.code, message: error.publicMessage, requestId: req.requestId } });
+    }
     const code = status === 400 ? 'INVALID_JSON' : status === 413 ? 'PAYLOAD_TOO_LARGE' : error.code === 'ORIGIN_FORBIDDEN' ? error.code : 'INTERNAL_ERROR';
     const message = status === 400 ? 'Format JSON tidak valid.' : status === 413 ? 'Payload terlalu besar.' : status === 403 ? 'Origin ditolak.' : 'Terjadi gangguan layanan.';
     res.status(status).json({ error: { code, message, requestId: req.requestId } });

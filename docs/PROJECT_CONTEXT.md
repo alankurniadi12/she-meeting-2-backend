@@ -207,3 +207,12 @@ Folder aplikasi disiapkan sebagai repo mandiri. Dokumen bersama menjadi satu sum
 ## 16. Hasil sinkronisasi GitHub awal
 
 Push awal berhasil untuk kedua repo, masing-masing dengan dev/prod. git ls-remote mengonfirmasi commit fondasi frontend 8b25cf9 dan backend cadd492 pada kedua branch masing-masing; upstream tersedia, working tree bersih saat verifikasi awal, dan HEAD/default GitHub dev. Hasil sinkronisasi disimpan melalui commit dokumentasi backend lanjutan. Gunakan branch dev untuk kelanjutan D0-02. Tidak ada deployment, konfigurasi CI/CD/branch protection atau perubahan fitur bisnis pada tahap Git ini.
+
+
+## 17. Pengembangan dilanjutkan — D0-02 / autentikasi
+
+Pengguna meminta melanjutkan coding bertahap dan commit setiap perubahan sesuai branch yang disepakati. D0-02 kini ditulis dan diuji lokal: seed 3 divisi/4 akun dummy (Camp, Transport, ICT, Admin ICT), Argon2id, sesi MongoDB absolut 12 jam, CSRF/Origin, rate limit persisten, serta guard akun aktif/sessionVersion/role di server. Endpoint login/me/logout, baca divisi dan baca akun admin tersedia. Halaman Vue sementara menampilkan login dan identitas akun sebenarnya; belum dashboard.
+
+Kredensial acak hanya `.local/demo-accounts.json` backend, mode 0600/diabaikan Git. Jalankan `npm run seed:demo` dari backend setelah MongoDB lokal aktif; seed ulang tidak mereset akun. Tidak ada temuan dummy yang dibuat pada tahap akun. Validasi: 26 tes backend dengan DB test nyata, build frontend, browser Camp/Admin ICT, refresh, logout, keyboard dan HP 390px. Header Secure diuji, tetapi cross-subdomain HTTPS/hosting belum diuji. Reset/nonaktif/ubah peran melalui endpoint/UI tetap M-06; pemeriksaan revokasi diuji dengan update DB test.
+
+**Berikutnya D0-03:** dashboard pembuka dengan data backend dan kerangka navigasi setelah login, dilanjut daftar/filter serta CRUD pada urutan backlog. Tetap data dummy; tanpa persetujuan data operasional/deployment/promosi prod. Hasil/commit dicatat DEVELOPMENT_LOG.

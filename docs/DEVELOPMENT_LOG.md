@@ -55,3 +55,29 @@ Tahap berikutnya D0-02 sesuai backlog. Proses uji frontend/backend dan MongoDB l
 ### Hasil unggahan awal
 
 Frontend commit fondasi 8b25cf9 dan backend commit fondasi cadd492 berhasil diunggah ke masing-masing origin. Pada saat verifikasi awal, dev dan prod pada setiap repo cocok dengan SHA remote, memiliki upstream, dan working tree bersih. GitHub HEAD menunjuk dev pada kedua repo. Hasil ini dicatat dalam commit dokumentasi backend berikutnya; bukan perubahan fitur/deployment. Pemeriksaan 21 dokumen tidak menemukan tautan lokal rusak, syntax launcher valid, staging awal lolos pemeriksaan whitespace dan tidak memuat pola credential/runtime yang diperiksa.
+
+## 9 November 2026 — tahap 02 / D0-02: akun dan autentikasi
+
+**Hasil:** D0-02 ditulis dan diuji lokal. Pengguna meminta lanjut coding dan commit setiap perubahan pada branch yang disepakati; kedua repo disinkronkan dengan origin/dev sebelum perubahan. Checkpoint frontend **e5d537f** berpasangan dengan commit backend yang memuat bagian catatan ini. Kerja pada dev; prod tidak dipromosikan dan tidak ada deployment.
+
+### Implementasi
+
+- Seed lokal non-destruktif: divisi Camp/Transport/ICT dan akun camp/transport/ict/admin.ict, satu admin terpisah. Argon2id 0.45.2 dipin exact pada package/lock (64 MiB, timeCost 3, parallelism 1). Kredensial acak hanya file .local/demo-accounts.json, mode 0600 dan diabaikan Git; tidak dicetak ke log/ditanam di source. Belum seed temuan.
+- Sesi MongoDB opaque: token acak 256 bit, hanya hash SHA-256 tersimpan sebagai ID, CSRF terikat sesi, masa absolut 12 jam dan TTL cleanup. Akun aktif/sessionVersion/peran dibaca setiap request. Login baru merotasi sesi cookie lama; beberapa perangkat tetap didukung; logout mencabut sesi saat ini.
+- Endpoint login/me/logout, baca divisi, baca akun admin. Guard server 401 anonim dan 403 divisi ke admin, pemeriksaan Origin + CSRF mutasi, allowlist input/query, rate limit MongoDB 15 menit per username/IP (persisten setelah API restart), no-store dan respons tanpa rahasia. Cookie demo __Host-/Secure dengan origin HTTPS; lokal memakai nama development.
+- Frontend / mengganti halaman fondasi menjadi form login dan ringkasan akun/divisi sebenarnya. Fetch credentials, CSRF di memori, timeout, penanganan galat, identitas header/avatar, refresh sesi saat reload/fokus, timer expiry dan pencegahan respons me terlambat menghidupkan ulang UI sesudah logout. Belum router/dashboard bisnis.
+- README kedua repo dan induk lokal, salinan petunjuk workspace, PRD/backlog, API/data/akses/arsitektur/UI, tes, keputusan, indeks dan konteks terbaru diselaraskan. Instruksi menjalankan kini mencakup seed dummy dan URI test eksplisit.
+
+### Validasi nyata
+
+- `MONGODB_TEST_URI=mongodb://127.0.0.1:27027 npm test`: **26 lulus, 0 gagal, 0 dilewati**. Suite memakai database test unik, kemudian hanya database itu dibersihkan. Tanpa env, suite integrasi dilewati dan 9 tes fondasi/config tetap berjalan.
+- Cakupan: hash/sandi, payload Mongo dan spoof role, Origin/login, anonim 401, divisi-admin 403, admin list tanpa rahasia, CSRF salah/antar sesi, logout satu perangkat, rotasi sesi, expiry sebelum TTL cleanup, nonaktif/sessionVersion, rate limit username/IP termasuk spoof X-Forwarded-For, persistensi limit setelah router restart, dan header cookie Secure/logout. Tes cookie Secure masih loopback/header, bukan bukti deployment HTTPS cross-subdomain.
+- `npm run build` frontend lulus sesudah perubahan akhir. `git diff --check` kedua repo lulus. Instalasi npm melaporkan 0 vulnerability pada saat pemasangan; ini bukan audit keamanan menyeluruh.
+- Browser lokal: sandi salah ditolak, login Camp berhasil dengan divisi backend, refresh mempertahankan sesi, logout kembali ke form, refresh sesudah logout tetap anonim, Admin ICT via keyboard Enter menampilkan role benar. HP 390px: form/akun tanpa overflow horizontal, drawer buka/tutup. Satu percobaan klik segera setelah animasi drawer belum memicu logout; klik ulang setelah drawer tertutup berhasil. Tidak ditemukan error konsol saat pemeriksaan.
+- Seed dijalankan ulang: dokumen akun identik (sandi/status/versi/timestamp tetap), kredensial mode 0600. Pembacaan fixture mengonfirmasi **3 divisi, 4 akun Argon2id, 1 ADMIN, 0 temuan**. Screenshot lokal `.local/d0-02-login.png` tidak ikut Git, bersama file kredensial/database/log. Dev server frontend/backend dan MongoDB khusus proyek dibiarkan aktif untuk review lokal.
+
+### Batas dan tahap berikutnya
+
+D0-01/D0-02 selesai; seluruh D0/MVP belum selesai. Mutasi membuat/reset/nonaktif akun dan audit administrasinya tetap M-06; revokasi pada tes menggunakan perubahan database test. Belum CRUD/status/audit temuan, konflik versi bisnis, foto, PDF atau dashboard. API fitur yang belum ditulis memberi 404 setelah autentikasi/otorisasi, bukan respons sukses palsu.
+
+Berikutnya **D0-03**: dashboard pembuka dan kerangka navigasi dengan sumber data backend. Tetap data dummy. Hosting, trust proxy, HTTPS lintas subdomain, beban Argon2 pada VPS, backup/restore serta izin perusahaan belum diverifikasi. Tidak menyatakan siap produksi.

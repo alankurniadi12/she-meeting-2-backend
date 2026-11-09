@@ -14,6 +14,18 @@ Frontend sementara satu halaman tanpa Vue Router/Pinia karena belum ada halaman 
 
 Sumber versi bootstrap: metadata registry resmi [Vue](https://registry.npmjs.org/vue/latest), [Vite](https://registry.npmjs.org/vite/latest), [Express](https://registry.npmjs.org/express/latest), dan [driver MongoDB](https://registry.npmjs.org/mongodb/latest). Nomor yang terkunci dicatat di package.json/lockfile kedua aplikasi, bukan bergantung pada nilai tag mutable sesudah bootstrap.
 
+## Implementasi tahap 02 — D0-02
+
+Bagian ini menggantikan batas autentikasi tahap 01 di atas. Argon2 **0.45.2** dipin dari registry npm resmi; Argon2id memakai 64 MiB, timeCost 3, parallelism 1. API hashing mengikuti [node-argon2 resmi](https://github.com/ranisalt/node-argon2); cookie mengikuti [Express Response API](https://expressjs.com/en/5x/api/#res.cookie). Tidak menambah JWT, Redis, Pinia atau router sebelum diperlukan.
+
+Sesi opaque diimplementasikan dengan driver MongoDB yang sudah ada: cookie acak 256 bit, SHA-256 sebagai ID store, CSRF token 256 bit terikat sesi, expiry 12 jam absolut dan TTL cleanup. Cookie tidak memerlukan secret signing karena token acak hanya diterima jika ada di store; peran/identitas selalu dibaca dari akun aktif, sessionVersion wajib cocok. MongoDB menyimpan counter login per username/IP agar API restart tidak menghapus batas. Rincian batas/format ada di API_CONTRACT.
+
+Startup menyiapkan indeks unik username, satu akun DIVISION aktif/divisi, kode/nama divisi, serta TTL sesi/counter sebelum listen. Seed lokal loopback development saja, non-destruktif, membuat Camp/Transport/ICT/Admin ICT dengan sandi acak ke `.local/demo-accounts.json` (mode 0600, diabaikan Git); tidak mereset sandi akun yang sudah ada. Audit admin masih rencana M-06, seed bukan aktivitas akun perusahaan.
+
+Vue `/` kini menampilkan login atau ringkasan akun/divisi nyata. Fetch memakai credentials, CSRF hanya di memori, timeout 10 detik. Sesi dipulihkan lewat me saat reload/fokus dan dibersihkan saat waktu habis/401; respons tertunda sebelum logout tidak menghidupkan ulang sesi UI. Belum ada dashboard bisnis/route operasional, temuan, foto/PDF atau deployment.
+
+`COOKIE_SECURE=false` hanya lokal development/test HTTP. APP_ENV=demo mewajibkan cookie Secure dan origin HTTPS; contoh env lokal perlu disesuaikan saat hosting. `trust proxy=false` tetap dipertahankan: pembatasan IP di belakang reverse proxy harus dikonfigurasi/diuji pada O-02; jangan mengaktifkan trust proxy generik. Header cookie Secure sudah diuji lokal, bukan bukti browser cross-subdomain HTTPS sudah berhasil.
+
 ## Komponen
 
 ```text

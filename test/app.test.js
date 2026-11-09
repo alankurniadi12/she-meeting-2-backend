@@ -26,7 +26,7 @@ test('readiness mengembalikan 503 bila MongoDB tidak siap', async (t) => {
   assert.equal(data.error.code, 'NOT_READY');
   assert.ok(!JSON.stringify(data).includes('secret'));
 });
-test('namespace data ditutup sebelum implementasi autentikasi', async (t) => {
+test('tanpa router autentikasi namespace tetap tertutup', async (t) => {
   const url = await serve(t);
   for (const path of ['/api/v1/findings', '/api/v1/admin/accounts', '/api/v1/dashboard']) {
     const response = await fetch(`${url}${path}`);

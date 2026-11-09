@@ -20,3 +20,11 @@ test('port dan wildcard CORS ditolak', () => {
     assert.throws(() => loadConfig(env));
   }
 });
+test('demo wajib cookie Secure dengan origin HTTPS; lokal HTTP hanya development/test', () => {
+  for (const env of [
+    { COOKIE_SECURE: 'yes' }, { COOKIE_SECURE: 'true' },
+    { APP_ENV: 'demo', MONGODB_DB: 'she_meeting_demo', COOKIE_SECURE: 'false' },
+    { APP_ENV: 'demo', MONGODB_DB: 'she_meeting_demo' },
+  ]) assert.throws(() => loadConfig(env));
+  assert.equal(loadConfig({ APP_ENV: 'demo', MONGODB_DB: 'she_meeting_demo', ALLOWED_ORIGINS: 'https://frontend.example.com' }).cookieSecure, true);
+});

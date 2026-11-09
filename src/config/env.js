@@ -20,8 +20,12 @@ export function loadConfig(env = process.env) {
     try { parsed = new URL(origin); } catch { throw new Error('ALLOWED_ORIGINS tidak valid.'); }
     if (!['http:', 'https:'].includes(parsed.protocol) || parsed.origin !== origin || parsed.username || parsed.password) throw new Error('ALLOWED_ORIGINS harus origin HTTP/HTTPS eksplisit.');
   }
+  if (env.COOKIE_SECURE !== undefined && !['true', 'false'].includes(env.COOKIE_SECURE)) throw new Error('COOKIE_SECURE harus true atau false.');
+  const cookieSecure = env.COOKIE_SECURE ? env.COOKIE_SECURE === 'true' : appEnv === 'demo';
+  if (appEnv === 'demo' && !cookieSecure) throw new Error('Demo online wajib cookie Secure dan HTTPS.');
+  if (cookieSecure && origins.some((origin) => !origin.startsWith('https://'))) throw new Error('Cookie Secure memerlukan origin frontend HTTPS.');
   return Object.freeze({
     appEnv, port, host: env.HOST || '127.0.0.1', mongoUri, databaseName,
-    allowedOrigins: origins, timeZone: env.APP_TIMEZONE || 'Asia/Jakarta',
+    allowedOrigins: origins, timeZone: env.APP_TIMEZONE || 'Asia/Jakarta', cookieSecure,
   });
 }

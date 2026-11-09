@@ -1,6 +1,6 @@
 # Persiapan MVP SHE Meeting
 
-Status 9 November 2026: paket kebutuhan dari tiga putaran wawancara tersedia dan **tahap fondasi D0-01 sudah berjalan serta diuji lokal**. Autentikasi dan fitur bisnis belum dibuat; belum deployment atau persetujuan operasional.
+Status 9 November 2026: paket kebutuhan dari tiga putaran wawancara tersedia dan **fondasi D0-01 dan autentikasi D0-02 sudah berjalan serta diuji lokal**. Dashboard dan fitur bisnis temuan belum dibuat; belum deployment atau persetujuan operasional.
 
 ## Mulai membaca
 
@@ -40,9 +40,9 @@ Aturan teknis bernomor R-01 dan seterusnya di catatan keputusan adalah asumsi pr
 
 ## Kondisi workspace dan langkah berikutnya
 
-Kedua folder aplikasi berisi kode dan lockfile terpisah. Fondasi meliputi Vue/Vite JavaScript, Express, koneksi MongoDB, health/readiness, konfigurasi lokal, halaman sementara dan 8 tes. [README utama](../README.md) menjelaskan cara menjalankan.
+Kedua folder aplikasi berisi kode dan lockfile terpisah. Fondasi meliputi Vue/Vite JavaScript, Express, MongoDB, health/readiness, konfigurasi lokal; D0-02 menambah seed akun/divisi dummy, login/logout, sesi, CSRF/Origin, baca divisi/akun admin, dan 26 tes yang dijalankan dengan MongoDB test nyata. [README utama](../README.md) menjelaskan cara menjalankan.
 
-**Selanjutnya D0-02:** akun bersama divisi/admin, seed dummy, sesi login dan kontrol akses server. Halaman fondasi belum menjadi dashboard bisnis; spesifikasi dashboard/list dan kontrak endpoint bisnis tetap rencana. Tidak mengklaim seluruh D0 atau MVP selesai.
+**Selanjutnya D0-03:** dashboard pembuka dan navigasi setelah login, dengan statistik backend. Halaman akun belum menjadi dashboard bisnis; spesifikasi dashboard/list dan kontrak endpoint bisnis tetap rencana. Tidak mengklaim seluruh D0 atau MVP selesai.
 
 Perubahan kode wajib memperbarui dokumentasi yang relevan, termasuk backlog dan catatan pengembangan, sesuai instruksi pengguna saat memulai coding.
 
