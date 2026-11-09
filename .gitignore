@@ -1,0 +1,14 @@
+.DS_Store
+node_modules/
+dist/
+coverage/
+.local/
+.env
+.env.*
+!.env.example
+*.log
+
+# Private runtime files
+uploads/
+*.pem
+*.key

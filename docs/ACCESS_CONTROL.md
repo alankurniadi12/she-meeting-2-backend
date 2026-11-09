@@ -1,0 +1,37 @@
+# Matriks hak akses dan akun
+
+## Keputusan pengguna
+
+Akun **bersama per divisi**, tanpa nama pribadi, mendukung pergantian shift 14/7. Semua pemegang akun divisi melihat dan memperbaiki temuan lintas divisi, termasuk nama pelapor. Operator rapat tidak memerlukan peran/login baru. Tidak ada akun khusus supervisor atau verifikator.
+
+Admin ICT mengelola akun. Rancangan teknis: satu akun admin operasional terpisah dari akun bersama ICT. Nama tampilan admin cukup Admin ICT; tidak mewajibkan nama pribadi.
+
+## Matriks
+
+| Tindakan | Tanpa login | Akun divisi | Admin ICT | Status |
+| --- | --- | --- | --- | --- |
+| Login | Ya | Ya | Ya | Produk |
+| Melihat daftar, detail, dashboard, nama pelapor | Tidak | Ya, semua divisi | Ya | Produk |
+| Mencatat/koreksi laporan dan penanggung jawab | Tidak | Ya, semua divisi | Ya | Produk |
+| Mengubah progres/status/target/prioritas | Tidak | Ya, semua divisi | Ya | Produk |
+| Unggah/lihat foto | Tidak | Ya | Ya | Produk; batas berkas teknis |
+| Melihat audit | Tidak | Ya | Ya | Produk |
+| Unduh PDF sesuai filter | Tidak | Ya | Ya | Asumsi R-09 |
+| Batalkan dengan alasan | Tidak | Ya | Ya | Mekanisme produk; pelaku asumsi R-08 |
+| Pulihkan pembatalan dengan alasan | Tidak | Tidak | Ya | Asumsi R-08 |
+| Hapus permanen temuan/audit | Tidak | Tidak | Tidak | Produk |
+| Buat/reset/nonaktifkan akun | Tidak | Tidak | Ya | Admin dipilih pengguna |
+| Kelola/nonaktifkan master divisi | Tidak | Tidak | Ya | Asumsi teknis |
+| Backup/pemulihan server | Tidak | Tidak | Di luar UI oleh ICT | Operasi |
+
+Akun tidak dapat menaikkan peran, mengganti divisinya sendiri, atau menentukan aktor/waktu audit melalui payload. Backend memeriksa sesi, status akun dan peran untuk setiap endpoint. CORS dan filter UI bukan otorisasi.
+
+## Riwayat akun bersama
+
+Simpan accountId, username dan nama divisi pada saat tindakan, waktu server, jenis tindakan, dan perubahan. Teks UI: Diubah oleh akun Camp, bukan Diubah oleh individu tertentu. Pelapor tidak otomatis sama dengan pencatat. Tidak meminta nama operator untuk mengakali keputusan akun bersama.
+
+Reset sandi/penonaktifan mencabut seluruh sesi akun terkait. Logout hanya sesi saat ini. Sesi beberapa perangkat diperbolehkan; jangan simpan kredensial atau token di log.
+
+Rancangan kredensial: admin membuat sandi acak minimal 12 karakter dan menyampaikannya melalui kanal internal yang disepakati pengguna; tidak dikirim oleh agen atau disimpan di source/PDF. Akun bersama memakai kredensial yang sama antar shift, bukan kewajiban membuat identitas pribadi. Reset dilakukan ICT bila akses perlu diganti. Audit reset hanya mencatat jenis tindakan dan akun admin pelaku, tanpa sandi/hash sebelum maupun sesudah.
+
+Admin tidak mewakili kewenangan penilaian keselamatan. Tidak ada permission approval tersembunyi.
