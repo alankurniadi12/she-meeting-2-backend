@@ -2,6 +2,10 @@
 
 Keputusan produk dari putaran 1–3. Detail teknis mengikuti asumsi R-01–R-12 di [catatan keputusan](DECISIONS.md).
 
+## Status implementasi D0-05
+
+Pencatatan/koreksi/progres/status berikut sudah tersedia dengan backend nyata. Audit dasar dan guard versi/retry sudah ditulis agar write tidak tanpa jejak, tetapi UI/endpoint riwayat lengkap masih D0-06. Batal/pulihkan, foto/PDF dan mutasi admin tetap rencana. Konflik saat ini mempertahankan draf, menyediakan lihat versi terbaru dan explicit discard+reload; tidak otomatis menimpa data versi baru. Retry hasil tidak pasti mempertahankan ID/payload. Draft hanya memori tab, bukan penyimpanan offline/tahan refresh.
+
 ## Pencatatan
 
 1. Pelapor menyampaikan kondisi kepada perwakilan/operator, kapan saja atau saat rapat.

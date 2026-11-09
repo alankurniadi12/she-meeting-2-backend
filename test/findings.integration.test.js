@@ -148,7 +148,7 @@ test('daftar dan ringkasan temuan HTTP dengan MongoDB nyata', { skip: !uri }, as
       assert.equal(response.status, 400);
       assert.equal((await response.json()).error.code, 'INVALID_QUERY');
     }
-    assert.equal((await request('/findings/unknown')).status, 404);
+    assert.equal((await request(`/findings/${new ObjectId()}`)).status, 404);
   });
   await t.test('galat pembacaan memberi 500 tanpa data palsu atau detail internal', async () => {
     const failedDatabase = { collection() { return { aggregate() { throw new Error('mongodb://private-secret'); } }; } };

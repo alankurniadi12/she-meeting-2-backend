@@ -1,6 +1,6 @@
 # Kontrak API MVP
 
-Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai D0-04:** GET `/health`, GET `/ready` internal, POST `/auth/login`, GET `/auth/me`, POST `/auth/logout`, GET `/divisions`, GET `/admin/accounts`, GET `/dashboard` ringkas, GET `/findings`, dan GET `/findings/summary` tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. Endpoint detail/mutasi temuan, ekspor, mutasi admin serta tren/grafik/daftar tindak lanjut dashboard masih rencana. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
+Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai D0-05:** GET `/health`, GET `/ready` internal, POST `/auth/login`, GET `/auth/me`, POST `/auth/logout`, GET `/divisions`, GET `/admin/accounts`, GET `/dashboard` ringkas, GET `/findings`, dan GET `/findings/summary` tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. GET `/findings/:id`, POST `/findings`, PATCH `/findings/:id`, POST `/findings/:id/progress` juga tersedia. Riwayat lengkap/progres paginasi, pembatalan/pemulihan, foto, ekspor, mutasi admin dan dashboard lengkap masih rencana. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
 
 ## Konvensi
 
@@ -21,11 +21,11 @@ Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai D0-04:** GET `/healt
 | POST /auth/logout | CSRF | Cabut sesi saat ini, 204 |
 | GET /divisions | activeOnly default true | Master divisi; pengguna login |
 | GET /findings | Filter + pagination | D0-04: daftar ringkas + meta.summary seluruh hasil filter dari aggregate yang sama; tanpa audit/progres/foto biner |
-| POST /findings | Data awal + mutationId | 201, status IN_PROGRESS dan version=1 |
-| GET /findings/:id | ID | Detail, progres terbatas, metadata foto; 404 jika hilang |
-| PATCH /findings/:id | Field bisnis yang berubah, version, mutationId, correctionReason jika diwajibkan | 200 detail terbaru; audit atomik |
+| POST /findings | Data awal + mutationId UUID v4 | D0-05: 201 acknowledgement versi 1/IN_PROGRESS; retry identik 200 tanpa duplikasi |
+| GET /findings/:id | ID | D0-05: detail bisnis + 10 progres terbaru, actor snapshot dan attachmentCount; tanpa audit/receipt/storageKey |
+| PATCH /findings/:id | Field core yang berubah, version, mutationId | D0-05: 200 acknowledgement; koreksi core + audit/versi atomik. Status melalui progress. |
 | GET /findings/:id/progress | page/pageSize | Catatan progres paginasi; urut terbaru, akun divisi dan waktu |
-| POST /findings/:id/progress | text opsional, status/targetDate/priority opsional, holdReason/correctionReason bila perlu, version, mutationId | Setidaknya satu perubahan/catatan; versi baru dan audit dalam satu write |
+| POST /findings/:id/progress | text opsional, status/targetDate/priority opsional, holdReason/correctionReason bila perlu, version, mutationId | D0-05: acknowledgement; minimal satu perubahan/catatan, progres+audit+receipt+versi dalam satu write |
 | GET /findings/:id/history | page/pageSize | Audit paginasi, urut waktu terbaru |
 | POST /findings/:id/cancel | reason, version, mutationId | Tandai batal; 422 tanpa alasan |
 | POST /findings/:id/restore | reason, version, mutationId | ADMIN saja; pulihkan batal, audit |
@@ -112,7 +112,19 @@ Respons list: `{ data: [row], meta: { page, pageSize, total, totalPages, summary
 
 List memakai `$match` + proyeksi allowlist + `$facet`: rows diurutkan/dipaginasi, summary dihitung dari seluruh input facet yang sama. UI memakai meta.summary, sehingga tidak perlu dua request yang berpotensi berbeda. GET `/findings/summary` memakai aggregate counts dan mengembalikan `{data:{...summary,asOf,today,timeZone,dataMode}}`, menolak page/pageSize; sort diterima tetapi tidak memengaruhi hitungan. Keduanya maxTimeMS 5 detik; galat pembacaan 500 tanpa angka palsu. Nama master divisi dibaca terpisah setelah aggregate; asOf adalah waktu request, bukan jaminan histori snapshot resmi.
 
-Parser/builder tersedia untuk dipakai ekspor PDF nanti; endpoint PDF belum diimplementasikan. Route statis summary sudah didaftarkan sebelum calon detail. GET detail dan semua mutasi masih 404 setelah autentikasi; belum ada tombol detail/CRUD/PDF semu.
+Parser/builder tersedia untuk dipakai ekspor PDF nanti; endpoint PDF belum diimplementasikan. Route statis summary sudah didaftarkan sebelum calon detail. Detail dan mutasi inti kini tersedia pada D0-05 di bawah; pembatalan/foto/PDF tetap belum tersedia.
+
+## Mutasi dan detail D0-05
+
+Semua mutasi melalui sesi aktif, Origin allowlist dan token CSRF. Identitas/waktu/versi baru berasal dari server; payload tidak boleh menentukan actor, status awal, completedAt, audit/receipt atau field internal. Data awal memakai field core sesuai DATA_MODEL; prioritas/target boleh null/tidak diisi, tanpa unggahan wajib, status awal IN_PROGRESS. Tanggal laporan tidak melewati hari kalender server, target tidak sebelum laporan, penanggung jawab 1–50 ID unik, referensi baru hanya divisi aktif. Edit yang tidak mengubah referensi divisi historis nonaktif tetap diterima. Field/tipe/referensi salah 422 VALIDATION_FAILED dengan error.fields; ID path tidak valid juga 422, ID valid tidak ditemukan 404.
+
+PATCH hanya field core (reportedDate, description, location, reporterName, reporterDivisionId, responsibleDivisionIds, priority, targetDate) + version/mutationId. Progress menerima text/status/holdReason/priority/targetDate/correctionReason + version/mutationId. Tertunda wajib alasan 1–2000; pindah keluar Tertunda mengosongkan holdReason, nilai lama tetap audit. Selesai mengisi completedAt server saat transisi; pengeditan catatan pada status Selesai mempertahankan waktu itu. Koreksi COMPLETED ke aktif wajib correctionReason; completedAt dikosongkan, bukan mekanisme kejadian berulang. Tidak ada persentase per divisi atau approval. Tanpa perubahan/catatan 422 NO_CHANGES. Temuan batal tidak dapat dimutasi (409 FINDING_CANCELLED).
+
+**Penyesuaian kontrak teknis:** respons tulis adalah acknowledgement ringkas yang stabil, `{data:{id,reference,version,status,updatedAt},meta:{replayed:false|true}}`; klien melakukan GET detail untuk snapshot terbaru. Ini menggantikan rancangan awal mengembalikan detail penuh pada PATCH, agar retry tetap memberi hasil operasi aslinya tanpa menggandakan data atau mengaku versi sekarang adalah hasil lama. Create pertama 201, retry create 200; PATCH/progress 200. GET detail sendiri mengembalikan field core/ID/nama divisi, actor snapshot, version, status/target/prioritas/alasan/completedAt, pembatalan, waktu/label turunan, 10 progres terbaru/progressTotal dan attachmentCount. Tidak mengirim audit, mutationReceipts/requestHash, biner/storageKey atau hash sandi. GET /progress dan /history paginasi tetap D0-06.
+
+mutationId hanya UUID v4; request yang sama harus memakai ID dan payload/akun yang sama. Create memakai indeks unik createMutationId (parsial, fixture tanpa ID tetap sah). Update mencari receipt pada dokumen sebelum konflik versi; receipt memuat SHA-256 request canonical (jenis, accountId, body tanpa mutationId) dan acknowledgement awal. Payload/akun/jenis operasi berbeda pada ID yang sama ditolak 409 MUTATION_REUSED. Retry sukses mengembalikan acknowledgement asli walaupun ada versi lebih baru; GET detail memastikan UI membaca keadaan terkini.
+
+Audit before/after, actor akun divisi, snapshot nama/kode divisi, progres append-only, receipt dan increment versi disimpan atomik bersama dalam satu dokumen. Write kondisional _id + version + tidak batal; stale write 409 VERSION_CONFLICT dengan currentVersion, tanpa overwrite. Dua retry serentak operasi sama mengembalikan hasil sama, tidak menambah progres/audit. Batas BSON aplikasi 8 MiB diperiksa sebelum write; 409 HISTORY_CAPACITY_REACHED menghentikan operasi tanpa menghapus riwayat. Receipt tidak dipangkas diam-diam. Pembacaan audit/peninjauan konflik lengkap menyusul D0-06.
 
 ## Contoh create (semua nilai contoh)
 
@@ -134,7 +146,7 @@ Server mengisi status, reference, createdBy, waktu dan audit. Tanggal contoh buk
 
 ## Konsistensi mutasi
 
-Hitung perubahan dan audit berdasarkan versi dokumen yang dibaca. Write kondisional `_id+version` mengubah field, append audit, dan increment version bersama. Jika version berbeda, 409 VERSION_CONFLICT tanpa menyimpan sebagian. Retry mutationId yang sudah berhasil mengembalikan hasil operasi sebelumnya, bukan menggandakan catatan. Mutasi akun/divisi mengikuti pola version+audit tertanam yang sama. Progres append-only; koreksi dijelaskan melalui catatan baru, tidak mengubah histori diam-diam.
+Hitung perubahan dan audit berdasarkan versi dokumen yang dibaca. Write kondisional `_id+version` mengubah field, append audit, dan increment version bersama. Jika version berbeda, 409 VERSION_CONFLICT tanpa menyimpan sebagian. Retry mutationId yang sudah berhasil mengembalikan acknowledgement operasi sebelumnya, bukan menggandakan catatan; klien kemudian GET detail terbaru. Mutasi akun/divisi mengikuti pola version+audit tertanam yang sama. Progres append-only; koreksi dijelaskan melalui catatan baru, tidak mengubah histori diam-diam.
 
 Koreksi COMPLETED menjadi aktif memerlukan correctionReason dan dicatat sebagai koreksi, bukan kejadian berulang. Pembaruan record batal ditolak kecuali pemulihan admin. Unggah memeriksa version setelah file diverifikasi dan membersihkan file orphan bila gagal.
 

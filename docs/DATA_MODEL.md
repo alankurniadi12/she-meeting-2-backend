@@ -1,6 +1,6 @@
 # Model data dan kamus kolom
 
-Rancangan teknis untuk MongoDB. D0-02 mengimplementasikan accounts, divisions, sessions, loginAttempts dan seed akun/divisi dummy. D0-03 menambah collection findings berisi 18 fixture dummy dan agregat dashboard; D0-04 menambah pembacaan daftar/summary, filter dan badge turunan server. API mutasi serta audit bisnis/version conflict belum diimplementasikan; histori pada fixture hanya event DEMO_SEED. ID entitas API berupa string ObjectId; ID entitas internal tetap ObjectId. Pengecualian internal: sessions/loginAttempts memakai ID hash string dan tidak diekspos sebagai entitas API. Tanggal kalender menggunakan YYYY-MM-DD, timestamp UTC ISO 8601. Zona tampilan/asumsi bisnis Asia/Jakarta; zona lokasi perusahaan belum dikonfirmasi.
+Rancangan teknis untuk MongoDB. D0-02 mengimplementasikan accounts, divisions, sessions, loginAttempts dan seed akun/divisi dummy. D0-03 menambah collection findings berisi 18 fixture dummy dan agregat dashboard; D0-04 menambah pembacaan daftar/summary, filter dan badge turunan server. D0-05 menambah create/detail/koreksi/progres dengan audit bisnis/receipt/versi atomik. Histori fixture awal tetap DEMO_SEED; API/tampilan histori lengkap belum tersedia. ID entitas API berupa string ObjectId; ID entitas internal tetap ObjectId. Pengecualian internal: sessions/loginAttempts memakai ID hash string dan tidak diekspos sebagai entitas API. Tanggal kalender menggunakan YYYY-MM-DD, timestamp UTC ISO 8601. Zona tampilan/asumsi bisnis Asia/Jakarta; zona lokasi perusahaan belum dikonfirmasi.
 
 ## Entitas
 
@@ -10,7 +10,7 @@ Rancangan teknis untuk MongoDB. D0-02 mengimplementasikan accounts, divisions, s
 | accounts | _id, username, displayName, divisionId, role, passwordHash, active, sessionVersion, version, audit[], timestamps | role DIVISION atau ADMIN; satu akun aktif DIVISION per divisi; admin boleh tanpa divisionId; tidak ada nama pribadi wajib |
 | sessions | _id (SHA-256 token cookie), accountId, sessionVersion, csrfToken, createdAt, expiresAt | Hanya diakses server, TTL expiresAt; kedaluwarsa eksplisit, absolut 12 jam; tidak menyimpan token cookie mentah |
 | loginAttempts | _id (hash window+IP/username), count, expiresAt | Counter fixed window 15 menit, TTL; hanya server, bukan audit pengguna |
-| findings | Data temuan, version, progressEntries[], attachments[], audit[], seedKey opsional | D0-03/D0-04: fixture, aggregate dan daftar/summary read-only. Mutasi atomik status/progres/audit masih D0-05/D0-06. |
+| findings | Data temuan, version, progressEntries[], attachments[], audit[], mutationReceipts[], createMutationId/seedKey opsional | D0-05: write inti atomik, CAS versi dan idempotensi; pembacaan riwayat lengkap tetap D0-06. |
 
 Tidak ada tabel persetujuan, supervisor, meeting scheduling, atau status per divisi. Master lokasi sementara teks bebas; autocomplete dari nilai terdahulu dapat ditunda.
 
@@ -50,7 +50,7 @@ Kode divisi nonaktif tetap dapat dibaca pada data lama; edit uraian tidak otomat
 
 `seedKey` unik parsial string, format D0-03-finding-01 sampai 18, menjaga retry tanpa overwrite; reference SM-DEMO-<ObjectId> unik. `createdBy`/`updatedBy` dan event `DEMO_SEED` memakai aktor sistem `seed.demo`, source DEMO_SEED, accountId/divisionId null; tidak mengklaim Admin ICT atau individu melakukan edit melalui UI. Ini metadata fixture, bukan implementasi audit bisnis. Progres/attachment kosong, version=1 saat seed. Kontrak aktor mutasi melalui sesi tetap accountId akun nyata pada tahap berikutnya.
 
-Indeks yang benar-benar dibuat sampai D0-04: reference unik, seedKey unik parsial string, cancelledAt + responsibleDivisionIds, reportedDate + _id descending, updatedAt + _id descending. Indeks createMutationId/status tambahan di bawah masih rencana untuk tahap terkait. List memakai projection allowlist dan tidak membawa array histori/foto ke output; descriptionExcerpt dipotong maks. 240. Filter/status/target usia dihitung dari field sumber, bukan boolean tersimpan. Seed menambah yang belum ada; data nonfixture tidak dihapus/ditimpa.
+Indeks yang benar-benar dibuat sampai D0-04: reference unik, seedKey unik parsial string, cancelledAt + responsibleDivisionIds, reportedDate + _id descending, updatedAt + _id descending. D0-05 menambah indeks createMutationId unik parsial string; indeks status tambahan mengikuti kebutuhan tahap berikutnya. List memakai projection allowlist dan tidak membawa array histori/foto ke output; descriptionExcerpt dipotong maks. 240. Filter/status/target usia dihitung dari field sumber, bukan boolean tersimpan. Seed menambah yang belum ada; data nonfixture tidak dihapus/ditimpa.
 
 ## Audit, konflik, dan ukuran dokumen
 
@@ -61,6 +61,16 @@ MongoDB mendukung atomisitas satu dokumen dan kondisi versi untuk mencegah overw
 Array akan tumbuh. Jangan menghapus audit diam-diam: ukur BSON sebelum menulis, gunakan ambang aplikasi 8 MiB dan respons 409 HISTORY_CAPACITY_REACHED jika terlampaui. ICT perlu memigrasikan histori ke penyimpanan terpisah dengan transaksi sebelum melanjutkan temuan tersebut. Ini keterbatasan rancangan demo, bukan retensi perusahaan. Batas BSON MongoDB 16 MiB; foto disimpan terpisah. [Batas MongoDB](https://www.mongodb.com/docs/manual/reference/limits/#bson-document-size).
 
 mutationId UUID per operasi memungkinkan retry aman: create memakai indeks unik createMutationId, update memeriksa mutationId yang sudah tercatat sebelum konflik versi. Batasi ukuran payload dan daftar field yang dapat diedit; jangan meneruskan operator kueri MongoDB dari input.
+
+## Realisasi mutasi D0-05
+
+Field core divalidasi server sesuai tabel. Create menggunakan reference SM-<tahun laporan>-<ObjectId> dan version=1, status IN_PROGRESS, completedAt/holdReason/cancelledAt null; actor dari akun sesi, tanpa nama individu wajib. Prioritas/target/foto boleh kosong. Pembaruan memakai _id+version+tidak batal, append audit/progres/receipt dan increment bersama.
+
+`mutationReceipts[]` adalah metadata internal `{mutationId,requestHash,result}`; result acknowledgement id/reference/version/status/updatedAt yang immutable untuk retry. Hash menyertakan jenis operasi, akun dan payload canonical. Array tidak dikirim pada API detail/list. createMutationId unik parsial menjaga retry create; UUID dari klien bukan reference temuan. Capacity guard menghitung BSON kandidat lengkap (audit/progres/receipt) sebelum write, batas 8 MiB. Receipt ikut kapasitas; tidak menghapus histori untuk memberi tempat.
+
+Audit menyimpan action CREATED/CORRECTED/PROGRESS_UPDATED, UUID event, actor snapshot, timestamp, revision, mutationId, before/after kolom berubah, correctionReason bila ada, divisionSnapshots nama/kode divisi yang dirujuk, dan progressEntryId jika menambah teks. Teks progres append-only pada progressEntries dengan actor/waktu/revisi. Saat master berubah nama, snapshot event tetap nama saat mutasi. Fixture DEMO_SEED lama tidak dipalsukan sebagai audit akun. Detail hanya menampilkan 10 progres terakhir dan total, bukan seluruh audit; pembacaan paginasi D0-06 belum ditulis.
+
+UI uji manual menambah satu temuan dummy di luar 18 fixture seed, lalu mengoreksi/progres sampai Selesai. Seed tetap insert-only 18 fixture; jumlah total development dapat bertambah dari pemakaian form dan bukan konstanta sistem.
 
 ## Foto
 

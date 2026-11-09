@@ -238,3 +238,14 @@ Frontend Vue Router 4.6.4 stable kompatibel Node 24.10 lokal menambah /login, /d
 Validasi: 51 tes backend dengan MongoDB test terpisah, 2 tes frontend dan build lulus. Browser Admin ICT/Camp, 12 hasil Camp+ICT dengan 5 baris per halaman, pencarian panel, data batal, reset/URL/Back/refresh/login ulang, galat, desktop 1440px dan HP 390px diperiksa. Screenshot lokal diabaikan Git; detail/CRUD/progres/PDF tidak diberi tombol fungsi semu.
 
 **Selanjutnya D0-05:** tambah/detail/koreksi, progres/status, prioritas/target opsional, kemudian D0-06 audit bisnis dan konflik versi. Filter baca batal serta badge sudah sebagian M-03/M-01; mutasi/validasi bisnisnya belum. Dashboard grafik/tren/tindak lanjut M-04, admin mutasi/foto/PDF/hosting/izin operasional belum selesai. Tetap data dummy, kerja dev, tanpa deployment/promosi prod.
+
+
+## 20. Pencatatan dan progres — D0-05
+
+Pengguna meminta lanjut tahap coding. D0-05 kini ditulis dan diuji lokal: POST create, GET detail, PATCH core, POST progress di backend; form /findings/new, detail /findings/:id dan koreksi /edit di Vue. Semua akun login tetap boleh lintas divisi, actor adalah akun divisi dari sesi. Awal Diproses; Tertunda wajib alasan; Selesai tanpa foto/approval, completedAt server; koreksi dari Selesai ke aktif wajib alasan dan bukan untuk kejadian berulang. Prioritas/target opsional, target tidak sebelum laporan.
+
+Fondasi D0-06 didahulukan untuk integritas write pertama: audit before/after + actor/snapshot divisi, progres append-only, receipt acknowledgement dan CAS version ditulis atomik. Retry identik tidak menggandakan; payload/akun berbeda pada ID sama ditolak, ukuran kandidat >8 MiB dihentikan. Respons mutasi acknowledgement immutable lalu GET detail, bukan full detail pada tiap retry. UI menjaga draft saat 409, lihat versi baru atau explicit discard+reload; draft memori tab per akun/resource, tidak tahan refresh/tutup tab. Network/5xx tidak pasti memakai retry payload/ID sama.
+
+Validasi: 62 tes backend dengan DB test terpisah, 5 tes frontend/build lulus. Browser: buat tanpa foto/target, koreksi, tunda dengan alasan, lanjut, Selesai, refresh, konflik dua tab tanpa hilang draft, form/detail HP 390px serta desktop 1440px tanpa overflow. Satu temuan dummy manual D0-05 disimpan di luar 18 fixture (total development 19: 17 valid/2 batal; snapshot saat akhir uji 6 Diproses/5 Tertunda/6 Selesai). Akun/sandi serta fixture seed lama tidak diubah.
+
+**Selanjutnya D0-06:** API/UI riwayat lengkap before/after, progres paginasi dan peninjauan konflik/draft. Detail saat ini hanya 10 progres terakhir, bukan seluruh audit. Batal/pulihkan, foto/PDF/admin mutasi/dashboard lengkap/hosting dan izin operasional belum selesai. Tetap data dummy, commit pada dev, tanpa promosi prod atau deployment.

@@ -121,3 +121,12 @@ Asumsi teknis tambahan: filter dashboard maksimal 50 ID, YYYY-MM tahun 1000–99
 D0-04 menyediakan daftar/ringkasan temuan dengan filter bersama, pencarian literal, pagination dan badge server. List mengirim meta.summary dari facet yang sama agar angka seluruh hasil tetap sejalan dengan baris; summary API terpisah juga tersedia untuk pemakai lain. Sort didefinisikan field:arah dengan _id tie-breaker. Filter lanjut dan filter baca data batal sudah tersedia, tetapi aksi batal/pulihkan/CRUD/audit tetap tahap berikutnya. Tidak menandai seluruh M-01/M-03 selesai.
 
 Route login/dashboard/findings kini memakai Vue Router 4.6.4 exact yang mendukung runtime lokal. Latest major 5 tidak dipakai karena dependency membutuhkan patch Node yang lebih baru; tidak mengubah Node global. Filter/pagination pada URL, tujuan login hanya dua route internal yang diimplementasikan; server tetap otoritas akses. SPA fallback hosting diuji ketika O-02. Pengguna meminta terus melanjutkan tahap coding; commit checkpoint tetap pada dev kedua repo, bukan promosi prod.
+
+
+## Realisasi tahap 05 — integritas sejak write pertama
+
+Pengguna meminta tahap berikutnya. D0-05 mencakup create/detail/koreksi/progres/status/target/prioritas. Guard versi, audit bisnis atomik, idempotency receipt dan guard ukuran 8 MiB didahulukan dari fondasi D0-06 agar tidak ada write tanpa jejak atau rawan overwrite. D0-06 tetap sebagian karena API/UI histori lengkap, progres paginasi dan peninjauan konflik lengkap belum tersedia. Batal/pulihkan/foto/PDF/admin mutasi tidak ikut tahap ini.
+
+Penyesuaian kontrak teknis dari rancangan awal: mutasi mengembalikan acknowledgement immutable id/reference/version/status/updatedAt, kemudian frontend GET detail. Ini menjaga retry mengembalikan hasil asli operasi, termasuk bila sudah ada versi lebih baru, tanpa menyimpan salinan full detail/progres di setiap receipt. CreateMutationId unik parsial, UUID v4, receipt hash bound ke akun/jenis/payload; perbedaan payload/akun memakai ID sama 409. Tidak mengubah aturan bisnis pengguna.
+
+Draft hanya memori tab keyed akun/resource; tidak localStorage. Hasil simpan network/5xx tidak pasti mengunci isian untuk retry identik. Konflik menjaga draft dan meminta tinjau versi terbaru, explicit discard+reload memakai peringatan. Tidak mengklaim draft tahan refresh/offline atau merge otomatis. Notice sukses hanya dibuat sesudah acknowledgement, bukan query URL. Form awal mengambil tanggal server dari dashboard yang sudah ada; tidak menambah endpoint konfigurasi. Tidak ada dependency/runtime/hosting baru.

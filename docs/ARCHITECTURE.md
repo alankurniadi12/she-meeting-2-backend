@@ -48,6 +48,18 @@ Dashboard berpindah dari history.replaceState manual ke query router. Daftar men
 
 History mode membutuhkan SPA fallback pada hosting nanti. Deep link lokal Vite sudah diuji, bukan bukti rewrite Vercel/HTTPS O-02 sudah dikonfigurasi. Tidak deployment pada D0-04.
 
+## Implementasi tahap 05 — write inti dan detail
+
+Router temuan menambah POST create, GET detail, PATCH core dan POST progress di belakang sesi/CSRF/Origin yang sudah ada. Validasi JavaScript allowlist tanpa dependency baru; ID/tipe/teks/tanggal/divisi aktif/status dipastikan server. Detail serialisasi explicit, tanpa audit/receipt/secret. Status dan foto mengikuti alur sederhana pengguna.
+
+Write memakai atomisitas satu dokumen MongoDB, filter expected version dan array audit/progres/receipt tertanam, sesuai [panduan atomisitas MongoDB](https://www.mongodb.com/docs/manual/core/write-operations-atomicity/). Fondasi audit/konflik D0-06 didahulukan saat write pertama agar tidak ada periode tanpa integritas. Hasil mutasi adalah acknowledgement immutable, GET detail terpisah untuk data terkini; receipt hash+payload terikat akun/jenis mencegah duplikasi atau penggunaan ulang ID dengan isi berbeda. Guard ukuran BSON kandidat 8 MiB dan unique createMutationId parsial aktif. Tidak menambahkan transaksi multi-collection atau antrean.
+
+Frontend menambah /findings/new, /findings/:id dan /findings/:id/edit, tombol tambah/link detail, informasi pencatat akun vs pelapor, koreksi core dan form progres dengan konfirmasi Selesai untuk seluruh divisi. Draft cache hanya memori tab, keyed akun+resource, tidak localStorage. Draft kosong/tidak diubah mengikuti versi terbaru; draft yang diubah mempertahankan versi awal untuk CAS. Konflik mempertahankan teks/isian, menghentikan save, membuka versi terbaru di tab lain atau membuang draft secara eksplisit setelah peringatan. Peninjauan/merge lebih baik masih D0-06.
+
+Jika response simpan tidak pasti (network/5xx), payload+mutationId disimpan dan field dikunci untuk retry identik; 4xx membolehkan perbaikan isian. Navigasi dicegah saat write berlangsung, peringatan sebelum meninggalkan draft. Setelah acknowledgement, detail dimuat ulang; sukses tidak berasal dari query URL. Draft dihapus setelah sukses/explicit discard, tetapi refresh/menutup tab menghapus cache; browser memberi peringatan, bukan penyimpanan tahan gangguan/offline. Pemulihan sesi/draft penuh lintas refresh tetap M-07, tidak diklaim selesai.
+
+Belum API/UI riwayat penuh, progres paginasi, cancel/restore, foto, PDF atau mutasi admin. Tidak mengubah dependency/runtime/hosting pada tahap ini.
+
 ## Komponen
 
 ```text
