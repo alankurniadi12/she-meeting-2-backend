@@ -1,6 +1,6 @@
 # Persiapan MVP SHE Meeting
 
-Status 9 November 2026: paket kebutuhan dari tiga putaran wawancara tersedia dan **fondasi D0-01, autentikasi D0-02 dan dashboard ringkas D0-03 sudah berjalan serta diuji lokal**. Daftar serta mutasi temuan belum dibuat; belum deployment atau persetujuan operasional.
+Status 9 November 2026: paket kebutuhan dari tiga putaran wawancara tersedia dan **fondasi D0-01, autentikasi D0-02, dashboard ringkas D0-03 dan daftar rapat D0-04 sudah berjalan serta diuji lokal**. Detail/mutasi temuan belum dibuat; belum deployment atau persetujuan operasional.
 
 ## Mulai membaca
 
@@ -40,9 +40,9 @@ Aturan teknis bernomor R-01 dan seterusnya di catatan keputusan adalah asumsi pr
 
 ## Kondisi workspace dan langkah berikutnya
 
-Kedua folder aplikasi berisi kode dan lockfile terpisah. Fondasi meliputi Vue/Vite JavaScript, Express, MongoDB, health/readiness, konfigurasi lokal; D0-02 menambah seed akun/divisi dummy, login/logout, sesi, CSRF/Origin, baca divisi/akun admin, dan tes akses; D0-03 menambah 18 fixture temuan, aggregate dashboard dan filter/indikator. Total 37 tes dijalankan dengan MongoDB test nyata. [README utama](../README.md) menjelaskan cara menjalankan.
+Kedua folder aplikasi berisi kode dan lockfile terpisah. Fondasi meliputi Vue/Vite JavaScript, Express, MongoDB, health/readiness, konfigurasi lokal; D0-02 menambah seed akun/divisi dummy, login/logout, sesi, CSRF/Origin, baca divisi/akun admin, dan tes akses; D0-03 menambah 18 fixture temuan, aggregate dashboard dan filter/indikator. D0-04 menambah daftar/summary, filter/pagination/badge, serta route Vue Router. Total 51 tes backend dengan MongoDB nyata dan 2 tes frontend lulus. [README utama](../README.md) menjelaskan cara menjalankan.
 
-**Selanjutnya D0-04:** daftar rapat, pencarian dan filter multi-divisi dengan hitungan unik. Dashboard ringkas tersedia; grafik/tren/tindak lanjut M-04, CRUD/progres/audit, foto/PDF dan mutasi admin masih rencana. Tidak mengklaim seluruh D0 atau MVP selesai.
+**Selanjutnya D0-05:** tambah/detail/koreksi dan progres/status/target/prioritas, lalu D0-06 audit bisnis/konflik. Daftar rapat serta dashboard ringkas tersedia; grafik/tren/tindak lanjut M-04, CRUD/progres/audit, foto/PDF dan mutasi admin masih rencana. Tidak mengklaim seluruh D0 atau MVP selesai.
 
 Perubahan kode wajib memperbarui dokumentasi yang relevan, termasuk backlog dan catatan pengembangan, sesuai instruksi pengguna saat memulai coding.
 

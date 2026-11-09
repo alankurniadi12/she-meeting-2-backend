@@ -227,3 +227,14 @@ Seed development loopback kini menambah 18 temuan sintetik insert-only (16 valid
 Validasi: 37 tes backend lulus dengan database test nyata/terpisah, build frontend, browser Camp/Admin ICT, filter/bulan/refresh/persistensi URL, kosong/galat, keyboard dan HP 390px tanpa overflow. Commit tetap pada dev masing-masing repo dan dokumentasi kanonis backend.
 
 **Selanjutnya D0-04:** daftar rapat, pencarian dan filter multi-divisi dengan ringkasan unik/pagination; lalu D0-05/D0-06 CRUD, progres dan audit bisnis/konflik. Dashboard lengkap (grafik/tren/tindak lanjut) masih M-04. Foto/PDF/admin mutasi, hosting dan izin operasional belum tersedia. Tetap data dummy, tanpa deployment/promosi prod.
+
+
+## 19. Daftar rapat — D0-04
+
+Pengguna meminta lanjut pengembangan. D0-04 kini ditulis dan diuji lokal: GET /api/v1/findings dan /findings/summary terproteksi sesi, daftar ringkas lintas divisi, pencarian literal, filter multi-divisi/status/prioritas/divisi pelapor/tanggal-basis/pembatalan, urutan stabil dan pagination. List menggabungkan rows dan summary seluruh filter dalam satu facet; temuan bersama tetap sekali, data batal dihitung terpisah dari kartu status. Badge Baru hari 0–6 serta Terlambat dihitung server; target kosong tetap Belum ditentukan.
+
+Frontend Vue Router 4.6.4 stable kompatibel Node 24.10 lokal menambah /login, /dashboard dan /findings (root redirect dengan query). Sidebar dan judul tab mengikuti halaman, filter/page tersimpan di URL dan pulih pada Back/refresh, login ulang mengembalikan tujuan internal yang sah. Desktop enam kolom, HP kartu; state loading/kosong/galat/halaman kosong dibedakan. Dua tes frontend menjaga parameter berulang dan pembatasan redirect login. Tidak mengubah sandi/fixture yang sudah ada.
+
+Validasi: 51 tes backend dengan MongoDB test terpisah, 2 tes frontend dan build lulus. Browser Admin ICT/Camp, 12 hasil Camp+ICT dengan 5 baris per halaman, pencarian panel, data batal, reset/URL/Back/refresh/login ulang, galat, desktop 1440px dan HP 390px diperiksa. Screenshot lokal diabaikan Git; detail/CRUD/progres/PDF tidak diberi tombol fungsi semu.
+
+**Selanjutnya D0-05:** tambah/detail/koreksi, progres/status, prioritas/target opsional, kemudian D0-06 audit bisnis dan konflik versi. Filter baca batal serta badge sudah sebagian M-03/M-01; mutasi/validasi bisnisnya belum. Dashboard grafik/tren/tindak lanjut M-04, admin mutasi/foto/PDF/hosting/izin operasional belum selesai. Tetap data dummy, kerja dev, tanpa deployment/promosi prod.

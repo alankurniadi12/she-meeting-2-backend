@@ -1,6 +1,6 @@
 # Kontrak API MVP
 
-Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai D0-03:** GET `/health`, GET `/ready` internal, POST `/auth/login`, GET `/auth/me`, POST `/auth/logout`, GET `/divisions`, GET `/admin/accounts`, serta GET `/dashboard` ringkas tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. Endpoint daftar/detail/mutasi temuan, ekspor, mutasi admin serta tren/grafik/daftar tindak lanjut dashboard masih rencana. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
+Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai D0-04:** GET `/health`, GET `/ready` internal, POST `/auth/login`, GET `/auth/me`, POST `/auth/logout`, GET `/divisions`, GET `/admin/accounts`, GET `/dashboard` ringkas, GET `/findings`, dan GET `/findings/summary` tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. Endpoint detail/mutasi temuan, ekspor, mutasi admin serta tren/grafik/daftar tindak lanjut dashboard masih rencana. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
 
 ## Konvensi
 
@@ -20,7 +20,7 @@ Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai D0-03:** GET `/healt
 | GET /auth/me | Cookie | Akun/divisi/peran dan csrfToken; 401 bila tidak aktif |
 | POST /auth/logout | CSRF | Cabut sesi saat ini, 204 |
 | GET /divisions | activeOnly default true | Master divisi; pengguna login |
-| GET /findings | Filter + pagination | List proyeksi tanpa audit/progres lengkap/foto biner |
+| GET /findings | Filter + pagination | D0-04: daftar ringkas + meta.summary seluruh hasil filter dari aggregate yang sama; tanpa audit/progres/foto biner |
 | POST /findings | Data awal + mutationId | 201, status IN_PROGRESS dan version=1 |
 | GET /findings/:id | ID | Detail, progres terbatas, metadata foto; 404 jika hilang |
 | PATCH /findings/:id | Field bisnis yang berubah, version, mutationId, correctionReason jika diwajibkan | 200 detail terbaru; audit atomik |
@@ -94,11 +94,25 @@ Semua angka memakai satu aggregate MongoDB: data batal dikecualikan, tanpa unwin
 | dateBasis | reported (default) atau completed; completed hanya yang status kini COMPLETED dengan completedAt terisi |
 | cancellation | active (default), cancelled, all |
 | page, pageSize | Awal 1; default 20, maksimal 100; tidak berlaku untuk summary/PDF |
-| sort | Allowlist reportedDate atau updatedAt dengan asc/desc; default reportedDate desc, _id desc |
+| sort | reportedDate:asc, reportedDate:desc, updatedAt:asc, updatedAt:desc; default reportedDate:desc, _id sebagai tie-breaker arah sama |
 
 List, summary, dan PDF memakai parser/filter builder yang sama. Filter unknown ditolak, bukan disisipkan langsung ke MongoDB. PDF dan ringkasan tidak mengikutkan page/pageSize. Setiap respons memberikan asOf server. Respons bisa berubah bila ada edit di antara request; UI refresh list+summary setelah mutasi dan saat kembali ke daftar, tampilkan timestamp, jangan menjanjikan live snapshot.
 
 Dashboard berbeda dari filter tanggal daftar: division scope berlaku untuk seluruh dashboard; month hanya angka periodik/tren. Kartu status adalah snapshot semua tanggal. Definisi pada [UI](UI_SPEC.md).
+
+## Daftar dan ringkasan D0-04
+
+GET `/findings` dan `/findings/summary` terproteksi sesi divisi/admin; baca lintas divisi tetap diperbolehkan. Keduanya memakai parser/filter builder yang sama. Query di luar allowlist, operator Mongo, parameter berulang/array, enum salah, tanggal kalender tidak valid (termasuk kabisat), from > to, page di luar 1–999999, dan pageSize di luar 1–100 ditolak 400 INVALID_QUERY. Tahun kalender 1000–9999, penanggung jawab maksimal 50 ID unik (input maksimal 50), q trim maksimal 100 karakter; regex di-escape agar pencarian literal, case-insensitive. Parameter status/priority/ID/tanggal kosong tidak sah; q kosong sah tanpa pencarian.
+
+`dateBasis=completed` selalu membatasi status kini COMPLETED dengan completedAt terisi Date, walau from/to kosong. Batas from/to inklusif menggunakan tanggal kalender pada zona aplikasi. Bila status bertentangan, hasil nol; server tidak mengganti filter status diam-diam. ID divisi valid yang tidak ditemukan juga hasil nol. Master divisi nonaktif tetap dapat difilter dan tampil pada data historis.
+
+Respons list: `{ data: [row], meta: { page, pageSize, total, totalPages, summary, asOf, today, timeZone, dataMode } }`. total adalah totalMatched sebelum pagination; totalPages=ceil(total/pageSize), nol jika kosong. Halaman melampaui hasil memberi 200 dengan data=[], total/summary tetap sesuai filter (UI menyediakan kembali ke halaman pertama). Row hanya berisi id, reference, reportedDate, descriptionExcerpt (maks. 240), descriptionTruncated, location, reporterName, reporterDivision/responsibleDivisions (id/code/name/active), status/priority/targetDate/cancelledAt, updatedAt, updatedBy (username/displayName/source saja), ageDays/isNew/isOverdue. Tidak mengirim dokumen raw, full description panjang, audit, progres, storageKey atau secret akun.
+
+`summary={totalMatched,totalValid,counts:{IN_PROGRESS,ON_HOLD,COMPLETED},open,overdue,cancelled}`. Pada cancellation=all/cancelled, totalMatched mencakup batal; kartu counts/totalValid/open/overdue hanya tidak batal, cancelled ditampilkan terpisah. Default active mengecualikan batal. isNew memakai selisih tanggal laporan 0–6; isOverdue memakai target < today, status aktif dan tidak batal.
+
+List memakai `$match` + proyeksi allowlist + `$facet`: rows diurutkan/dipaginasi, summary dihitung dari seluruh input facet yang sama. UI memakai meta.summary, sehingga tidak perlu dua request yang berpotensi berbeda. GET `/findings/summary` memakai aggregate counts dan mengembalikan `{data:{...summary,asOf,today,timeZone,dataMode}}`, menolak page/pageSize; sort diterima tetapi tidak memengaruhi hitungan. Keduanya maxTimeMS 5 detik; galat pembacaan 500 tanpa angka palsu. Nama master divisi dibaca terpisah setelah aggregate; asOf adalah waktu request, bukan jaminan histori snapshot resmi.
+
+Parser/builder tersedia untuk dipakai ekspor PDF nanti; endpoint PDF belum diimplementasikan. Route statis summary sudah didaftarkan sebelum calon detail. GET detail dan semua mutasi masih 404 setelah autentikasi; belum ada tombol detail/CRUD/PDF semu.
 
 ## Contoh create (semua nilai contoh)
 

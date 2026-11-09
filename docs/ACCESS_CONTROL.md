@@ -6,9 +6,9 @@ Akun **bersama per divisi**, tanpa nama pribadi, mendukung pergantian shift 14/7
 
 Admin ICT mengelola akun. Rancangan teknis: satu akun admin operasional terpisah dari akun bersama ICT. Nama tampilan admin cukup Admin ICT; tidak mewajibkan nama pribadi.
 
-## Status implementasi sampai D0-03
+## Status implementasi sampai D0-04
 
-Login/logout, identitas me, baca divisi, baca akun admin dan dashboard agregat sudah diuji pada server. Dashboard memakai filter penanggung jawab yang dipilih, bukan batas divisi akun; semua akun login boleh melihat seluruh scope. Seluruh namespace data memerlukan sesi; namespace admin memeriksa role terkini. Endpoint membuat/reset/nonaktifkan akun, master divisi, dan aksi temuan dalam matriks tetap rencana. Revokasi status/sessionVersion diuji melalui perubahan database test; belum ada UI/endpoint reset. Audit bisnis/administrasi belum ditulis.
+Login/logout, identitas me, baca divisi, baca akun admin, dashboard agregat serta daftar/ringkasan temuan sudah diuji pada server. List/summary juga diuji menolak sesi yang sudah dicabut; pembaca Camp boleh membaca lintas divisi. Dashboard memakai filter penanggung jawab yang dipilih, bukan batas divisi akun; semua akun login boleh melihat seluruh scope. Seluruh namespace data memerlukan sesi; namespace admin memeriksa role terkini. Endpoint membuat/reset/nonaktifkan akun, master divisi, dan aksi temuan dalam matriks tetap rencana. Revokasi status/sessionVersion diuji melalui perubahan database test; belum ada UI/endpoint reset. Audit bisnis/administrasi belum ditulis.
 
 ## Matriks
 

@@ -2,15 +2,17 @@
 
 Nama sementara pilihan pengguna: **SHE Meeting**. Warna dominan merah dan biru. Dashboard halaman pembuka; sidebar kiri dan header berisi Home, status login/nama akun, avatar dan keluar. Referensi logo, kode warna resmi, perangkat kantor dan resolusi proyektor belum diberikan; gunakan placeholder tanpa mengarang identitas perusahaan.
 
-## Implementasi saat ini — tahap 03
+## Implementasi saat ini — tahap 04
 
-Route `/` menampilkan login saat anonim, lalu **dashboard ringkas sebagai halaman pembuka** setelah sesi sah. Sidebar Dashboard aktif; header Home/nama akun/peran/avatar dan tombol Keluar nyata, label demo tetap terlihat. Daftar temuan/Kelola akun masih teks Nanti. Route tabel berikut tetap peta target; belum route terpisah /dashboard atau /findings.
+Vue Router kini menyediakan /login, /dashboard dan /findings; / mengarah ke dashboard dengan query lama. Setelah login, tujuan default dashboard, atau kembali ke tautan daftar/dashboard internal yang diminta sebelum login. Header/sidebar aktif sesuai halaman, judul tab ikut berubah, nama/peran/avatar/Keluar tetap nyata. Route lain belum tersedia; peta berikut mengandung target tahap selanjutnya.
 
-Dashboard D0-03 menampilkan empat kartu Total/Diproses/Tertunda/Selesai, indikator Terbuka/Melewati target, dua angka bulanan, filter checkbox beberapa divisi dan bulan, Reset/Terapkan filter/Perbarui data, cakupan aktif serta timestamp server/zona. Semua angka dari API MongoDB; tidak ada array angka statis di frontend. Filter diterapkan eksplisit lalu dicatat di query URL, pulih saat refresh; refresh manual memakai scope yang sedang ditampilkan. Nama divisi nonaktif ditandai; tidak membatasi baca berdasarkan akun.
+Daftar D0-04: checkbox beberapa divisi, pencarian kondisi/lokasi/pelapor/referensi, status, filter lanjutan yang dapat dilipat (prioritas, divisi pelapor, dasar/rentang tanggal, pembatalan, urutan dan baris 5/10/20/50/100). Terapkan filter mulai halaman 1; Reset menghapus pilihan termasuk draf belum diterapkan. Ringkasan empat kartu menghitung seluruh hasil filter sebelum pagination. Data batal terpisah dan tidak masuk kartu status. Enam kolom desktop: temuan/lokasi, pelapor, penanggung jawab, prioritas/target, status/badge, pembaruan; HP menjadi kartu dengan label. Target kosong Belum ditentukan, prioritas kosong Belum dinilai; Baru dan Terlambat mengikuti perhitungan server. Aktor DEMO_SEED ditulis Seed data demo, bukan individu.
 
-Saat loading, angka disembunyikan; galat memberi Coba lagi/Reset tanpa mengaku datanya nol; data kosong sah menampilkan nol dan penjelasan. Sesi 401 kembali ke login; respons lama setelah unmount diabaikan. Indikator bulan dan snapshot semua tanggal diberi definisi terpisah. Grafik status per-divisi, tren enam bulan serta daftar maksimal lima tindak lanjut tetap M-04.
+URL menyimpan filter/page. Back/Forward/refresh mengembalikan pilihan; Perbarui data membaca ulang. Loading/galat menyembunyikan kartu/baris lama, galat memberi Coba lagi/Reset, kosong sah memberi nol, page di luar hasil menyediakan Ke halaman pertama. Belum tombol tambah/detail/koreksi/progres/PDF; catatan tahap berikutnya menyatakan batasnya.
 
-Form login tetap berlabel/autocomplete dan membersihkan sandi setelah percobaan; CSRF di memori, cookie HttpOnly. Browser tahap 03: Camp/Admin ICT, filter Camp+ICT/bulan, reset/refresh/persistensi URL, kosong/galat, keyboard dan drawer HP 390px diperiksa tanpa overflow horizontal. Domain hosting, proyektor/perangkat kantor belum diuji.
+Dashboard ringkas D0-03 tetap tersedia: empat kartu, indikator terbuka/terlambat/bulanan, filter divisi/bulan, timestamp dan label demo. Grafik per-divisi/tren/5 tindak lanjut masih M-04. Semua angka backend; sesi/token tidak disimpan di localStorage. Tujuan setelah login dibatasi ke route internal yang diimplementasikan, bukan URL bebas.
+
+Browser D0-04: Admin ICT/Camp, filter Camp+ICT menghasilkan 12 unik dalam tiga halaman ukuran 5, pindah halaman tidak mengubah angka, pencarian panel menghasilkan 3, URL/Back/refresh, data batal, kosong/galat dan reset diuji. Desktop 1440px seluruh enam kolom terlihat; HP 390px tidak overflow horizontal, drawer/navigasi kembali dicoba. Hosting/proyektor/perangkat kantor belum diuji.
 
 ## Peta halaman
 

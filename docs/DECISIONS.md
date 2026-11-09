@@ -114,3 +114,10 @@ Seed hanya MongoDB development loopback; sandi acak disimpan lokal privat 0600 d
 Pengguna sudah mencoba login D0-02 dan meminta tahap berikutnya. D0-03 mengimplementasikan dashboard ringkas sesuai penerimaan backlog: empat kartu backend, indikator terbuka/terlambat, bulan masuk/selesai, filter multi-divisi dan kerangka identitas/navigasi. Grafik/tren/per-divisi/daftar tindak lanjut tetap M-04, daftar rapat D0-04. Tidak menandai dashboard lengkap atau MVP selesai.
 
 Asumsi teknis tambahan: filter dashboard maksimal 50 ID, YYYY-MM tahun 1000–9999, query tidak dikenal ditolak; aggregate maxTimeMS 5 detik. Route / dipertahankan sampai daftar/detail memerlukan router. Filter sukses disimpan ke URL. Seed lokal diperluas dengan 18 fixture insert-only, 2 batal; aktor sistem DEMO_SEED dengan accountId null bukan audit edit pengguna. Tidak ada dependency/hosting baru atau perubahan kewenangan perusahaan.
+
+
+## Realisasi tahap 04 — daftar tanpa mutasi
+
+D0-04 menyediakan daftar/ringkasan temuan dengan filter bersama, pencarian literal, pagination dan badge server. List mengirim meta.summary dari facet yang sama agar angka seluruh hasil tetap sejalan dengan baris; summary API terpisah juga tersedia untuk pemakai lain. Sort didefinisikan field:arah dengan _id tie-breaker. Filter lanjut dan filter baca data batal sudah tersedia, tetapi aksi batal/pulihkan/CRUD/audit tetap tahap berikutnya. Tidak menandai seluruh M-01/M-03 selesai.
+
+Route login/dashboard/findings kini memakai Vue Router 4.6.4 exact yang mendukung runtime lokal. Latest major 5 tidak dipakai karena dependency membutuhkan patch Node yang lebih baru; tidak mengubah Node global. Filter/pagination pada URL, tujuan login hanya dua route internal yang diimplementasikan; server tetap otoritas akses. SPA fallback hosting diuji ketika O-02. Pengguna meminta terus melanjutkan tahap coding; commit checkpoint tetap pada dev kedua repo, bukan promosi prod.

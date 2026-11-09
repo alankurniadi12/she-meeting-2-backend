@@ -7,6 +7,7 @@ import { prepareAuthStore } from './auth/store.js';
 import { createAuthRouter } from './auth/router.js';
 import { createDashboardRouter } from './dashboard/router.js';
 import { prepareFindingStore } from './findings/store.js';
+import { createFindingRouter } from './findings/router.js';
 
 let server;
 let client;
@@ -29,7 +30,8 @@ try {
   await prepareFindingStore(connection.database);
   const authRouter = await createAuthRouter({ database: connection.database, config });
   const dashboardRouter = createDashboardRouter({ database: connection.database, config });
-  const app = createApp({ config, authRouter, dashboardRouter, checkDatabase: async () => {
+  const findingRouter = createFindingRouter({ database: connection.database, config });
+  const app = createApp({ config, authRouter, dashboardRouter, findingRouter, checkDatabase: async () => {
     const result = await connection.database.command({ ping: 1 }, { timeoutMS: 2000 });
     return result.ok === 1;
   } });

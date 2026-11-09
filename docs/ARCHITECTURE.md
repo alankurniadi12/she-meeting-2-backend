@@ -36,6 +36,18 @@ DashboardView Vue menampilkan kartu status/indikator, filter beberapa divisi dan
 
 Masih memakai route `/` untuk login atau dashboard berdasarkan sesi. Router halaman baru ditambahkan ketika daftar/detail diperlukan pada D0-04, bukan route bisnis placeholder sekarang. Grafik tren/per-divisi dan daftar tindak lanjut tetap M-04. Hosting/deep link HTTPS belum diuji.
 
+## Implementasi tahap 04 — daftar rapat dan navigasi
+
+Backend menambah router temuan setelah guard sesi, dengan fail-closed lokal pada router. Parser/filter builder bersama mengontrol pencarian literal, scope OR beberapa divisi, status/prioritas/divisi pelapor, tanggal/basis, pembatalan, pagination dan sort. List menggabungkan rows serta summary seluruh filter dalam satu [$facet MongoDB](https://www.mongodb.com/docs/manual/reference/operator/aggregation/facet/); tidak unwind penanggung jawab, tidak menghitung hanya halaman saat ini. Endpoint summary menggunakan parser/builder yang sama; PDF akan menggunakannya ketika diimplementasikan. Projection explicit membatasi kolom keluar; dua indeks urutan ditambahkan. Tidak mengubah fixture yang sudah ada atau menambah write endpoint.
+
+Frontend memakai Vue Router **4.6.4** exact, stable major 4 yang kompatibel dengan Node 24.10.0 lokal. Percobaan latest major 5 menarik dependency Babel 8 yang mensyaratkan Node >=24.11 (atau 22.18); major 4 dipilih sesuai aturan stable kompatibel tanpa upgrade global. Lockfile akhir tidak memuat dependency percobaan yang dilepas. API navigasi mengikuti [dokumentasi Vue Router](https://router.vuejs.org/guide/essentials/dynamic-matching.html).
+
+Route / mengarah /dashboard dengan query lama, /login untuk login, /dashboard dan /findings memerlukan sesi pada UI. App memulihkan sesi sebelum render halaman privat; 401 kembali login dengan tujuan internal yang diizinkan saja. Tujuan eksternal/malformed/tidak diimplementasikan ditolak ke /dashboard. Guard UI merupakan UX; backend tetap memeriksa akses. Route tak dikenal memberi halaman belum tersedia; detail/CRUD belum dibuka.
+
+Dashboard berpindah dari history.replaceState manual ke query router. Daftar menyimpan filter/page di URL; browser Back/Forward dan refresh memuat ulang data, perubahan filter mengulang page 1, response sebelum unmount/route lama diabaikan. Desktop memakai tabel enam kolom (scroll internal bila ruang sempit), HP kartu dari markup yang sama. Loading/galat menyembunyikan angka lama, empty/page kosong dibedakan. Read-only, tanpa v-html atau aksi sukses semu. Hasil dibatasi 100 baris/halaman, aggregate 5 detik; skala data besar belum diuji.
+
+History mode membutuhkan SPA fallback pada hosting nanti. Deep link lokal Vite sudah diuji, bukan bukti rewrite Vercel/HTTPS O-02 sudah dikonfigurasi. Tidak deployment pada D0-04.
+
 ## Komponen
 
 ```text

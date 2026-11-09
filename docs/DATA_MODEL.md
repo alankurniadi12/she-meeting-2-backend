@@ -1,6 +1,6 @@
 # Model data dan kamus kolom
 
-Rancangan teknis untuk MongoDB. D0-02 mengimplementasikan accounts, divisions, sessions, loginAttempts dan seed akun/divisi dummy. D0-03 menambah collection findings berisi 18 fixture dummy dan pembacaan agregat dashboard. API mutasi serta audit bisnis/version conflict belum diimplementasikan; histori pada fixture hanya event DEMO_SEED. ID entitas API berupa string ObjectId; ID entitas internal tetap ObjectId. Pengecualian internal: sessions/loginAttempts memakai ID hash string dan tidak diekspos sebagai entitas API. Tanggal kalender menggunakan YYYY-MM-DD, timestamp UTC ISO 8601. Zona tampilan/asumsi bisnis Asia/Jakarta; zona lokasi perusahaan belum dikonfirmasi.
+Rancangan teknis untuk MongoDB. D0-02 mengimplementasikan accounts, divisions, sessions, loginAttempts dan seed akun/divisi dummy. D0-03 menambah collection findings berisi 18 fixture dummy dan agregat dashboard; D0-04 menambah pembacaan daftar/summary, filter dan badge turunan server. API mutasi serta audit bisnis/version conflict belum diimplementasikan; histori pada fixture hanya event DEMO_SEED. ID entitas API berupa string ObjectId; ID entitas internal tetap ObjectId. Pengecualian internal: sessions/loginAttempts memakai ID hash string dan tidak diekspos sebagai entitas API. Tanggal kalender menggunakan YYYY-MM-DD, timestamp UTC ISO 8601. Zona tampilan/asumsi bisnis Asia/Jakarta; zona lokasi perusahaan belum dikonfirmasi.
 
 ## Entitas
 
@@ -10,7 +10,7 @@ Rancangan teknis untuk MongoDB. D0-02 mengimplementasikan accounts, divisions, s
 | accounts | _id, username, displayName, divisionId, role, passwordHash, active, sessionVersion, version, audit[], timestamps | role DIVISION atau ADMIN; satu akun aktif DIVISION per divisi; admin boleh tanpa divisionId; tidak ada nama pribadi wajib |
 | sessions | _id (SHA-256 token cookie), accountId, sessionVersion, csrfToken, createdAt, expiresAt | Hanya diakses server, TTL expiresAt; kedaluwarsa eksplisit, absolut 12 jam; tidak menyimpan token cookie mentah |
 | loginAttempts | _id (hash window+IP/username), count, expiresAt | Counter fixed window 15 menit, TTL; hanya server, bukan audit pengguna |
-| findings | Data temuan, version, progressEntries[], attachments[], audit[], seedKey opsional | D0-03: fixture/read aggregate. Mutasi atomik status/progres/audit masih D0-05/D0-06. |
+| findings | Data temuan, version, progressEntries[], attachments[], audit[], seedKey opsional | D0-03/D0-04: fixture, aggregate dan daftar/summary read-only. Mutasi atomik status/progres/audit masih D0-05/D0-06. |
 
 Tidak ada tabel persetujuan, supervisor, meeting scheduling, atau status per divisi. Master lokasi sementara teks bebas; autocomplete dari nilai terdahulu dapat ditunda.
 
@@ -50,7 +50,7 @@ Kode divisi nonaktif tetap dapat dibaca pada data lama; edit uraian tidak otomat
 
 `seedKey` unik parsial string, format D0-03-finding-01 sampai 18, menjaga retry tanpa overwrite; reference SM-DEMO-<ObjectId> unik. `createdBy`/`updatedBy` dan event `DEMO_SEED` memakai aktor sistem `seed.demo`, source DEMO_SEED, accountId/divisionId null; tidak mengklaim Admin ICT atau individu melakukan edit melalui UI. Ini metadata fixture, bukan implementasi audit bisnis. Progres/attachment kosong, version=1 saat seed. Kontrak aktor mutasi melalui sesi tetap accountId akun nyata pada tahap berikutnya.
 
-Indeks yang benar-benar dibuat D0-03: reference unik, seedKey unik parsial string, cancelledAt + responsibleDivisionIds. Indeks createMutationId/daftar/status di bawah masih rencana untuk tahap terkait. Seed menambah yang belum ada; data nonfixture tidak dihapus/ditimpa.
+Indeks yang benar-benar dibuat sampai D0-04: reference unik, seedKey unik parsial string, cancelledAt + responsibleDivisionIds, reportedDate + _id descending, updatedAt + _id descending. Indeks createMutationId/status tambahan di bawah masih rencana untuk tahap terkait. List memakai projection allowlist dan tidak membawa array histori/foto ke output; descriptionExcerpt dipotong maks. 240. Filter/status/target usia dihitung dari field sumber, bukan boolean tersimpan. Seed menambah yang belum ada; data nonfixture tidak dihapus/ditimpa.
 
 ## Audit, konflik, dan ukuran dokumen
 

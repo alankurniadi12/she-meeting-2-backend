@@ -2,7 +2,7 @@
 
 Backend Express.js + JavaScript dan driver MongoDB untuk aplikasi internal SHE Meeting. Folder docs/ merupakan sumber tunggal dokumen bersama frontend/backend.
 
-Status: D0-01 sampai D0-03 selesai serta diuji lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin dan dashboard ringkas tersedia. Daftar/mutasi/audit bisnis temuan, grafik/tren dashboard, mutasi admin, foto/PDF belum tersedia. Belum deployment.
+Status: D0-01 sampai D0-04 selesai serta diuji lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Detail/mutasi/audit bisnis temuan, grafik/tren dashboard, mutasi admin, foto/PDF belum tersedia. Belum deployment.
 
 ## Menjalankan mandiri
 
@@ -37,7 +37,7 @@ npm test
 MONGODB_TEST_URI=mongodb://127.0.0.1:27027 npm test
 ```
 
-Tanpa MONGODB_TEST_URI, 12 tes unit/fondasi/config dijalankan dan dua suite integrasi dilewati secara eksplisit. Dengan URI test, seluruh 37 tes berjalan pada database unik she_meeting_test_auth_<uuid> dan she_meeting_test_dashboard_<uuid>, lalu hanya database tersebut dihapus. DB development tidak dipakai sebagai fallback.
+Tanpa MONGODB_TEST_URI, 15 tes unit/fondasi/config dijalankan dan tiga suite integrasi dilewati secara eksplisit. Dengan URI test, seluruh 51 tes berjalan pada database unik she_meeting_test_auth_<uuid>, she_meeting_test_dashboard_<uuid> dan she_meeting_test_findings_<uuid>, lalu hanya database tersebut dihapus. DB development tidak dipakai sebagai fallback.
 
 Startup mem-ping MongoDB dan menyiapkan indeks autentikasi/findings sebelum listen. Readiness internal jangan diteruskan reverse proxy internet. API anonim 401; akun divisi ditolak 403 dari /api/v1/admin/*; admin boleh GET /api/v1/admin/accounts (baca saja). Mutasi admin dan temuan belum tersedia. Login/mutasi harus mengirim Origin allowlist; setelah login mutasi juga wajib X-CSRF-Token dari login/me. Sesi beberapa perangkat didukung, logout mencabut sesi saat ini.
 
@@ -48,6 +48,12 @@ Cookie lokal she_session_dev (HttpOnly/SameSite=Lax, absolut 12 jam). Tambahkan 
 GET /api/v1/dashboard memerlukan sesi divisi/admin. Query hanya month=YYYY-MM dan responsibleDivisionIds=<ID dipisah koma, maksimal 50>. Default semua divisi dan bulan kalender APP_TIMEZONE. Snapshot semua tanggal; pilihan bulan hanya memengaruhi dua indikator masuk/selesai. Data batal tidak dihitung, temuan bersama tetap unik. Respons berisi snapshot/period/scope/asOf/today/timeZone/dataMode; kontrak lengkap di docs/API_CONTRACT.md. Tidak ada endpoint tulis temuan pada tahap ini.
 
 Dashboard kosong sah mengembalikan nol; galat pembacaan 500 tidak diganti angka nol. APP_TIMEZONE divalidasi sebelum startup; default Asia/Jakarta. Filter, batas bulan/zona/target, seed idempotent, fail-closed dan kegagalan agregasi termasuk pengujian. Grafik/tren/tindak lanjut tetap tahap M-04.
+
+## Daftar rapat D0-04
+
+GET /api/v1/findings dan GET /api/v1/findings/summary memerlukan sesi aktif. Parser bersama menerima pencarian q (literal, case-insensitive, maksimal 100), responsibleDivisionIds (OR maksimal 50), reporterDivisionId, status, priority, from/to (tanggal sah inklusif), dateBasis=reported|completed, cancellation=active|cancelled|all, dan sort=reportedDate:asc|desc atau updatedAt:asc|desc. List menerima page (default 1, maksimum 999999) dan pageSize (default 20, maksimum 100); summary menolak pagination. Input/query di luar allowlist ditolak, bukan operator MongoDB dari klien.
+
+List mengirim data ringkas serta meta.summary dari satu facet MongoDB sebelum pagination. Summary tidak berubah karena pindah halaman; batal dihitung terpisah dari totalValid/status. Proyeksi tidak mengirim audit/progres/foto/rahasia akun. Metadata asOf/today/timeZone menyatakan waktu pemuatan. Badge Baru umur 0–6 hari dan Terlambat dihitung server. Tidak ada endpoint detail/tulis/ekspor pada D0-04. Format lengkap serta batas pada docs/API_CONTRACT.md.
 
 ## Dokumen dan Git
 
