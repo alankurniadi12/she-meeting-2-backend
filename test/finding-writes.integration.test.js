@@ -147,6 +147,38 @@ test('mutasi temuan HTTP, audit atomik, retry dan konflik MongoDB nyata', { skip
     assert.equal((await get(id)).progressTotal, before.progressTotal + 1);
     assert.equal((await call(`/${id}/progress`, { mutationId: randomUUID(), version: before.version + 1 })).status, 422);
   });
+  await t.test('riwayat before/after dan progres dipaginasi tanpa metadata internal', async () => {
+    const before = await get(id);
+    for (let index = 0; index < 12; index++) {
+      const response = await call(`/${id}/progress`, { mutationId: randomUUID(), version: before.version + index, text: `Catatan halaman ${index + 1}` });
+      assert.equal(response.status, 200);
+    }
+    const first = await call(`/${id}/progress?page=1&pageSize=10`, undefined, { method: 'GET', session: transport });
+    assert.equal(first.status, 200);
+    const progress = await first.json();
+    assert.equal(progress.data.length, 10); assert.equal(progress.meta.total, before.progressTotal + 12);
+    assert.equal(progress.data[0].text, 'Catatan halaman 12');
+    const second = await call(`/${id}/progress?page=2&pageSize=10`, undefined, { method: 'GET' });
+    assert.equal(second.status, 200); assert.ok((await second.json()).data.length > 0);
+    const historyResponse = await call(`/${id}/history?page=1&pageSize=10`, undefined, { method: 'GET' });
+    assert.equal(historyResponse.status, 200);
+    const history = await historyResponse.json();
+    assert.equal(history.meta.total, (await get(id)).version);
+    assert.deepEqual(history.data[0].after, {}); assert.equal(history.data[0].progressEntryId != null, true);
+    const createPage = await call(`/${id}/history?page=2&pageSize=10`, undefined, { method: 'GET' });
+    const created = (await createPage.json()).data.find((entry) => entry.action === 'CREATED');
+    assert.equal(created.before, null); assert.equal(created.after.reporterDivisionId, String(ids.TRANSPORT));
+    assert.ok(!JSON.stringify(history).includes('mutationId') && !JSON.stringify(history).includes('requestHash'));
+    for (const path of [`/${id}/history?page=0`, `/${id}/history?pageSize=51`, `/${id}/progress?sort=bad`, `/${id}/history?page=1&page=2`]) assert.equal((await call(path, undefined, { method: 'GET' })).status, 422);
+    assert.equal((await call(`/${id}/progress?page=999`, undefined, { method: 'GET' })).status, 200);
+    assert.equal((await call(`/${new ObjectId()}/history`, undefined, { method: 'GET' })).status, 404);
+    assert.equal((await call(`/${id}/history`, undefined, { method: 'GET', session: null, csrf: null })).status, 401);
+    const fixtureId = new ObjectId();
+    await db.collection('findings').insertOne({ _id: fixtureId, audit: [{ action: 'DEMO_SEED', actor: { source: 'DEMO_SEED', displayName: 'Seed data demo' }, timestamp: clock, revision: 1 }], progressEntries: [] });
+    const fixture = await call(`/${fixtureId}/history`, undefined, { method: 'GET' });
+    assert.equal(fixture.status, 200);
+    assert.equal((await fixture.json()).data[0].before, null);
+  });
   await t.test('batal/ID hilang dan guard ukuran histori tidak menyimpan sebagian', async () => {
     assert.equal((await call(`/${new ObjectId()}`, undefined, { method: 'GET' })).status, 404);
     assert.equal((await call('/invalid', undefined, { method: 'GET' })).status, 422);

@@ -2,7 +2,7 @@
 
 Backend Express.js + JavaScript dan driver MongoDB untuk aplikasi internal SHE Meeting. Folder docs/ merupakan sumber tunggal dokumen bersama frontend/backend.
 
-Status: D0-01 sampai D0-05 selesai serta diuji lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik dasar/versi/retry sudah tersedia. Riwayat lengkap, grafik/tren dashboard, mutasi admin, pembatalan/foto/PDF belum tersedia. Belum deployment.
+Status: D0-01 sampai D0-06 selesai serta diuji lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Grafik/tren dashboard, mutasi admin, pembatalan/foto/PDF belum tersedia. Belum deployment.
 
 ## Menjalankan mandiri
 
@@ -37,7 +37,7 @@ npm test
 MONGODB_TEST_URI=mongodb://127.0.0.1:27027 npm test
 ```
 
-Tanpa MONGODB_TEST_URI, 15 tes unit/fondasi/config dijalankan dan empat suite integrasi dilewati secara eksplisit. Dengan URI test, seluruh 62 tes berjalan pada database unik she_meeting_test_auth_<uuid>, she_meeting_test_dashboard_<uuid>, she_meeting_test_findings_<uuid> dan she_meeting_test_write_<uuid>, lalu hanya database tersebut dihapus. DB development tidak dipakai sebagai fallback.
+Tanpa MONGODB_TEST_URI, 15 tes unit/fondasi/config dijalankan dan empat suite integrasi dilewati secara eksplisit. Dengan URI test, seluruh 63 tes berjalan pada database unik she_meeting_test_auth_<uuid>, she_meeting_test_dashboard_<uuid>, she_meeting_test_findings_<uuid> dan she_meeting_test_write_<uuid>, lalu hanya database tersebut dihapus. DB development tidak dipakai sebagai fallback.
 
 Startup mem-ping MongoDB dan menyiapkan indeks autentikasi/findings sebelum listen. Readiness internal jangan diteruskan reverse proxy internet. API anonim 401; akun divisi ditolak 403 dari /api/v1/admin/*; admin boleh GET /api/v1/admin/accounts (baca saja). Mutasi inti temuan sudah tersedia; mutasi admin, batal/pulihkan dan lampiran belum tersedia. Login/mutasi harus mengirim Origin allowlist; setelah login mutasi juga wajib X-CSRF-Token dari login/me. Sesi beberapa perangkat didukung, logout mencabut sesi saat ini.
 
@@ -73,3 +73,7 @@ Mulai dari [indeks dokumen](docs/README.md), [PRD](docs/PRD.md), [konteks](docs/
 - workspace/: salinan launcher opsional untuk layout dua repo, bukan root deployment.
 
 Setiap perubahan wajib menyelaraskan dokumen relevan. Jangan commit .env, kredensial, dependency, data MongoDB, foto lokal, hasil build atau log. Demo tetap dummy; penggunaan data nyata dan hosting perusahaan belum disetujui.
+
+## Riwayat D0-06
+
+GET `/api/v1/findings/:id/progress` dan `/api/v1/findings/:id/history` mengirim 10 terbaru per halaman secara default (`page`, `pageSize` maksimal 50), termasuk temuan batal. Riwayat audit memperlihatkan before/after, akun divisi, waktu, alasan koreksi dan snapshot nama divisi. Event seed lama ditandai sebagai metadata sistem tanpa before/after. Detail tetap memuat hanya 10 progres terbaru; receipt/hash tidak dikirim. Lihat `docs/API_CONTRACT.md`.

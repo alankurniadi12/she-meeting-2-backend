@@ -162,3 +162,13 @@ D0-01–D0-04 selesai; seluruh D0/MVP belum selesai. **Berikutnya D0-05:** tamba
 ### Batas dan langkah berikutnya
 
 D0-01–D0-05 selesai; D0-06 baru sebagian. **Berikutnya D0-06:** API/UI audit before/after lengkap dan progres yang dipaginasi, kompatibilitas histori DEMO_SEED lama serta peninjauan konflik/draft yang lebih baik. Saat ini maksimal 10 progres, audit tersimpan tetapi belum UI lengkap; pemulihan draft tahan refresh/sesi berakhir penuh belum diverifikasi end-to-end. Batal/pulihkan, foto/PDF/admin mutasi/dashboard lengkap, hosting/backup/UAT perusahaan masih belum selesai. Seluruh data tetap dummy, belum izin operasional atau bukti siap produksi.
+
+## 9 November 2026 — tahap 06 / D0-06: riwayat dan konflik
+
+**Hasil:** frontend commit `af7a645` berpasangan dengan commit backend tahap ini. GET riwayat audit dan progres per temuan dengan page/pageSize ketat, terbaru dahulu, potongan array pada MongoDB, tanpa receipt/hash/mutationId. Event akun menampilkan before/after, aktor akun divisi, alasan koreksi, tautan catatan dan snapshot nama divisi; DEMO_SEED lama ditandai tanpa mengarang nilai before/after. Detail Vue menampilkan kedua jenis riwayat per 10 item dengan navigasi halaman dan state kosong/galat.
+
+Konflik koreksi/progres kini membaca versi terbaru dan membandingkan nilai semula, draf, serta server. Tindakan rebase manual mempertahankan field yang diubah pada draf dan mengambil nilai server pada field yang belum diubah; versi dan mutationId berikutnya baru setelah peninjauan. Buang draf tetap eksplisit. Retry hasil tidak pasti tetap memakai payload/ID lama, tanpa menganggapnya konflik. Ini bukan merge otomatis pada field sama dan draf masih memori tab.
+
+**Validasi:** MongoDB test terisolasi: 63 tes backend lulus termasuk lebih dari 10 catatan, dua halaman, parameter salah/berulang, anon 401, ID 404, event create, dan fixture seed lama. Frontend 6 tes lulus termasuk rebase field serta build Vite 40 modul lulus. `git diff --check` diperiksa. Tes awal backend tanpa eskalasi sandbox gagal membuka port loopback (EPERM); rerun dengan izin lokal berhasil. Browser manual D0-06 belum diuji, demikian juga proyektor/HP di lingkungan kantor. Tidak ada deployment, data operasional, perubahan prod, atau klaim siap produksi.
+
+**Berikutnya:** D0-07, uji skenario presentasi end-to-end dengan data dummy dan catat kekurangan nyata. Foto, PDF, pembatalan/pemulihan, mutasi admin dan dashboard lengkap masih tahap berikutnya.

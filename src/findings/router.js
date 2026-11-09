@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { readFindings } from './read-service.js';
 import { createFinding, updateFinding } from './write-service.js';
 import { findingDetail } from './detail-service.js';
+import { findingHistory } from './history-service.js';
 
 export function createFindingRouter({ database, config, now = () => new Date() }) {
   const router = Router();
@@ -17,6 +18,8 @@ export function createFindingRouter({ database, config, now = () => new Date() }
     res.status(result.meta.replayed ? 200 : 201).json(result);
   });
   router.get('/:id', async (req, res) => res.json({ data: await findingDetail(database, { id: req.params.id, timeZone: config.timeZone, now: now() }) }));
+  router.get('/:id/progress', async (req, res) => res.json(await findingHistory(database, { id: req.params.id, query: req.query, kind: 'progress' })));
+  router.get('/:id/history', async (req, res) => res.json(await findingHistory(database, { id: req.params.id, query: req.query, kind: 'audit' })));
   router.patch('/:id', async (req, res) => res.json(await updateFinding(database, { id: req.params.id, body: req.body, account: req.auth.account, timeZone: config.timeZone, now: now() })));
   router.post('/:id/progress', async (req, res) => res.json(await updateFinding(database, { id: req.params.id, body: req.body, account: req.auth.account, timeZone: config.timeZone, now: now(), kind: 'PROGRESS' })));
   return router;

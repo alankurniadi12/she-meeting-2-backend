@@ -56,3 +56,7 @@ Seed minimal 18 temuan sintetik: masing-masing status, satu dan beberapa penangg
 ICT menyiapkan data; calon perwakilan Camp/Transport/ICT bila bersedia mencoba tugas nyata dengan data dummy. Catat waktu pencatatan/pencarian, kebutuhan bantuan, galat, dan informasi yang membingungkan. Target numerik dan durasi pilot belum disepakati. Tidak ada kelulusan jika hak akses gagal, data hilang, angka salah, atau perubahan menimpa diam-diam.
 
 Template bukti: tanggal/lingkungan/commit, skenario, hasil aktual, lulus/gagal, lampiran, pelaksana (divisi cukup), tindak lanjut. Persetujuan operasional tetap terpisah dari lulus tes teknis.
+
+## Validasi D0-06
+
+Integrasi test_write memeriksa halaman progres lebih dari 10, audit CREATED dan event catatan, ObjectId before/after, actor tanpa metadata receipt, parameter salah/berulang, akses anonim, ID hilang, dan fixture DEMO_SEED lama. Tes frontend memeriksa rebase field yang diedit dan field terbaru tanpa memutasi draf sumber. Build frontend juga dijalankan. Pemeriksaan browser manual D0-06 belum dilakukan; uji proyektor/HP pada alur baru tetap dibutuhkan D0-07.
