@@ -44,10 +44,14 @@ D0-01 saja selesai. D0-03 belum selesai walaupun kerangka visual awal tersedia: 
 
 Tahap berikutnya D0-02 sesuai backlog. Proses uji frontend/backend dan MongoDB lokal dihentikan setelah verifikasi; data lokal dan screenshot tetap tersimpan. Pengguna dapat menjalankannya kembali lewat README. Operasi VPS/domain serta data perusahaan tidak disentuh. Perubahan berikutnya harus menyelaraskan dokumentasi terkait sebagaimana diminta pengguna.
 
-## 9 November 2026 — persiapan sinkronisasi GitHub
+## 9 November 2026 — sinkronisasi awal GitHub
 
 - Pengguna menunjuk repo GitHub frontend/backend dan meminta dev/prod pada masing-masing repo. Kedua remote kosong pada pemeriksaan awal. Identitas Git yang sudah ada dipertahankan.
 - Repo dipisah di folder aplikasi, tanpa repo induk. .gitignore lokal, README mandiri, .nvmrc dan AGENTS ditambahkan. Backend menyediakan npm run db:dev secara mandiri dan snapshot launcher induk di workspace/.
 - Dokumen kanonis dipindahkan ke backend/docs; docs dan PROJECT_CONTEXT induk menjadi symlink, sehingga pembaruan dokumen tidak membutuhkan salinan dua PRD.
 - Tidak ada perubahan fitur bisnis/dependency. Lockfile tetap sama; yang berubah adalah packaging standalone dan dokumentasi. Validasi staging/sinkronisasi mengikuti GIT_WORKFLOW.
 - Git push/branch tidak mengubah status kesiapan produksi dan tidak menyiapkan deployment.
+
+### Hasil unggahan awal
+
+Frontend commit fondasi 8b25cf9 dan backend commit fondasi cadd492 berhasil diunggah ke masing-masing origin. Pada saat verifikasi awal, dev dan prod pada setiap repo cocok dengan SHA remote, memiliki upstream, dan working tree bersih. GitHub HEAD menunjuk dev pada kedua repo. Hasil ini dicatat dalam commit dokumentasi backend berikutnya; bukan perubahan fitur/deployment. Pemeriksaan 21 dokumen tidak menemukan tautan lokal rusak, syntax launcher valid, staging awal lolos pemeriksaan whitespace dan tidak memuat pola credential/runtime yang diperiksa.

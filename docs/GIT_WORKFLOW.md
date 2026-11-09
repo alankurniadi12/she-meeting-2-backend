@@ -9,7 +9,7 @@ Permintaan pengguna 9 November 2026: unggah frontend/backend ke repo yang ditunj
 | Frontend | https://github.com/alankurniadi12/she-meeting-2-frontend.git | dev | prod |
 | Backend | https://github.com/alankurniadi12/she-meeting-2-backend.git | dev | prod |
 
-Checkpoint awal kedua branch berisi fondasi D0-01. Nama prod tidak berarti MVP lengkap, sudah disetujui perusahaan atau sudah dideploy. Push tidak otomatis menjadi instruksi menghubungkan hosting/menjalankan deployment. Branch protection, CI/CD, default branch dan deployment host belum dikonfigurasi oleh tahap ini.
+Checkpoint awal kedua branch berisi fondasi D0-01. Nama prod tidak berarti MVP lengkap, sudah disetujui perusahaan atau sudah dideploy. Push tidak otomatis menjadi instruksi menghubungkan hosting/menjalankan deployment. GitHub teramati memilih dev sebagai default branch setelah push awal. Branch protection, CI/CD dan deployment host belum dikonfigurasi oleh tahap ini.
 
 ## Dokumentasi satu sumber
 
@@ -53,3 +53,14 @@ git ls-remote origin refs/heads/dev refs/heads/prod
 ```
 
 Bandingkan SHA lokal dan remote kedua branch, serta pastikan working tree bersih. Gunakan identitas Git pengguna yang sudah dikonfigurasi; tidak mengganti kredensial atau membuat token baru sebagai bagian upload ini.
+
+## Hasil unggahan awal — 9 November 2026
+
+Unggahan awal berhasil dan remote diverifikasi menggunakan git ls-remote. Kedua repo memiliki dev/prod dengan upstream masing-masing, default GitHub dev, dan branch lokal aktif dev.
+
+| Repo | Commit fondasi awal | Verifikasi saat unggahan awal |
+| --- | --- | --- |
+| Frontend | 8b25cf90e3d6410ff0066b1b74a7a142ec9d1a4e | dev/prod lokal sama dengan remote; working tree bersih |
+| Backend | cadd492c5528516196da291f380bb715bb7d58f6 | dev/prod lokal sama dengan remote; working tree bersih |
+
+Commit di atas adalah checkpoint fondasi pertama. Pencatatan hasil verifikasi ini dikirim dalam commit dokumentasi berikutnya pada backend, kemudian prod di-fast-forward sebagai bagian penyiapan awal yang sama. Gunakan git rev-parse/ls-remote untuk posisi terbaru, jangan menganggap hash awal selalu HEAD.
