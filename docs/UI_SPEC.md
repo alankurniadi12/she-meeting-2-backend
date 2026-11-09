@@ -2,13 +2,15 @@
 
 Nama sementara pilihan pengguna: **SHE Meeting**. Warna dominan merah dan biru. Dashboard halaman pembuka; sidebar kiri dan header berisi Home, status login/nama akun, avatar dan keluar. Referensi logo, kode warna resmi, perangkat kantor dan resolusi proyektor belum diberikan; gunakan placeholder tanpa mengarang identitas perusahaan.
 
-## Implementasi saat ini — tahap 02
+## Implementasi saat ini — tahap 03
 
-Route `/` adalah layar akses sementara: form username/sandi bila anonim, identitas/peran akun serta daftar divisi aktif dari backend setelah login. Dashboard sebagai halaman pembuka tetap target D0-03; tabel route berikut belum berarti route sudah tersedia. Sidebar menandai Dashboard/Daftar temuan/Kelola akun sebagai Nanti, tanpa tombol sukses semu atau statistik rekaan.
+Route `/` menampilkan login saat anonim, lalu **dashboard ringkas sebagai halaman pembuka** setelah sesi sah. Sidebar Dashboard aktif; header Home/nama akun/peran/avatar dan tombol Keluar nyata, label demo tetap terlihat. Daftar temuan/Kelola akun masih teks Nanti. Route tabel berikut tetap peta target; belum route terpisah /dashboard atau /findings.
 
-Form memiliki label, autocomplete, status sedang memproses, galat kredensial/koneksi, dan membersihkan sandi setelah percobaan. Header/avatar mengambil nama akun backend; akun divisi bersama dibedakan dari Admin ICT. Logout kembali ke form, me memulihkan sesi setelah refresh, timer/fokus menangani sesi yang berakhir. Sesi/token tidak disimpan di localStorage.
+Dashboard D0-03 menampilkan empat kartu Total/Diproses/Tertunda/Selesai, indikator Terbuka/Melewati target, dua angka bulanan, filter checkbox beberapa divisi dan bulan, Reset/Terapkan filter/Perbarui data, cakupan aktif serta timestamp server/zona. Semua angka dari API MongoDB; tidak ada array angka statis di frontend. Filter diterapkan eksplisit lalu dicatat di query URL, pulih saat refresh; refresh manual memakai scope yang sedang ditampilkan. Nama divisi nonaktif ditandai; tidak membatasi baca berdasarkan akun.
 
-Diuji browser desktop serta 390px: login salah/benar Camp, refresh, logout, login Admin ICT via Enter, drawer buka/tutup, tanpa overflow horizontal pada login/halaman akun. Header cookie Secure/CSRF diuji HTTP terpisah; domain hosting/proyektor kantor belum diuji.
+Saat loading, angka disembunyikan; galat memberi Coba lagi/Reset tanpa mengaku datanya nol; data kosong sah menampilkan nol dan penjelasan. Sesi 401 kembali ke login; respons lama setelah unmount diabaikan. Indikator bulan dan snapshot semua tanggal diberi definisi terpisah. Grafik status per-divisi, tren enam bulan serta daftar maksimal lima tindak lanjut tetap M-04.
+
+Form login tetap berlabel/autocomplete dan membersihkan sandi setelah percobaan; CSRF di memori, cookie HttpOnly. Browser tahap 03: Camp/Admin ICT, filter Camp+ICT/bulan, reset/refresh/persistensi URL, kosong/galat, keyboard dan drawer HP 390px diperiksa tanpa overflow horizontal. Domain hosting, proyektor/perangkat kantor belum diuji.
 
 ## Peta halaman
 

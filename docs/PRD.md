@@ -2,7 +2,7 @@
 
 Versi 0.3 · 9 November 2026 · hasil wawancara putaran 1–3.
 
-Status implementasi: D0-01/fondasi dan D0-02/autentikasi selesai serta diuji lokal; dashboard dan fitur bisnis temuan masih rencana. Lihat [catatan pengembangan](DEVELOPMENT_LOG.md). Kebutuhan produk cukup untuk melanjutkan demo dummy. Rincian teknis menggunakan asumsi prototipe pada [catatan keputusan](DECISIONS.md). Belum disetujui perusahaan untuk data operasional.
+Status implementasi: D0-01/fondasi, D0-02/autentikasi, dan D0-03/dashboard ringkas selesai serta diuji lokal. FR-07 baru sebagian (kartu/indikator/filter); grafik/tren/daftar tindak lanjut masih M-04. Daftar rapat dan mutasi temuan masih rencana. Lihat [catatan pengembangan](DEVELOPMENT_LOG.md). Kebutuhan produk cukup untuk melanjutkan demo dummy. Rincian teknis menggunakan asumsi prototipe pada [catatan keputusan](DECISIONS.md). Belum disetujui perusahaan untuk data operasional.
 
 ## 1. Masalah dan tujuan
 

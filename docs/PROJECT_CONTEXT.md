@@ -216,3 +216,14 @@ Pengguna meminta melanjutkan coding bertahap dan commit setiap perubahan sesuai 
 Kredensial acak hanya `.local/demo-accounts.json` backend, mode 0600/diabaikan Git. Jalankan `npm run seed:demo` dari backend setelah MongoDB lokal aktif; seed ulang tidak mereset akun. Tidak ada temuan dummy yang dibuat pada tahap akun. Validasi: 26 tes backend dengan DB test nyata, build frontend, browser Camp/Admin ICT, refresh, logout, keyboard dan HP 390px. Header Secure diuji, tetapi cross-subdomain HTTPS/hosting belum diuji. Reset/nonaktif/ubah peran melalui endpoint/UI tetap M-06; pemeriksaan revokasi diuji dengan update DB test.
 
 **Berikutnya D0-03:** dashboard pembuka dengan data backend dan kerangka navigasi setelah login, dilanjut daftar/filter serta CRUD pada urutan backlog. Tetap data dummy; tanpa persetujuan data operasional/deployment/promosi prod. Hasil/commit dicatat DEVELOPMENT_LOG.
+
+
+## 18. Dashboard ringkas — D0-03
+
+Pengguna mengonfirmasi login bisa dipakai, lalu meminta lanjut tahap berikutnya. D0-03 kini ditulis dan diuji lokal: dashboard pembuka setelah login di route /, empat kartu status, indikator terbuka/terlambat, masuk/selesai per bulan, filter beberapa divisi, reset/refresh, query URL, timestamp/zona dan label demo. GET /api/v1/dashboard terproteksi sesi; aggregate MongoDB menghitung temuan unik, mengecualikan batal, membedakan tanggal laporan dan pencatatan selesai.
+
+Seed development loopback kini menambah 18 temuan sintetik insert-only (16 valid/2 batal); sandi dan akun D0-02 tetap. Seed ulang tidak mengubah tanggal, versi, audit atau suntingan temuan. Metadata DEMO_SEED aktor sistem bukan audit bisnis pengguna. `npm run seed:demo` tetap perintah yang sama. Pada seed awal 9 November, scope semua: 16 total, 6 Diproses, 5 Tertunda, 5 Selesai, 11 terbuka, 5 terlambat; angka di UI tetap dihitung backend, bukan hardcode.
+
+Validasi: 37 tes backend lulus dengan database test nyata/terpisah, build frontend, browser Camp/Admin ICT, filter/bulan/refresh/persistensi URL, kosong/galat, keyboard dan HP 390px tanpa overflow. Commit tetap pada dev masing-masing repo dan dokumentasi kanonis backend.
+
+**Selanjutnya D0-04:** daftar rapat, pencarian dan filter multi-divisi dengan ringkasan unik/pagination; lalu D0-05/D0-06 CRUD, progres dan audit bisnis/konflik. Dashboard lengkap (grafik/tren/tindak lanjut) masih M-04. Foto/PDF/admin mutasi, hosting dan izin operasional belum tersedia. Tetap data dummy, tanpa deployment/promosi prod.

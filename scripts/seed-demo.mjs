@@ -5,6 +5,7 @@ import { loadConfig } from '../src/config/env.js';
 import { connectDatabase } from '../src/lib/database.js';
 import { prepareAuthStore } from '../src/auth/store.js';
 import { hashPassword } from '../src/auth/password.js';
+import { seedDemoFindings } from '../src/findings/demo.js';
 
 const config = loadConfig();
 // Seed is intentionally confined to the local development environment for D0-02.
@@ -58,6 +59,7 @@ try {
       audit: [], createdAt: now, updatedAt: now, seedKey: 'D0-02',
     } }, { upsert: true });
   }
-  console.log('Seed dummy selesai: Camp, Transport, ICT, Admin ICT. Tidak ada temuan yang dibuat.');
+  const inserted = await seedDemoFindings(db, { divisionIds, timeZone: config.timeZone });
+  console.log(`Seed dummy selesai: Camp, Transport, ICT, Admin ICT; ${inserted} temuan contoh baru ditambahkan (18 fixture).`);
   console.log('Kredensial lokal: .local/demo-accounts.json (privat, diabaikan Git). Seed ulang tidak mereset akun.');
 } finally { await client?.close(); }

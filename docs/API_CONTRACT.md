@@ -1,6 +1,6 @@
 # Kontrak API MVP
 
-Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi D0-02:** GET `/health`, GET `/ready` internal, POST `/auth/login`, GET `/auth/me`, POST `/auth/logout`, GET `/divisions`, dan GET `/admin/accounts` tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. Endpoint temuan/dashboard/ekspor dan mutasi admin masih rencana. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
+Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai D0-03:** GET `/health`, GET `/ready` internal, POST `/auth/login`, GET `/auth/me`, POST `/auth/logout`, GET `/divisions`, GET `/admin/accounts`, serta GET `/dashboard` ringkas tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. Endpoint daftar/detail/mutasi temuan, ekspor, mutasi admin serta tren/grafik/daftar tindak lanjut dashboard masih rencana. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
 
 ## Konvensi
 
@@ -32,7 +32,7 @@ Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi D0-02:** GET `/health`, GET
 | POST /findings/:id/attachments | Multipart file, kind, version, mutationId | 201 metadata; tidak menerima storageKey dari klien |
 | GET /findings/:id/attachments/:attachmentId | ID | File yang direferensikan temuan, setelah login; private/no-store |
 | GET /findings/summary | Filter tanpa pagination | totalMatched, totalValid, counts per status, open, overdue, cancelled; satu aggregate untuk counts |
-| GET /dashboard | responsibleDivisionIds, month | Snapshot/status, indikator bulan, tren 6 bulan, per-divisi, maksimal 5 tindak lanjut |
+| GET /dashboard | responsibleDivisionIds, month | D0-03: snapshot/status + indikator bulan. Tren 6 bulan, per-divisi dan 5 tindak lanjut masih M-04. |
 | GET /exports/findings.pdf | Filter list tanpa page/pageSize | application/pdf, attachment, private/no-store; semua hasil filter, batas eksplisit |
 | GET /admin/accounts | pagination | ADMIN; tanpa passwordHash |
 | POST /admin/accounts | username, displayName, divisionId, role, initialPassword | ADMIN; 201; audit akun |
@@ -54,6 +54,32 @@ Daftarkan route statis `/findings/summary` sebelum `/:id` untuk menghindari tert
 - Batas login fixed window 15 menit: 10 percobaan/username dan 30/IP (termasuk sukses/input tidak valid); 429 `LOGIN_RATE_LIMITED` + `Retry-After`. Counter MongoDB tetap berlaku setelah API restart; batas dapat mencapai dua kali kuota di sekitar pergantian window. Tidak mempercayai X-Forwarded-For; proxy hosting belum dikonfigurasi.
 - GET divisions hanya menerima `activeOnly=true|false`; default true. GET admin/accounts hanya `page`/`pageSize` (default 1/20, maksimal 100), tanpa rahasia. Query lain 400.
 - Akun nonaktif/sessionVersion tidak cocok/expired selalu 401 meskipun TTL belum membersihkan record. Endpoint reset/nonaktif/ubah peran beserta auditnya masih M-06.
+
+## Dashboard ringkas D0-03
+
+Endpoint GET `/api/v1/dashboard` memerlukan sesi aktif divisi atau admin, tanpa pembatasan data berdasarkan divisi akun. Filter `responsibleDivisionIds` adalah OR penanggung jawab, maksimal 50 ID ObjectId heksadesimal dipisah koma; duplikat dihapus, tanpa parameter berarti semua divisi. ID valid yang tidak ditemukan memberi hasil nol. String kosong, array/parameter berulang, format ID salah dan query di luar allowlist ditolak 400 INVALID_QUERY. `month` memakai YYYY-MM (tahun 1000–9999), default bulan kalender server pada APP_TIMEZONE; bulan mendatang sah dan dapat nol.
+
+Respons saat ini (contoh struktur, angka bukan konstanta):
+
+```json
+{
+  "data": {
+    "dataMode": "DEMO",
+    "asOf": "2026-11-09T10:00:00.000Z",
+    "today": "2026-11-09",
+    "timeZone": "Asia/Jakarta",
+    "scope": { "responsibleDivisionIds": [] },
+    "snapshot": {
+      "totalValid": 16,
+      "counts": { "IN_PROGRESS": 6, "ON_HOLD": 5, "COMPLETED": 5 },
+      "open": 11, "overdue": 5
+    },
+    "period": { "month": "2026-11", "reported": 9, "completed": 5 }
+  }
+}
+```
+
+Semua angka memakai satu aggregate MongoDB: data batal dikecualikan, tanpa unwind penanggung jawab agar temuan bersama tetap unik. Snapshot semua tanggal; `month` hanya memengaruhi period.reported (reportedDate) dan period.completed (status kini COMPLETED + completedAt pada zona aplikasi). Target kosong/hari ini dan status Selesai tidak terlambat. Respons tidak mengirim pelapor, uraian, audit atau dokumen akun. Database kosong memberi nol; kegagalan pembacaan memberi 500 tanpa data/angka nol palsu. `asOf` adalah waktu request, bukan jaminan snapshot historis resmi.
 
 ## Filter bersama
 

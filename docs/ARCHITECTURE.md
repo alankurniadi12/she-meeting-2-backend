@@ -26,6 +26,16 @@ Vue `/` kini menampilkan login atau ringkasan akun/divisi nyata. Fetch memakai c
 
 `COOKIE_SECURE=false` hanya lokal development/test HTTP. APP_ENV=demo mewajibkan cookie Secure dan origin HTTPS; contoh env lokal perlu disesuaikan saat hosting. `trust proxy=false` tetap dipertahankan: pembatasan IP di belakang reverse proxy harus dikonfigurasi/diuji pada O-02; jangan mengaktifkan trust proxy generik. Header cookie Secure sudah diuji lokal, bukan bukti browser cross-subdomain HTTPS sudah berhasil.
 
+## Implementasi tahap 03 — dashboard ringkas
+
+GET dashboard dipasang setelah guard sesi; router dashboard juga menolak jika req.auth tidak tersedia agar fail closed jika salah pasang. Service memvalidasi query, lalu satu `$match` + `$group` menghitung kartu, terbuka/terlambat dan indikator bulan, dengan maxTimeMS 5 detik. Array penanggung jawab dicocokkan langsung memakai `$in`, tanpa unwind. Waktu kalender memakai Intl/APP_TIMEZONE yang divalidasi saat startup; bulan completedAt memakai [MongoDB $dateToString dengan timezone](https://www.mongodb.com/docs/manual/reference/operator/aggregation/dateToString/). Tidak ada dependency baru.
+
+Startup menyiapkan indeks read/fixture findings. Seed diperluas menjadi 18 temuan dummy, insert-only melalui seedKey unik; metadata DEMO_SEED dibedakan dari audit bisnis. Tidak ada endpoint tulis temuan pada D0-03.
+
+DashboardView Vue menampilkan kartu status/indikator, filter beberapa divisi dan bulan, refresh manual, state loading/kosong/galat, timestamp dan label demo. Data gagal tidak dirender sebagai nol; respons sebelum component unmount diabaikan. Filter sukses disimpan pada query URL dan dipulihkan setelah refresh. Pilihan bulan hanya untuk indikator periodik; angka status diberi cakupan semua tanggal. Master divisi dibaca dengan activeOnly=false agar riwayat divisi nonaktif dapat difilter.
+
+Masih memakai route `/` untuk login atau dashboard berdasarkan sesi. Router halaman baru ditambahkan ketika daftar/detail diperlukan pada D0-04, bukan route bisnis placeholder sekarang. Grafik tren/per-divisi dan daftar tindak lanjut tetap M-04. Hosting/deep link HTTPS belum diuji.
+
 ## Komponen
 
 ```text

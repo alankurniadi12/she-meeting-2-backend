@@ -107,3 +107,10 @@ Dokumen bersama memakai satu sumber di backend/docs; jalur docs dan PROJECT_CONT
 D0-02 selesai diuji lokal pada 9 November 2026. Argon2id 64 MiB/3 iterasi/parallelism 1; sesi MongoDB opaque tanpa JWT/signing secret; cookie mentah hanya browser, SHA-256 pada store. CSRF terikat sesi dan Origin wajib untuk login/mutasi. Login dibatasi fixed window MongoDB 15 menit (10/username, 30/IP), termasuk login sukses/input salah; parameter prototipe ini dapat ditinjau ketika pilot, bukan aturan perusahaan. Tidak mempercayai forwarded IP sebelum reverse proxy diperiksa.
 
 Seed hanya MongoDB development loopback; sandi acak disimpan lokal privat 0600 dan tidak dipublikasikan/di-hardcode. Seed ulang tidak mereset akun. Akun Admin ICT terpisah dari ICT. UI `/` sementara untuk login/identitas sebelum dashboard D0-03; tidak menambah route bisnis palsu. Mutasi admin/audit tetap M-06; tes revokasi mengubah sessionVersion/status di DB test. Pengguna kembali menegaskan commit setiap perubahan pada branch yang disepakati; checkpoint D0-02 di dev kedua repo, tanpa promosi prod/deployment.
+
+
+## Realisasi tahap 03 dan batas dashboard
+
+Pengguna sudah mencoba login D0-02 dan meminta tahap berikutnya. D0-03 mengimplementasikan dashboard ringkas sesuai penerimaan backlog: empat kartu backend, indikator terbuka/terlambat, bulan masuk/selesai, filter multi-divisi dan kerangka identitas/navigasi. Grafik/tren/per-divisi/daftar tindak lanjut tetap M-04, daftar rapat D0-04. Tidak menandai dashboard lengkap atau MVP selesai.
+
+Asumsi teknis tambahan: filter dashboard maksimal 50 ID, YYYY-MM tahun 1000–9999, query tidak dikenal ditolak; aggregate maxTimeMS 5 detik. Route / dipertahankan sampai daftar/detail memerlukan router. Filter sukses disimpan ke URL. Seed lokal diperluas dengan 18 fixture insert-only, 2 batal; aktor sistem DEMO_SEED dengan accountId null bukan audit edit pengguna. Tidak ada dependency/hosting baru atau perubahan kewenangan perusahaan.

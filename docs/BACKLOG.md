@@ -1,6 +1,6 @@
 # Backlog implementasi dan batas demo
 
-Status: **D0-01 dan D0-02 selesai serta diuji lokal**. D0-03 dan seterusnya belum selesai. Halaman akses akun sementara belum menjadi dashboard data bisnis. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
+Status: **D0-01 sampai D0-03 selesai serta diuji lokal**. Dashboard ringkas bersumber MongoDB sudah tersedia; D0-04/daftar rapat dan tahap berikutnya belum selesai. Dashboard lengkap M-04 masih sebagian. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
 
 ## D0 — demo alur utama, dikerjakan dahulu
 
@@ -8,7 +8,7 @@ Status: **D0-01 dan D0-02 selesai serta diuji lokal**. D0-03 dan seterusnya belu
 | --- | --- | --- | --- |
 | D0-01 ✅ | Bootstrap Vue/Vite JavaScript + Express dan MongoDB; kunci versi stable | Cek environment lokal | Selesai 9 November: dua lockfile, build, 8 tes, health/readiness dan ping MongoDB lokal berhasil. Detail DEVELOPMENT_LOG. |
 | D0-02 ✅ | Seed dummy, akun Camp/Transport/ICT dan admin; sesi login dan akses server | D0-01 | Selesai 9 November: 4 akun dummy, Argon2id, sesi MongoDB, CSRF/Origin, 401 anonim/403 admin bagi divisi, 26 tes lulus dan login browser diuji. |
-| D0-03 | Kerangka merah/biru, sidebar/header/avatar, dashboard pembuka | D0-02 | Identitas akun benar; kartu status bersumber data backend, label demo terlihat |
+| D0-03 ✅ | Kerangka merah/biru, sidebar/header/avatar, dashboard pembuka | D0-02 | Selesai 9 November: identitas akun, 4 kartu backend, terbuka/terlambat, indikator bulanan, filter multi-divisi, 18 fixture, 37 tes lulus dan browser desktop/HP diperiksa. |
 | D0-04 | Daftar dan filter multi-divisi dengan hitungan unik | D0-03 | Temuan bersama muncul sekali; angka mengikuti filter; pencarian dasar berfungsi |
 | D0-05 | Tambah/detail/koreksi, progres, status, target kosong, prioritas | D0-04 | Awal Diproses, Tertunda wajib alasan, Selesai tanpa foto, data bertahan setelah refresh |
 | D0-06 | Audit akun divisi dan version conflict | D0-05 | Siapa berupa akun divisi, before/after tersimpan, stale edit ditolak tanpa hilang draf |
@@ -23,7 +23,7 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 | M-01 | Validasi lengkap, default, filter lanjutan dan badge batas tanggal | 02,04,06 | Validasi client/server konsisten; uji hari 0/6/7 lulus |
 | M-02 | Unggah/lihat foto opsional privat dan kegagalan unggah | 05 | Format/ukuran dibatasi; tanpa sesi ditolak; laporan teks tetap tersedia |
 | M-03 | Pembatalan, filter batal, pemulihan admin | 08 | Alasan wajib, data/audit tidak hilang, angka default mengecualikan batal |
-| M-04 | Dashboard lengkap dalam batas UI_SPEC | 07 | Tren, per-divisi, tindak lanjut sesuai definisi dan scope |
+| M-04 (sebagian) | Dashboard lengkap dalam batas UI_SPEC | 07 | Kartu/indikator/scope sudah D0-03. Tren 6 bulan, grafik per-divisi dan daftar maksimal 5 tindak lanjut masih rencana. |
 | M-05 | PDF pagination/wrapping/filter | 09 | Semua hasil filter, ringkasan cocok, teks panjang terbaca, batas jelas |
 | M-06 | UI admin akun/divisi, reset dan revokasi sesi | 01,11 | Divisi tidak bisa akses admin; reset memutus semua sesi akun |
 | M-07 | Responsif, keyboard, state kosong/galat/sesi berakhir | 10 | Rapat desktop dan alur HP dapat dicoba tanpa kehilangan data |
@@ -41,9 +41,9 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 
 ## Status dokumentasi dan cakupan saat ini
 
-README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes autentikasi tersedia, tes aturan bisnis temuan menyusul. D0-03 belum selesai: identitas login sudah nyata, tetapi statistik temuan backend belum ada.
+README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes autentikasi/dashboard/seed tersedia, tes mutasi temuan menyusul. D0-03 sudah selesai; filter dashboard tidak berarti daftar rapat D0-04 atau seluruh FR-07/M-04 selesai.
 
-Tahap berikutnya: **D0-03**, dashboard pembuka dan kerangka navigasi setelah login, dengan ringkasan yang bersumber backend. Seed D0-02 hanya akun/divisi; seed temuan diperlukan pada tahap data berikutnya. UI membuat/reset/nonaktifkan akun tetap M-06; tes revokasi D0-02 mengubah status/sessionVersion langsung di database test, bukan klaim endpoint reset sudah tersedia.
+Tahap berikutnya: **D0-04**, daftar rapat, pencarian dan filter multi-divisi dengan ringkasan unik sebelum pagination. D0-03 sudah menambah 18 fixture temuan tanpa API mutasi. UI membuat/reset/nonaktifkan akun tetap M-06; tes revokasi menggunakan perubahan database test, bukan endpoint reset. D0-05/D0-06 akan menambah CRUD, progres serta audit bisnis/konflik versi.
 
 ## Definition of Done
 

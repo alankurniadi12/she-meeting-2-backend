@@ -8,6 +8,10 @@ test('default memakai database dan port development terpisah', () => {
   assert.equal(config.mongoUri, 'mongodb://127.0.0.1:27027');
   assert.equal(config.host, '127.0.0.1');
 });
+test('zona waktu tidak valid ditolak sebelum layanan dibuka', () => {
+  assert.throws(() => loadConfig({ APP_TIMEZONE: 'Invalid/Zone' }));
+  assert.equal(loadConfig({ APP_TIMEZONE: 'Asia/Jakarta' }).timeZone, 'Asia/Jakarta');
+});
 test('test/demo tidak boleh menyasar database development atau sistem', () => {
   for (const env of [
     { APP_ENV: 'test', MONGODB_DB: 'she_meeting_dev' },

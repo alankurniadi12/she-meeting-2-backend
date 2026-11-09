@@ -1,12 +1,12 @@
 # Pengujian, UAT, dan bukti penerimaan
 
-Rencana penerimaan seluruh MVP. **Hasil D0-02 tercatat di [DEVELOPMENT_LOG](DEVELOPMENT_LOG.md): 26 tes backend lulus dengan MongoDB nyata, build frontend lulus, dan alur login browser desktop/HP diperiksa.** T-01–T-04 serta bagian autentikasi T-20/T-21/T-24 sudah dicakup, dengan batas: reset/nonaktif diuji lewat DB test, bukan endpoint M-06; cookie HTTPS baru header, belum deployment. CRUD/foto/PDF dan seluruh skenario MVP belum dijalankan. Jalankan tes yang bermakna pada aturan bisnis/akses; tidak perlu tes yang hanya menyalin markup atau implementation detail. Simpan bukti hasil di catatan pengujian saat aplikasi tersedia.
+Rencana penerimaan seluruh MVP. **Hasil sampai D0-03 tercatat di [DEVELOPMENT_LOG](DEVELOPMENT_LOG.md): 37 tes backend lulus dengan MongoDB nyata, build frontend lulus, dan dashboard/login browser desktop/HP diperiksa.** T-01–T-04 serta bagian autentikasi T-20/T-21/T-24 sudah dicakup, dengan batas: reset/nonaktif diuji lewat DB test, bukan endpoint M-06; cookie HTTPS baru header, belum deployment. Bagian agregat T-10/T-11/T-13 juga diuji (tanpa daftar/grafik/CRUD). CRUD/foto/PDF dan seluruh skenario MVP belum dijalankan. Jalankan tes yang bermakna pada aturan bisnis/akses; tidak perlu tes yang hanya menyalin markup atau implementation detail. Simpan bukti hasil di catatan pengujian saat aplikasi tersedia.
 
 ## Menjalankan tes saat ini
 
-Dari repo backend, `npm test` menjalankan tes fondasi/config; suite integrasi dilewati secara eksplisit bila MONGODB_TEST_URI tidak ada. Jalankan MongoDB khusus proyek lalu `MONGODB_TEST_URI=mongodb://127.0.0.1:27027 npm test` untuk seluruh 26 tes. Suite membuat database unik `she_meeting_test_auth_<uuid>` lalu menghapus hanya database tersebut; tidak memakai DB development sebagai fallback. Frontend: `npm run build` dan pemeriksaan browser manual.
+Dari repo backend, `npm test` menjalankan tes fondasi/config; suite integrasi dilewati secara eksplisit bila MONGODB_TEST_URI tidak ada. Jalankan MongoDB khusus proyek lalu `MONGODB_TEST_URI=mongodb://127.0.0.1:27027 npm test` untuk seluruh 37 tes. Suite membuat database unik `she_meeting_test_auth_<uuid>` dan `she_meeting_test_dashboard_<uuid>` lalu menghapus hanya database tersebut; tidak memakai DB development sebagai fallback. Frontend: `npm run build` dan pemeriksaan browser manual.
 
-Seed ulang diperiksa identik (4 akun/3 divisi; sandi, status, versi dan timestamp tidak berubah), file kredensial mode 0600. Belum ada fixture temuan; bagian berikut target tahap data.
+Seed ulang diperiksa identik (4 akun/3 divisi; sandi, status, versi dan timestamp tidak berubah), file kredensial mode 0600. D0-03 menambah 18 fixture temuan (2 batal) insert-only. Rerun dengan clock lebih maju dan setelah fixture disunting diuji tidak menimpa data/versi/audit. Foto/fixture unggahan di bagian berikut masih target tahap foto.
 
 ## Fixture dummy
 

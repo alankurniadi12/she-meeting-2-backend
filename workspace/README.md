@@ -9,6 +9,6 @@ Untuk memulihkan layout workspace pada mesin baru:
 3. Instal dependency di masing-masing repo dengan npm ci.
 4. Dari folder induk, jalankan npm run db:dev di satu terminal, lalu npm --prefix she-meeting-backend run seed:demo sekali untuk akun dummy, dan npm run dev di terminal lain.
 
-Kredensial acak lokal berada pada she-meeting-backend/.local/demo-accounts.json; jangan commit file ini. Seed ulang tidak mereset akun. D0-02 menambahkan login/logout/sesi; dashboard/temuan belum tersedia. Petunjuk uji integrasi dan konfigurasi cookie ada di README backend.
+Kredensial acak lokal berada pada she-meeting-backend/.local/demo-accounts.json; jangan commit file ini. Seed ulang tidak mereset akun atau temuan yang ada. D0-02 menambahkan login/logout/sesi; D0-03 menambahkan 18 fixture temuan dan dashboard ringkas. Daftar/CRUD temuan serta grafik/tren dashboard lengkap belum tersedia. Petunjuk uji integrasi dan konfigurasi cookie ada di README backend.
 
 Kedua aplikasi juga dapat dijalankan mandiri; lihat README repo masing-masing. Dokumentasi kanonis ada di `../docs/`. Salinan launcher di sini perlu diselaraskan jika launcher di folder induk berubah.

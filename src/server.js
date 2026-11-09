@@ -5,6 +5,8 @@ import { connectDatabase } from './lib/database.js';
 import { createApp } from './app.js';
 import { prepareAuthStore } from './auth/store.js';
 import { createAuthRouter } from './auth/router.js';
+import { createDashboardRouter } from './dashboard/router.js';
+import { prepareFindingStore } from './findings/store.js';
 
 let server;
 let client;
@@ -24,8 +26,10 @@ try {
   const connection = await connectDatabase(config);
   client = connection.client;
   await prepareAuthStore(connection.database);
+  await prepareFindingStore(connection.database);
   const authRouter = await createAuthRouter({ database: connection.database, config });
-  const app = createApp({ config, authRouter, checkDatabase: async () => {
+  const dashboardRouter = createDashboardRouter({ database: connection.database, config });
+  const app = createApp({ config, authRouter, dashboardRouter, checkDatabase: async () => {
     const result = await connection.database.command({ ping: 1 }, { timeoutMS: 2000 });
     return result.ok === 1;
   } });

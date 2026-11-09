@@ -24,8 +24,11 @@ export function loadConfig(env = process.env) {
   const cookieSecure = env.COOKIE_SECURE ? env.COOKIE_SECURE === 'true' : appEnv === 'demo';
   if (appEnv === 'demo' && !cookieSecure) throw new Error('Demo online wajib cookie Secure dan HTTPS.');
   if (cookieSecure && origins.some((origin) => !origin.startsWith('https://'))) throw new Error('Cookie Secure memerlukan origin frontend HTTPS.');
+  const timeZone = env.APP_TIMEZONE || 'Asia/Jakarta';
+  try { new Intl.DateTimeFormat('en', { timeZone }).format(new Date()); }
+  catch { throw new Error('APP_TIMEZONE tidak valid. Gunakan zona IANA seperti Asia/Jakarta.'); }
   return Object.freeze({
     appEnv, port, host: env.HOST || '127.0.0.1', mongoUri, databaseName,
-    allowedOrigins: origins, timeZone: env.APP_TIMEZONE || 'Asia/Jakarta', cookieSecure,
+    allowedOrigins: origins, timeZone, cookieSecure,
   });
 }
