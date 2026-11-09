@@ -253,3 +253,7 @@ Validasi: 62 tes backend dengan DB test terpisah, 5 tes frontend/build lulus. Br
 ## 19. D0-06 — riwayat dan peninjauan konflik
 
 D0-06 menambahkan GET histori audit before/after dan progres paginasi, tampilan riwayat pada detail, serta perbandingan semula/draf/terbaru pada konflik koreksi dan progres. Rebase manual mempertahankan field draf yang diubah dan mengambil field server yang tidak diubah; pengguna tetap harus meninjau hasilnya. Aktor akun bersama tetap akun divisi, bukan individu. Event seed lama tidak diberi before/after palsu. Tes integrasi MongoDB dan build frontend lulus; alur browser manual D0-06 dan perangkat kantor belum diuji. D0-07 adalah verifikasi skenario presentasi. Data dummy tetap dipakai; belum deployment atau izin data operasional.
+
+## 20. D0-07 — verifikasi demo lokal
+
+Pengguna meminta langkah berikutnya. Alur demo lokal data dummy diuji di browser: dashboard/list filter dua divisi, create tanpa target/foto, tunda beralasan, selesai, riwayat/progres dua halaman, konflik progres/koreksi dua tab. Bug rebase draf Vue reaktif ditemukan dan diperbaiki; tes regresi ditambah. Koreksi dummy akun ICT melalui API lokal membuktikan audit lintas divisi. Teks UI yang masih menyebut riwayat belum ada diperbarui. Ini verifikasi teknis demo, bukan presentasi leader atau persetujuan pilot. Browser uji tidak berhasil berubah dari 841 px, jadi responsif 390/1440 D0-07 dan perangkat kantor belum diverifikasi. Fitur D1/operasional tetap belum selesai; lanjutkan sesuai prioritas demo/pilot yang diputuskan setelah umpan balik nyata.

@@ -172,3 +172,15 @@ Konflik koreksi/progres kini membaca versi terbaru dan membandingkan nilai semul
 **Validasi:** MongoDB test terisolasi: 63 tes backend lulus termasuk lebih dari 10 catatan, dua halaman, parameter salah/berulang, anon 401, ID 404, event create, dan fixture seed lama. Frontend 6 tes lulus termasuk rebase field serta build Vite 40 modul lulus. `git diff --check` diperiksa. Tes awal backend tanpa eskalasi sandbox gagal membuka port loopback (EPERM); rerun dengan izin lokal berhasil. Browser manual D0-06 belum diuji, demikian juga proyektor/HP di lingkungan kantor. Tidak ada deployment, data operasional, perubahan prod, atau klaim siap produksi.
 
 **Berikutnya:** D0-07, uji skenario presentasi end-to-end dengan data dummy dan catat kekurangan nyata. Foto, PDF, pembatalan/pemulihan, mutasi admin dan dashboard lengkap masih tahap berikutnya.
+
+## 9 November 2026 — tahap 07 / D0-07: uji alur presentasi lokal
+
+**Hasil:** frontend commit `4e78793` berpasangan dengan commit backend dokumentasi tahap ini. Browser localhost dengan akun Camp menguji dashboard, filter Camp+Transport, create dummy tanpa target/foto, status Tertunda (alasan wajib), Selesai, riwayat before/after dan progres dua halaman. Pada saat filter, 17 valid semua divisi menjadi 13 hasil unik Camp+Transport. Temuan dummy `SM-2026-6af1c29b794eabcf6e453600` dibuat. Sembilan catatan tambahan menghasilkan 11 progres dan 12 audit untuk menguji halaman kedua; tidak ada duplikasi atau pemotongan yang teramati. Audit create/status/progres menampilkan akun, waktu, nilai sebelum/sesudah dan snapshot divisi.
+
+**Bug dan perbaikan:** konflik dua tab menampilkan perbandingan dengan benar tetapi rebase gagal karena `structuredClone` menerima proxy reaktif Vue. Browser log menunjukkan `DataCloneError`. Penyalinan form diganti salinan field/array sederhana; tes proxy reaktif ditambah. Setelah perbaikan, rebase progres mempertahankan catatan/prioritas draf dan simpan berhasil. Rebase koreksi menjaga lokasi draf dan mengadopsi uraian terbaru dari tab kedua; simpan berhasil. Label prioritas konflik diterjemahkan ke bahasa Indonesia. Teks dashboard/daftar yang masih menyebut riwayat belum tersedia diperbarui, badge tahap diganti “Demo alur rapat”.
+
+**Akses lintas divisi:** akun dummy ICT login ke API lokal, mengoreksi lokasi temuan yang dibuat Camp dan audit mencatat actor `ict`, before/after, revisi 17. Kredensial tidak dicetak atau disimpan di Git. Sesi uji ICT di-logout. Data dummy uji tetap di DB development untuk demo; seed 18 fixture, akun dan sandi lama tidak diubah.
+
+**Validasi akhir:** 7 tes frontend, build Vite 40 modul, 63 tes backend MongoDB test terisolasi dan `git diff --check` lulus.
+
+**Batas verifikasi:** browser uji tetap 841 px ketika viewport override 390 dan 1440 dicoba, sehingga D0-07 tidak mengklaim uji layar HP/proyektor pada ukuran tersebut. Belum ada presentasi leader, uji jaringan kantor/HTTPS, atau keputusan pilot. Foto/PDF, batal/pulihkan, admin mutasi dan dashboard lengkap masih D1/D2. Ini bukan izin data operasional atau bukti siap produksi.

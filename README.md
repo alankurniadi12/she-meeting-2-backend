@@ -2,7 +2,7 @@
 
 Backend Express.js + JavaScript dan driver MongoDB untuk aplikasi internal SHE Meeting. Folder docs/ merupakan sumber tunggal dokumen bersama frontend/backend.
 
-Status: D0-01 sampai D0-06 selesai serta diuji lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Grafik/tren dashboard, mutasi admin, pembatalan/foto/PDF belum tersedia. Belum deployment.
+Status: D0-01 sampai D0-07 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Grafik/tren dashboard, mutasi admin, pembatalan/foto/PDF belum tersedia. Belum deployment.
 
 ## Menjalankan mandiri
 
@@ -77,3 +77,5 @@ Setiap perubahan wajib menyelaraskan dokumen relevan. Jangan commit .env, kreden
 ## Riwayat D0-06
 
 GET `/api/v1/findings/:id/progress` dan `/api/v1/findings/:id/history` mengirim 10 terbaru per halaman secara default (`page`, `pageSize` maksimal 50), termasuk temuan batal. Riwayat audit memperlihatkan before/after, akun divisi, waktu, alasan koreksi dan snapshot nama divisi. Event seed lama ditandai sebagai metadata sistem tanpa before/after. Detail tetap memuat hanya 10 progres terbaru; receipt/hash tidak dikirim. Lihat `docs/API_CONTRACT.md`.
+
+D0-07 memverifikasi alur demo dummy; akun ICT mengoreksi temuan Camp lewat API lokal dan audit before/after terbukti. Lihat `docs/PILOT.md`. Tidak ada perubahan API/hosting pada tahap ini.

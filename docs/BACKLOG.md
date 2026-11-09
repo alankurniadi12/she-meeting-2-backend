@@ -1,6 +1,6 @@
 # Backlog implementasi dan batas demo
 
-Status: **D0-01 sampai D0-06 selesai serta diuji lokal**. Riwayat before/after dan progres dipaginasi; draf konflik dapat ditinjau dan dipakai ulang secara eksplisit. Dashboard lengkap M-04 masih sebagian. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
+Status: **D0-01 sampai D0-07 selesai untuk demo lokal**. Riwayat before/after dan progres dipaginasi; rebase draf konflik diperbaiki dan alur rapat dummy diverifikasi di browser. Dashboard lengkap M-04 masih sebagian. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
 
 ## D0 — demo alur utama, dikerjakan dahulu
 
@@ -12,7 +12,7 @@ Status: **D0-01 sampai D0-06 selesai serta diuji lokal**. Riwayat before/after d
 | D0-04 ✅ | Daftar dan filter multi-divisi dengan hitungan unik | D0-03 | Selesai 9 November: daftar/summary API, filter/pencarian literal, pagination, badge, route Vue Router; 51 tes backend + 2 frontend/build lulus, browser desktop/HP diperiksa. |
 | D0-05 ✅ | Tambah/detail/koreksi, progres, status, target kosong, prioritas | D0-04 | Selesai 9 November: create/detail/PATCH/progress API dan UI, aturan status/target/divisi, 62 tes backend + 5 frontend/build lulus, alur browser/HP diuji dan data bertahan refresh. |
 | D0-06 ✅ | Riwayat perubahan akun divisi, paginasi progres dan peninjauan konflik | D0-05 | API/UI riwayat before/after dan progres 10 per halaman; seed lama ditandai; draf dibandingkan dengan versi terbaru dan rebase manual. 63 tes backend dan 6 frontend/build lulus. |
-| D0-07 | Verifikasi skenario presentasi dan catat fitur belum selesai | D0-06 | Alur pada PILOT dapat ditunjukkan; tidak mengklaim MVP lengkap |
+| D0-07 ✅ | Verifikasi skenario presentasi dan catat fitur belum selesai | D0-06 | Browser lokal: login Camp, dashboard, filter Camp+Transport (13 hasil unik saat uji), create dummy, tunda wajib alasan, selesai, riwayat/progres 2 halaman, konflik dua tab dan rebase; API dummy ICT membuktikan edit lintas divisi. Belum uji proyektor/HP fisik atau presentasi leader. |
 
 D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup, kecilkan demonstrasi secara terbuka; jangan mengganti login/penyimpanan dengan keberhasilan semu. Demo online tidak harus menjadi syarat demonstrasi lokal kepada leader.
 
@@ -41,9 +41,9 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 
 ## Status dokumentasi dan cakupan saat ini
 
-README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes autentikasi/dashboard/seed/daftar/mutasi kritis tersedia. D0-06 selesai; aksi pembatalan, foto/PDF dan seluruh MVP belum.
+README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes autentikasi/dashboard/seed/daftar/mutasi kritis tersedia. D0-07 selesai sebagai verifikasi teknis demo lokal; aksi pembatalan, foto/PDF dan seluruh MVP belum.
 
-Tahap berikutnya: **D0-07**, verifikasi skenario presentasi dengan data dummy dan daftar kekurangan yang jujur. Audit/versi/retry tidak ditunda pada write pertama D0-05 agar tidak ada periode write tanpa jejak atau rawan overwrite. Tetap 18 fixture seed plus temuan dummy dari uji manual; akun/sandi tidak berubah. UI admin akun tetap M-06; metadata DEMO_SEED dibedakan dari audit akun.
+Tahap berikutnya: pilih pekerjaan D1 yang paling dibutuhkan setelah demo internal; belum ada keputusan leader/pilot. Audit/versi/retry tidak ditunda pada write pertama D0-05 agar tidak ada periode write tanpa jejak atau rawan overwrite. Tetap 18 fixture seed plus temuan dummy dari uji manual; akun/sandi tidak berubah. UI admin akun tetap M-06; metadata DEMO_SEED dibedakan dari audit akun.
 
 ## Definition of Done
 

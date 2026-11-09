@@ -60,3 +60,7 @@ Template bukti: tanggal/lingkungan/commit, skenario, hasil aktual, lulus/gagal, 
 ## Validasi D0-06
 
 Integrasi test_write memeriksa halaman progres lebih dari 10, audit CREATED dan event catatan, ObjectId before/after, actor tanpa metadata receipt, parameter salah/berulang, akses anonim, ID hilang, dan fixture DEMO_SEED lama. Tes frontend memeriksa rebase field yang diedit dan field terbaru tanpa memutasi draf sumber. Build frontend juga dijalankan. Pemeriksaan browser manual D0-06 belum dilakukan; uji proyektor/HP pada alur baru tetap dibutuhkan D0-07.
+
+## Validasi D0-07
+
+Uji browser lokal menjalankan alur pada PILOT: dashboard 17 valid sebelum uji, filter Camp+Transport 13 unik, create dummy 2 divisi tanpa target/foto, validasi alasan Tertunda, Selesai, 11 progres dan 12 audit yang dipaginasi, konflik progres/koreksi dua tab serta rebase. Bug `structuredClone` terhadap proxy Vue ditemukan, diperbaiki, dan diulang hingga save berhasil. API lokal dengan akun dummy ICT menguji koreksi lintas divisi dan actor/before/after audit. Tes frontend menambah regresi proxy reaktif. Batas: viewport browser uji tetap 841 px saat override 390/1440, sehingga uji responsif D0-07 tidak diklaim lulus; tidak ada uji fisik proyektor/HP, HTTPS, atau UAT perusahaan.

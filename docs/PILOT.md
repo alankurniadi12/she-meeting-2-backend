@@ -57,3 +57,13 @@ Pengguna menekankan pencatatan cepat, ringkasan daftar per divisi, serta dashboa
 **Lanjut pilot** jika alur dimengerti, pihak terkait bersedia, data/hosting diizinkan, dan jalur inti serta akses/backup lolos. **Perbaiki** jika alur sulit, angka salah, atau tugas operator terlalu berat. **Tunda penggunaan nyata** jika izin atau pemilik operasi belum jelas. Keputusan ini tidak memerlukan penambahan workflow approval dalam aplikasi.
 
 Catatan presentasi kelak: tanggal, peserta/jabatan/divisi, versi demo, yang berhasil, kendala, perubahan prioritas, keputusan, pemilik dan waktu tindak lanjut.
+
+## Verifikasi teknis demo lokal D0-07 — 9 November 2026
+
+Skenario 1–6 di atas diuji dengan data dummy pada localhost oleh pengembang, **bukan** presentasi kepada leader. Akun Camp sudah login di browser. Dashboard menampilkan 17 temuan valid sebelum uji; filter Camp+Transport pada daftar menghasilkan 13 temuan unik. Satu temuan dummy `SM-2026-6af1c29b794eabcf6e453600` dibuat dengan dua penanggung jawab tanpa target/foto, status awal Diproses. Tertunda tanpa alasan ditahan form; dengan alasan/catatan berhasil. Selesai dengan konfirmasi berhasil. Audit menampilkan perubahan status/alasan/waktu dan nama akun; 11 catatan progres dan 12 audit sebelum uji konflik tampil pada dua halaman, termasuk entri pertama di halaman kedua.
+
+Dua tab akun Camp menguji konflik progres dan koreksi. Draf serta perbandingan nilai semula/draf/terbaru tampil. Uji ini menemukan `DataCloneError` pada rebase objek reaktif Vue; fungsi penyalin diperbaiki lalu alur diulang. Rebase progres mempertahankan catatan/prioritas draf dan berhasil menyimpan versi baru. Rebase koreksi mempertahankan lokasi draf serta mengambil uraian terbaru dari tab kedua, lalu berhasil menyimpan. Akun dummy ICT kemudian mengoreksi lokasi melalui API lokal; audit mencatat aktor `ict` dan before/after yang cocok. Tidak memakai data operasional atau mengubah akun/sandi.
+
+**Batas demo yang harus disebut:** foto, PDF, batal/pulihkan, administrasi akun, dashboard grafik/tren/tindak lanjut masih belum tersedia. Status Selesai hanya pernyataan akun, bukan verifikasi keselamatan. Draf tidak tahan refresh/tutup tab. Belum ada uji pada proyektor, perangkat HP fisik, HTTPS/VPS, jaringan kantor, atau presentasi/keputusan leader. Browser uji pada tahap ini tetap lebar 841 px meski override 390/1440 diminta; jangan menyebutnya bukti responsif pada kedua ukuran itu.
+
+Sebelum presentasi nyata, buka demo lokal dan cek login, angka dashboard vs daftar, formulir, status, dan riwayat pada perangkat yang akan dipakai. Siapkan jaringan/layar cadangan dan jelaskan fitur tertunda. Catat waktu pencatatan dan pencarian status sebagai baseline; belum ada target angka yang disetujui.
