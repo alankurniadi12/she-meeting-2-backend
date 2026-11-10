@@ -1,6 +1,6 @@
 # Kontrak API MVP
 
-Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai M-06 master divisi:** GET `/health`, GET `/ready` internal, POST `/auth/login`, GET `/auth/me`, POST `/auth/logout`, GET `/divisions`, GET `/admin/accounts`, GET `/dashboard` ringkas, GET `/findings`, dan GET `/findings/summary` tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. GET `/findings/:id`, GET `/findings/:id/progress`, GET `/findings/:id/history`, POST `/findings`, PATCH `/findings/:id`, POST `/findings/:id/progress` juga tersedia. Pembatalan/pemulihan M-03 tersedia; ekspor dan dashboard lengkap masih rencana; mutasi akun divisi serta master divisi oleh admin tersedia, bersama foto M-02. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
+Rancangan REST `/api/v1`, JSON UTF-8 kecuali ekspor PDF. **Implementasi sampai M-05 PDF:** login/sesi, divisi/admin, dashboard lengkap, daftar/detail/mutasi/riwayat/foto temuan dan GET `/exports/findings.pdf` tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal berisi code, message, requestId; fields ada pada validasi bisnis. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
 
 ## Konvensi
 
@@ -34,7 +34,7 @@ Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai M-06 master divisi:*
 | GET /findings/:id/attachments/:attachmentId | ID | M-02: WebP privat, sesi wajib, no-store/nosniff |
 | GET /findings/summary | Filter tanpa pagination | totalMatched, totalValid, counts per status, open, overdue, cancelled; satu aggregate untuk counts |
 | GET /dashboard | responsibleDivisionIds, month | M-04: snapshot/status, indikator bulan, tren 6 bulan, status per divisi, maksimal 5 tindak lanjut. |
-| GET /exports/findings.pdf | Filter list tanpa page/pageSize | application/pdf, attachment, private/no-store; semua hasil filter, batas eksplisit |
+| GET /exports/findings.pdf | Filter list tanpa page/pageSize | M-05: application/pdf, attachment, no-store; semua hasil filter, batas eksplisit |
 | GET /admin/accounts | pagination | ADMIN; tanpa passwordHash |
 | POST /admin/accounts | username, displayName, divisionId, role=DIVISION, initialPassword, mutationId | ADMIN; 201 akun divisi; audit/receipt. Pembuatan admin tambahan 403 |
 | PATCH /admin/accounts/:id | active/displayName, version, mutationId | ADMIN; akun divisi saja; audit, revokasi sesi saat nonaktif |
@@ -98,7 +98,7 @@ Respons juga mengirim `trend` berisi enam `{month, reported, completed}` sampai 
 | page, pageSize | Awal 1; default 20, maksimal 100; tidak berlaku untuk summary/PDF |
 | sort | reportedDate:asc, reportedDate:desc, updatedAt:asc, updatedAt:desc; default reportedDate:desc, _id sebagai tie-breaker arah sama |
 
-List, summary, dan PDF memakai parser/filter builder yang sama. Filter unknown ditolak, bukan disisipkan langsung ke MongoDB. PDF dan ringkasan tidak mengikutkan page/pageSize. Setiap respons memberikan asOf server. Respons bisa berubah bila ada edit di antara request; UI refresh list+summary setelah mutasi dan saat kembali ke daftar, tampilkan timestamp, jangan menjanjikan live snapshot.
+List, summary, dan PDF memakai parser/filter builder yang sama. Filter unknown ditolak, bukan disisipkan langsung ke MongoDB. PDF dan ringkasan tidak mengikutkan page/pageSize. Respons JSON memberi asOf server; PDF mencetak waktu pembuatan. Respons bisa berubah bila ada edit di antara request; UI refresh list+summary setelah mutasi dan saat kembali ke daftar, tampilkan timestamp, jangan menjanjikan live snapshot.
 
 Dashboard berbeda dari filter tanggal daftar: division scope berlaku untuk seluruh dashboard; month hanya angka periodik/tren. Kartu status adalah snapshot semua tanggal. Definisi pada [UI](UI_SPEC.md).
 
@@ -114,7 +114,7 @@ Respons list: `{ data: [row], meta: { page, pageSize, total, totalPages, summary
 
 List memakai `$match` + proyeksi allowlist + `$facet`: rows diurutkan/dipaginasi, summary dihitung dari seluruh input facet yang sama. UI memakai meta.summary, sehingga tidak perlu dua request yang berpotensi berbeda. GET `/findings/summary` memakai aggregate counts dan mengembalikan `{data:{...summary,asOf,today,timeZone,dataMode}}`, menolak page/pageSize; sort diterima tetapi tidak memengaruhi hitungan. Keduanya maxTimeMS 5 detik; galat pembacaan 500 tanpa angka palsu. Nama master divisi dibaca terpisah setelah aggregate; asOf adalah waktu request, bukan jaminan histori snapshot resmi.
 
-Parser/builder tersedia untuk dipakai ekspor PDF nanti; endpoint PDF belum diimplementasikan. Route statis summary sudah didaftarkan sebelum calon detail. Detail dan mutasi inti tersedia pada D0-05; pembatalan M-03 dan foto M-02 tersedia; PDF belum tersedia.
+Parser/builder digunakan juga oleh ekspor PDF M-05. Route statis summary didaftarkan sebelum detail. Detail dan mutasi inti tersedia sejak D0-05; pembatalan M-03 dan foto M-02 juga tersedia.
 
 ## Mutasi dan detail D0-05
 
@@ -152,9 +152,9 @@ Hitung perubahan dan audit berdasarkan versi dokumen yang dibaca. Write kondisio
 
 Koreksi COMPLETED menjadi aktif memerlukan correctionReason dan dicatat sebagai koreksi, bukan kejadian berulang. Pembaruan record batal ditolak kecuali pemulihan admin. Unggah memeriksa version setelah file diverifikasi dan membersihkan file orphan bila gagal.
 
-## Batas PDF usulan
+## Ekspor PDF M-05
 
-Maksimal 1.000 hasil per ekspor dan satu proses PDF aktif per instance backend; jika lebih, 422 EXPORT_TOO_LARGE meminta filter lebih sempit, bukan memotong diam-diam. Jika proses penuh, 429 EXPORT_BUSY. Tidak menyertakan pagination klien. Batas merupakan asumsi teknis; skala awal jauh di bawahnya tetapi tetap diuji.
+Maksimal 1.000 hasil per ekspor dan satu proses PDF aktif per instance backend; jika lebih, 422 EXPORT_TOO_LARGE meminta filter lebih sempit, bukan memotong diam-diam. Jika proses penuh, 429 EXPORT_BUSY. Parameter page/pageSize ditolak 400; UI menghapus keduanya saat ekspor. Query memproyeksikan field laporan dan hanya satu progres terakhir; foto, audit, receipt serta data sesi tidak masuk PDF. Respons sukses berisi `application/pdf`, `Content-Disposition: attachment`, `Cache-Control: no-store`, dan `X-Content-Type-Options: nosniff`. Ringkasan dihitung dari baris yang sama dengan PDF agar cocok. Tanggal/basis/zona/filter/urutan tertulis pada laporan. Batas ini asumsi teknis prototipe.
 
 ## D0-06 — riwayat yang dipaginasi
 

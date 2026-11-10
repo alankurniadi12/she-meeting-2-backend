@@ -1,6 +1,6 @@
 # Backlog implementasi dan batas demo
 
-Status: **D0-01 sampai D0-07, M-02, M-03, M-04 dan M-06 selesai untuk demo lokal**. Riwayat before/after dan progres dipaginasi; rebase draf konflik diperbaiki dan alur rapat dummy diverifikasi di browser. PDF M-05 belum tersedia. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
+Status: **D0-01 sampai D0-07, M-02 sampai M-06 selesai untuk demo lokal**. Riwayat before/after dan progres dipaginasi; rebase draf konflik diperbaiki dan alur rapat dummy diverifikasi di browser. M-05 PDF hasil filter sudah dapat diunduh. M-01, M-07 dan M-08 masih sebagian; belum ada izin operasional. Target demo pertama pengguna: **9 November 2026**.
 
 ## D0 — demo alur utama, dikerjakan dahulu
 
@@ -24,7 +24,7 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 | M-02 ✅ | Unggah/lihat foto opsional privat dan kegagalan unggah | 05 | JPEG/PNG/WebP ≤5 MiB, maksimal 10/temuan; file diolah WebP tanpa metadata di folder privat, baca bersesi, tanpa foto tetap sah. Tes integrasi dan UI lokal. |
 | M-03 ✅ | Pembatalan, filter batal, pemulihan admin | 08 | Filter batal/semua dan hitungan terpisah, aksi batal beralasan untuk akun login, pulih beralasan oleh admin, audit before/after, versi/retry dan UI telah diuji lokal. |
 | M-04 ✅ | Dashboard lengkap dalam batas UI_SPEC | 07 | Kartu/indikator/scope D0-03 ditambah tren 6 bulan, status per divisi dan maksimal 5 tindak lanjut. Filter multi-divisi dan angka unik diuji di Chrome; 67 tes backend, 7 frontend dan build lulus. |
-| M-05 | PDF pagination/wrapping/filter | 09 | Semua hasil filter, ringkasan cocok, teks panjang terbaca, batas jelas |
+| M-05 ✅ | PDF pagination/wrapping/filter | 09 | Semua hasil filter termasuk di luar halaman daftar, ringkasan dihitung dari hasil yang sama, teks panjang dibungkus dan halaman bernomor; batas 1.000 eksplisit. Tes integrasi, render visual 3 halaman dan unduh Chrome lokal lulus. |
 | M-06 ✅ | UI admin akun/divisi, reset dan revokasi sesi | 01,11 | ADMIN dapat mengelola akun DIVISION dan master divisi aktif/nonaktif; audit, versi dan retry dijaga server. Akun ADMIN lain atau perubahan akun ADMIN bukan cakupan MVP yang disetujui. |
 | M-07 | Responsif, keyboard, state kosong/galat/sesi berakhir | 10 | Rapat desktop dan alur HP dapat dicoba tanpa kehilangan data |
 | M-08 | Konfigurasi lokal dan contoh env; smoke/integrasi kritis | 01–12 | Pengembang dapat menjalankan dari README tanpa secret di git |
@@ -41,7 +41,7 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 
 ## Status dokumentasi dan cakupan saat ini
 
-README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes autentikasi/dashboard/seed/daftar/mutasi kritis tersedia. D0-07 selesai sebagai verifikasi teknis demo lokal; foto/PDF dan seluruh MVP belum.
+README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes autentikasi/dashboard/seed/daftar/mutasi/ekspor kritis tersedia. D0-07 selesai sebagai verifikasi teknis demo lokal; seluruh MVP belum.
 
 Tahap berikutnya: pilih pekerjaan D1 yang paling dibutuhkan setelah demo internal; belum ada keputusan leader/pilot. Audit/versi/retry tidak ditunda pada write pertama D0-05 agar tidak ada periode write tanpa jejak atau rawan overwrite. Tetap 18 fixture seed plus temuan dummy dari uji manual; akun/sandi tidak berubah. UI admin akun dan master divisi tersedia pada M-06; metadata DEMO_SEED dibedakan dari audit akun.
 

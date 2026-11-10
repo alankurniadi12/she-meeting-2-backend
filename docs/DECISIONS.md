@@ -69,6 +69,8 @@ Berikut keputusan implementasi awal dari asisten, **bukan jawaban pengguna/SOP y
 | R-11 | Snapshot dashboard semua tanggal; indikator bulan pakai tanggal masing-masing; list/summary/PDF satu filter; batal dikecualikan dari status counts | Angka dapat dijelaskan dan tidak menggandakan temuan bersama |
 | R-12 | Responsif PC/HP, online-only, refresh manual; backup harian 7 versi + off-VPS + restore test | Perangkat/jaringan/retensi operasional belum diketahui; target demo awal |
 
+R-09 telah diimplementasikan pada M-05 untuk demo lokal. Batas 1.000 dan satu render tetap asumsi teknis yang perlu uji performa di host demo, bukan kebijakan perusahaan.
+
 Audit/progres tertanam di finding, conditional version update atomik, dan guard ukuran BSON adalah rancangan pada DATA_MODEL/ARCHITECTURE; bukan keputusan bisnis pengguna. Rancangan API/validasi/performa lebih rinci mengikuti dokumen terkait.
 
 ## Belum diketahui — tidak menghambat demo lokal dummy

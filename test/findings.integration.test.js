@@ -11,6 +11,7 @@ import { hashPassword } from '../src/auth/password.js';
 import { prepareFindingStore } from '../src/findings/store.js';
 import { buildDemoFindings } from '../src/findings/demo.js';
 import { createFindingRouter } from '../src/findings/router.js';
+import { createExportsRouter } from '../src/exports/router.js';
 
 const uri = process.env.MONGODB_TEST_URI;
 test('daftar dan ringkasan temuan HTTP dengan MongoDB nyata', { skip: !uri }, async (t) => {
@@ -29,7 +30,8 @@ test('daftar dan ringkasan temuan HTTP dengan MongoDB nyata', { skip: !uri }, as
   const clock = new Date('2026-11-01T00:00:00Z');
   const authRouter = await createAuthRouter({ database: db, config });
   const findingRouter = createFindingRouter({ database: db, config, now: () => clock });
-  const server = createServer(createApp({ config, authRouter, findingRouter, checkDatabase: async () => true }));
+  const exportsRouter = createExportsRouter({ database: db, config, now: () => clock });
+  const server = createServer(createApp({ config, authRouter, findingRouter, exportsRouter, checkDatabase: async () => true }));
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   t.after(() => new Promise((resolve) => { server.close(resolve); server.closeAllConnections(); }));
   const base = `http://127.0.0.1:${server.address().port}/api/v1`;
@@ -141,6 +143,31 @@ test('daftar dan ringkasan temuan HTTP dengan MongoDB nyata', { skip: !uri }, as
     assert.equal(rows['TEST-G'].isNew, false);
     assert.equal(rows['TEST-B'].isOverdue, true);
     for (const ref of ['TEST-A', 'TEST-C', 'TEST-D']) assert.equal(rows[ref].isOverdue, false);
+  });
+  await t.test('PDF mengikuti semua hasil filter, bukan pagination dan tanpa sesi ditolak', async () => {
+    assert.equal((await fetch(`${base}/exports/findings.pdf`)).status, 401);
+    const response = await request(`/exports/findings.pdf?responsibleDivisionIds=${ids.CAMP},${ids.ICT}&page=2`);
+    assert.equal(response.status, 400);
+    const selected = await request(`/exports/findings.pdf?responsibleDivisionIds=${ids.CAMP},${ids.ICT}&cancellation=all`);
+    assert.equal(selected.status, 200);
+    assert.match(selected.headers.get('content-type'), /application\/pdf/);
+    assert.match(selected.headers.get('content-disposition'), /attachment/);
+    assert.equal(selected.headers.get('cache-control'), 'no-store');
+    const pdf = Buffer.from(await selected.arrayBuffer());
+    assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
+    assert.ok(pdf.length > 3000);
+    const empty = await request(`/exports/findings.pdf?responsibleDivisionIds=${new ObjectId()}`);
+    assert.equal(empty.status, 200);
+    assert.equal(Buffer.from(await empty.arrayBuffer()).subarray(0, 5).toString(), '%PDF-');
+  });
+  await t.test('PDF menolak lebih dari 1000 hasil tanpa memotong diam-diam', async () => {
+    const many = Array.from({ length: 1001 }, (_, index) => row(`LIMIT-${index}`, { description: 'LIMIT ekspor' }));
+    await db.collection('findings').insertMany(many);
+    try {
+      const response = await request('/exports/findings.pdf?q=LIMIT');
+      assert.equal(response.status, 422);
+      assert.equal((await response.json()).error.code, 'EXPORT_TOO_LARGE');
+    } finally { await db.collection('findings').deleteMany({ reference: /^LIMIT-/ }); }
   });
   await t.test('kueri salah/berulang/operator ditolak, summary tidak menerima pagination', async () => {
     for (const suffix of ['?status=NEW', '?pageSize=101', '?q[$ne]=x', '?status=ON_HOLD&status=COMPLETED', '?from=2026-02-29', '/summary?page=1']) {

@@ -1,12 +1,12 @@
 # Pengujian, UAT, dan bukti penerimaan
 
-Rencana penerimaan seluruh MVP. **Hasil sampai D0-05: 62 tes backend dengan MongoDB nyata + 5 tes frontend/build lulus; alur tambah/detail/koreksi/progres dan konflik dua tab diperiksa di browser.** T-01–T-04 akses/sesi dicakup dengan batas reset/nonaktif melalui DB test, cookie HTTPS hanya header. D0-04 mencakup filter/daftar/unik/pagination/tanggal/badge; D0-05 menambah bagian T-05–T-08, T-14/T-15 dan guard kapasitas T-23 (tanpa API/UI audit lengkap atau pembatalan/foto).
+Rencana penerimaan seluruh MVP. D0-01 sampai D0-07 dan M-02 sampai M-06 sudah memiliki implementasi demo lokal. M-05 menambah tes ekspor PDF untuk akses 401, filter/pagination, hasil nol, batas 1.000 dan unduh Chrome; PDF dummy panjang tiga halaman diperiksa secara visual. Hasil tes final dicatat pada DEVELOPMENT_LOG. Lulus tes lokal bukan persetujuan perusahaan.
 
-Belum seluruh T-01–T-24 selesai. Foto/PDF, backup/restore, hosting cross-subdomain/deep link Vercel, admin mutasi, proyektor kantor, pagination audit/progres dan peninjauan konflik lengkap tetap belum diuji. Jangan menyamakan lulus tes lokal dengan persetujuan perusahaan. Bukti rinci di [DEVELOPMENT_LOG](DEVELOPMENT_LOG.md).
+Belum seluruh T-01–T-24 selesai. Backup/restore, hosting cross-subdomain/deep link Vercel, perangkat/proyektor kantor, dan performa ekspor batas maksimum tetap belum diuji. Bukti rinci di [DEVELOPMENT_LOG](DEVELOPMENT_LOG.md).
 
 ## Menjalankan tes saat ini
 
-Dari repo backend, `npm test` menjalankan tes fondasi/config; suite integrasi dilewati secara eksplisit bila MONGODB_TEST_URI tidak ada. Jalankan MongoDB khusus proyek lalu `MONGODB_TEST_URI=mongodb://127.0.0.1:27027 npm test` untuk seluruh 62 tes. Suite membuat database unik `she_meeting_test_auth_<uuid>`, `she_meeting_test_dashboard_<uuid>`, `she_meeting_test_findings_<uuid>` dan `she_meeting_test_write_<uuid>` lalu menghapus hanya database tersebut; tidak memakai DB development sebagai fallback. Frontend: `npm test` (5 tes URL/tujuan login, draf/retry dan notice sukses), `npm run build`, serta pemeriksaan browser manual. Tanpa URI test backend, 15 tes unit/fondasi/config berjalan dan 4 suite integrasi dilewati.
+Dari repo backend, `npm test` menjalankan tes fondasi/config; suite integrasi dilewati bila MONGODB_TEST_URI tidak ada. Jalankan MongoDB khusus proyek lalu `MONGODB_TEST_URI=mongodb://127.0.0.1:27027 npm test` untuk suite penuh. Suite membuat database unik per kelompok lalu menghapus hanya database tersebut; tidak memakai DB development sebagai fallback. Frontend: `npm test`, `npm run build`, dan pemeriksaan browser manual.
 
 Seed ulang diperiksa identik (4 akun/3 divisi; sandi, status, versi dan timestamp tidak berubah), file kredensial mode 0600. D0-03 menambah 18 fixture temuan (2 batal) insert-only. Rerun dengan clock lebih maju dan setelah fixture disunting diuji tidak menimpa data/versi/audit. Foto/fixture unggahan di bagian berikut masih target tahap foto.
 
@@ -54,6 +54,10 @@ Seed minimal 18 temuan sintetik: masing-masing status, satu dan beberapa penangg
 ## Validasi M-04
 
 Tes integrasi MongoDB memeriksa nol saat kosong, scope multi-divisi unik, tren enam bulan, kontribusi per divisi, prioritas lima tindak lanjut dan proyeksi tanpa isi privat. Chrome lokal Admin ICT memeriksa 16 valid semua divisi dan 12 unik untuk Camp+ICT; tren dan daftar berubah mengikuti scope. Uji HP/proyektor kantor dan pembacaan serentak saat ada edit masih terbuka.
+
+## Validasi M-05
+
+Tes integrasi PDF memeriksa 401 tanpa sesi, parameter page/pageSize ditolak, filter multi-divisi dan batal, hasil kosong valid, signature/tipe/attachment/no-store, serta lebih dari 1.000 hasil mendapat 422 tanpa pemotongan. Unit frontend memastikan page/pageSize tidak dikirim saat ekspor. PDF dummy 9 temuan dengan uraian/progres panjang dirender menjadi 3 halaman A4; halaman awal, lanjutan dan akhir diperiksa untuk wrap, header dan nomor halaman. Chrome lokal akun ICT mengunduh PDF Camp+ICT (12 temuan unik) sampai status Done. Performa render 1.000 hasil dan proyektor/HP kantor masih terbuka.
 
 ## UAT dan kriteria pilot
 

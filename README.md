@@ -2,7 +2,7 @@
 
 Backend Express.js + JavaScript dan driver MongoDB untuk aplikasi internal SHE Meeting. Folder docs/ merupakan sumber tunggal dokumen bersama frontend/backend.
 
-Status: D0-01 sampai D0-07, M-02, M-03, M-04 dan M-06 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard lengkap dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. PDF M-05 belum tersedia; mutasi akun divisi dan master divisi oleh admin, foto opsional dan pembatalan/pemulihan tersedia. Belum deployment.
+Status: D0-01 sampai D0-07 dan M-02 sampai M-06 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard lengkap, daftar/ringkasan temuan dan PDF hasil filter tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Mutasi akun divisi dan master divisi oleh admin, foto opsional dan pembatalan/pemulihan tersedia. Belum deployment.
 
 ## Menjalankan mandiri
 

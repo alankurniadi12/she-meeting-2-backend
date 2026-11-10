@@ -8,6 +8,7 @@ import { createAuthRouter } from './auth/router.js';
 import { createDashboardRouter } from './dashboard/router.js';
 import { prepareFindingStore } from './findings/store.js';
 import { createFindingRouter } from './findings/router.js';
+import { createExportsRouter } from './exports/router.js';
 
 let server;
 let client;
@@ -31,7 +32,8 @@ try {
   const authRouter = await createAuthRouter({ database: connection.database, config });
   const dashboardRouter = createDashboardRouter({ database: connection.database, config });
   const findingRouter = createFindingRouter({ database: connection.database, config });
-  const app = createApp({ config, authRouter, dashboardRouter, findingRouter, checkDatabase: async () => {
+  const exportsRouter = createExportsRouter({ database: connection.database, config });
+  const app = createApp({ config, authRouter, dashboardRouter, findingRouter, exportsRouter, checkDatabase: async () => {
     const result = await connection.database.command({ ping: 1 }, { timeoutMS: 2000 });
     return result.ok === 1;
   } });

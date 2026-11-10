@@ -2,7 +2,7 @@
 
 Nama sementara pilihan pengguna: **SHE Meeting**. Warna dominan merah dan biru. Dashboard halaman pembuka; sidebar kiri dan header berisi Home, status login/nama akun, avatar dan keluar. Referensi logo, kode warna resmi, perangkat kantor dan resolusi proyektor belum diberikan; gunakan placeholder tanpa mengarang identitas perusahaan.
 
-## Implementasi saat ini — M-04
+## Implementasi saat ini — M-05
 
 Route /login, /dashboard, /findings, /findings/new, /findings/:id dan /findings/:id/edit tersedia; root tetap redirect dashboard. Sidebar/judul tab mengikuti halaman, filter daftar tersimpan pada returnTo yang dibatasi ke route daftar internal. Tujuan login kini juga mengizinkan form/detail/koreksi internal dengan ID valid, tanpa redirect eksternal. Detail membedakan pelapor, divisi asal, penanggung jawab bersama, akun pencatat/pengubah dan waktu server.
 
@@ -91,7 +91,7 @@ Data batal tidak masuk dashboard biasa. Pada filter Batal/Semua di daftar, tampi
 
 ## PDF
 
-Judul SHE Meeting — Data Demo pada demo, tanggal cetak/zona, akun divisi pembuat, filter, basis tanggal, jumlah temuan dan ringkasan. Kolom minimum: referensi/tanggal, uraian/lokasi, pelapor/divisi, penanggung jawab, status, prioritas, target, progres/alasan terakhir. Teks panjang dibungkus, header diulang, nomor halaman tersedia. Foto dan seluruh audit tidak ditanam dalam PDF MVP. PDF berisi semua hasil filter, bukan hanya halaman tabel saat ini.
+PDF M-05 sudah memakai judul SHE Meeting - Data Demo, tanggal cetak/zona, akun pembuat, filter, basis tanggal, jumlah temuan dan ringkasan. Setiap temuan memuat referensi/tanggal, uraian/lokasi, pelapor/divisi, penanggung jawab, status, prioritas, target, progres/alasan terakhir. Teks panjang dibungkus lintas halaman, header diulang, nomor halaman tersedia. Foto dan seluruh audit tidak ditanam dalam PDF MVP. PDF berisi semua hasil filter, bukan hanya halaman tabel saat ini; unduh tersedia pada Daftar temuan.
 
 D0-07: alur riwayat/progres lebih dari 10 item dan konflik koreksi/progres diuji di browser lokal. Rebase proxy Vue diperbaiki setelah kegagalan nyata, lalu simpan draf berhasil. Teks UI yang menyebut riwayat belum tersedia dihapus. Browser uji tidak berhasil memakai viewport 390/1440; verifikasi responsif tahap ini tetap terbuka.
 

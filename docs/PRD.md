@@ -2,7 +2,7 @@
 
 Versi 0.3 · 9 November 2026 · hasil wawancara putaran 1–3.
 
-Status implementasi: D0-01 sampai D0-07, M-02 foto opsional, M-03 pembatalan/pemulihan, M-04 dashboard lengkap dan M-06 administrasi akun/master divisi selesai untuk demo lokal. FR-07 kini mencakup kartu, indikator, filter multi-divisi, tren enam bulan, status per divisi dan lima tindak lanjut. D0-05/06 menyediakan pencatatan, progres, audit dan penanganan konflik; D0-07 menguji alur di browser lokal. Admin ICT dapat mengelola akun DIVISION dan master divisi; akun ADMIN lain/perubahan akun ADMIN belum dicakup. PDF M-05 dan uji layar HP/proyektor kantor belum selesai. Lihat [catatan pengembangan](DEVELOPMENT_LOG.md). Kebutuhan produk cukup untuk melanjutkan demo dummy. Rincian teknis menggunakan asumsi prototipe pada [catatan keputusan](DECISIONS.md). Belum disetujui perusahaan untuk data operasional.
+Status implementasi: D0-01 sampai D0-07 dan M-02 sampai M-06 selesai untuk demo lokal. Dashboard mencakup kartu, filter multi-divisi, tren, status per divisi dan tindak lanjut. M-05 menambah PDF seluruh hasil filter dengan ringkasan dan pagination; unduh Chrome lokal dan render visual dummy telah diuji. Pencatatan, progres, audit, foto opsional, pembatalan/pemulihan dan administrasi akun/divisi juga tersedia. Akun ADMIN lain/perubahan akun ADMIN belum dicakup. M-01, M-07, M-08 serta uji HP/proyektor kantor dan presentasi leader belum tuntas. Lihat [catatan pengembangan](DEVELOPMENT_LOG.md). Rincian teknis menggunakan asumsi prototipe pada [catatan keputusan](DECISIONS.md). Belum disetujui perusahaan untuk data operasional.
 
 ## 1. Masalah dan tujuan
 

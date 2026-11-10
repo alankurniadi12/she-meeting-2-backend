@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import { randomUUID } from 'node:crypto';
 
-export function createApp({ config, checkDatabase, authRouter, dashboardRouter, findingRouter }) {
+export function createApp({ config, checkDatabase, authRouter, dashboardRouter, findingRouter, exportsRouter }) {
   const app = express();
   app.disable('x-powered-by');
   app.set('trust proxy', false);
@@ -38,6 +38,7 @@ export function createApp({ config, checkDatabase, authRouter, dashboardRouter, 
   if (authRouter) app.use('/api/v1', authRouter);
   if (dashboardRouter) app.use('/api/v1/dashboard', dashboardRouter);
   if (findingRouter) app.use('/api/v1/findings', findingRouter);
+  if (exportsRouter) app.use('/api/v1/exports', exportsRouter);
   // Without a store (e.g. isolated foundation tests), fail closed.
   app.use('/api/v1', (req, res) => res.status(req.auth ? 404 : 401).json({ error: {
     code: req.auth ? 'NOT_FOUND' : 'UNAUTHENTICATED', message: req.auth ? 'Endpoint belum tersedia.' : 'Login diperlukan.', requestId: req.requestId,

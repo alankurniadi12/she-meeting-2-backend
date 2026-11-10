@@ -2,9 +2,9 @@
 
 Keputusan produk dari putaran 1–3. Detail teknis mengikuti asumsi R-01–R-12 di [catatan keputusan](DECISIONS.md).
 
-## Status implementasi sampai D0-06
+## Status implementasi sampai M-05
 
-Pencatatan/koreksi/progres/status berikut sudah tersedia dengan backend nyata. Audit, guard versi/retry, serta UI/endpoint riwayat lengkap paginasi tersedia melalui D0-06. Batal/pulihkan M-03 dan foto privat M-02 tersedia; PDF masih rencana; administrasi akun/divisi M-06 tersedia. Konflik mempertahankan draf, memperlihatkan nilai semula/draf/terbaru, lalu menawarkan rebase manual atau buang draf; tidak otomatis menimpa data versi baru. Retry hasil tidak pasti mempertahankan ID/payload. Draft hanya memori tab, bukan penyimpanan offline/tahan refresh.
+Pencatatan/koreksi/progres/status berikut sudah tersedia dengan backend nyata. Audit, guard versi/retry, serta UI/endpoint riwayat lengkap paginasi tersedia melalui D0-06. Batal/pulihkan M-03, foto privat M-02, PDF hasil filter M-05 dan administrasi akun/divisi M-06 tersedia. Konflik mempertahankan draf, memperlihatkan nilai semula/draf/terbaru, lalu menawarkan rebase manual atau buang draf; tidak otomatis menimpa data versi baru. Retry hasil tidak pasti mempertahankan ID/payload. Draft hanya memori tab, bukan penyimpanan offline/tahan refresh.
 
 ## Pencatatan
 
