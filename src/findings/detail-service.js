@@ -15,7 +15,7 @@ export async function findingDetail(database, { id, timeZone, now = new Date() }
     reporterDivisionId: String(row.reporterDivisionId), reporterDivision: division(row.reporterDivisionId),
     responsibleDivisionIds: row.responsibleDivisionIds.map(String), responsibleDivisions: row.responsibleDivisionIds.map(division),
     priority: row.priority ?? null, targetDate: row.targetDate ?? null, status: row.status, holdReason: row.holdReason ?? null,
-    completedAt: row.completedAt ?? null, cancelledAt: row.cancelledAt ?? null, cancellationReason: row.cancellationReason ?? null,
+    completedAt: row.completedAt ?? null, cancelledAt: row.cancelledAt ?? null, cancellationReason: row.cancellationReason ?? null, cancelledBy: actor(row.cancelledBy),
     createdBy: actor(row.createdBy), updatedBy: actor(row.updatedBy), createdAt: row.createdAt, updatedAt: row.updatedAt,
     progressEntries: (row.progressEntries || []).slice(-10).reverse().map((entry) => ({ id: entry.id, text: entry.text, actor: actor(entry.actor), timestamp: entry.timestamp })),
     progressTotal: row.progressEntries?.length ?? 0, attachmentCount: row.attachments?.length ?? 0,

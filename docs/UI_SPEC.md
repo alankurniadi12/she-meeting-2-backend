@@ -94,3 +94,7 @@ Data batal tidak masuk dashboard biasa. Pada filter Batal/Semua di daftar, tampi
 Judul SHE Meeting — Data Demo pada demo, tanggal cetak/zona, akun divisi pembuat, filter, basis tanggal, jumlah temuan dan ringkasan. Kolom minimum: referensi/tanggal, uraian/lokasi, pelapor/divisi, penanggung jawab, status, prioritas, target, progres/alasan terakhir. Teks panjang dibungkus, header diulang, nomor halaman tersedia. Foto dan seluruh audit tidak ditanam dalam PDF MVP. PDF berisi semua hasil filter, bukan hanya halaman tabel saat ini.
 
 D0-07: alur riwayat/progres lebih dari 10 item dan konflik koreksi/progres diuji di browser lokal. Rebase proxy Vue diperbaiki setelah kegagalan nyata, lalu simpan draf berhasil. Teks UI yang menyebut riwayat belum tersedia dihapus. Browser uji tidak berhasil memakai viewport 390/1440; verifikasi responsif tahap ini tetap terbuka.
+
+## M-03 — layar pembatalan
+
+Detail aktif menampilkan form Batalkan temuan untuk akun login dengan alasan wajib. Setelah batal, detail menunjukkan pelaku, waktu, alasan, badge Dibatalkan, riwayat tetap terbaca, dan progres/koreksi tertutup. Admin melihat form Pulihkan temuan dengan alasan wajib. Konflik versi menahan draf alasan sampai pengguna memuat versi terbaru dan secara eksplisit memilih mencoba lagi; hasil jaringan tidak pasti memakai retry idempotensi yang sama. Daftar memakai filter Batal/Semua dan memisahkan hitungan batal dari status valid.

@@ -22,6 +22,7 @@ test('mutasi temuan HTTP, audit atomik, retry dan konflik MongoDB nyata', { skip
   await db.collection('divisions').insertMany(Object.entries(ids).map(([code, _id]) => ({ _id, code, name: code, active: true })));
   const password = randomUUID(); const passwordHash = await hashPassword(password);
   await db.collection('accounts').insertMany(['camp', 'transport'].map((username) => ({ username, displayName: username, role: 'DIVISION', divisionId: ids[username.toUpperCase()], active: true, sessionVersion: 1, passwordHash })));
+  await db.collection('accounts').insertOne({ username: 'admin', displayName: 'Admin ICT', role: 'ADMIN', divisionId: ids.ICT, active: true, sessionVersion: 1, passwordHash });
   const config = loadConfig({ APP_ENV: 'test', MONGODB_DB: db.databaseName });
   let clock = new Date('2026-11-09T01:00:00Z');
   const authRouter = await createAuthRouter({ database: db, config });
@@ -36,7 +37,7 @@ test('mutasi temuan HTTP, audit atomik, retry dan konflik MongoDB nyata', { skip
     assert.equal(response.status, 200);
     return { cookie: response.headers.get('set-cookie').split(';')[0], csrf: (await response.json()).data.csrfToken };
   }
-  const camp = await login('camp'); const transport = await login('transport');
+  const camp = await login('camp'); const transport = await login('transport'); const admin = await login('admin');
   const call = (path = '', body, { session = camp, method = 'POST', requestOrigin = origin, csrf = session?.csrf } = {}) => fetch(`${base}${path}`, {
     method, headers: { ...(requestOrigin ? { Origin: requestOrigin } : {}), ...(session ? { Cookie: session.cookie } : {}), ...(csrf ? { 'X-CSRF-Token': csrf } : {}), ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}) }, body: body === undefined ? undefined : JSON.stringify(body),
   });
@@ -178,6 +179,53 @@ test('mutasi temuan HTTP, audit atomik, retry dan konflik MongoDB nyata', { skip
     const fixture = await call(`/${fixtureId}/history`, undefined, { method: 'GET' });
     assert.equal(fixture.status, 200);
     assert.equal((await fixture.json()).data[0].before, null);
+  });
+  await t.test('batal beralasan, pemulihan admin, audit, retry dan ringkasan tetap konsisten', async () => {
+    const created = await call('', initial());
+    const targetId = (await created.json()).data.id;
+    const countBefore = (await getDashboard(db, { query: {}, timeZone: config.timeZone, now: clock })).snapshot.totalValid;
+    const cancelPath = `/${targetId}/cancel`; const restorePath = `/${targetId}/restore`;
+    const invalid = { version: 1, mutationId: randomUUID(), reason: '' };
+    assert.equal((await call(cancelPath, invalid)).status, 422);
+    assert.equal((await call(cancelPath, { ...invalid, reason: 'Duplikat demo', cancelledBy: 'admin' })).status, 422);
+    assert.equal((await call(cancelPath, { ...invalid, reason: 'Duplikat demo' }, { session: null, csrf: null })).status, 401);
+    assert.equal((await call(cancelPath, { ...invalid, reason: 'Duplikat demo' }, { csrf: null })).status, 403);
+    assert.equal((await call(restorePath, { version: 1, mutationId: randomUUID(), reason: 'Pulihkan' }, { session: admin })).status, 409);
+    const body = { version: 1, mutationId: randomUUID(), reason: 'Duplikat data dummy' };
+    const cancelled = await call(cancelPath, body, { session: transport });
+    assert.equal(cancelled.status, 200);
+    const cancelledAck = (await cancelled.json()).data;
+    assert.equal(cancelledAck.version, 2);
+    assert.equal((await getDashboard(db, { query: {}, timeZone: config.timeZone, now: clock })).snapshot.totalValid, countBefore - 1);
+    assert.equal((await get(targetId)).cancellationReason, body.reason);
+    const cancelledReplay = await call(cancelPath, body, { session: transport });
+    assert.equal(cancelledReplay.status, 200);
+    assert.equal((await cancelledReplay.json()).meta.replayed, true);
+    assert.equal((await call(cancelPath, { ...body, reason: 'Beda' }, { session: transport })).status, 409);
+    assert.equal((await call(cancelPath, { version: 2, mutationId: randomUUID(), reason: 'Lagi' })).status, 409);
+    assert.equal((await call(`/${targetId}/progress`, { version: 2, mutationId: randomUUID(), text: 'Tidak boleh' })).status, 409);
+    assert.equal((await call(`/${targetId}`, { version: 2, mutationId: randomUUID(), location: 'Tidak boleh' }, { method: 'PATCH' })).status, 409);
+    const list = await call('?cancellation=cancelled', undefined, { method: 'GET' });
+    assert.ok((await list.json()).data.some((item) => item.id === targetId));
+    assert.equal((await call(restorePath, { version: 2, mutationId: randomUUID(), reason: 'Salah batal' })).status, 403);
+    const restoreBody = { version: 2, mutationId: randomUUID(), reason: 'Salah tandai duplikat demo' };
+    const restored = await call(restorePath, restoreBody, { session: admin });
+    assert.equal(restored.status, 200); assert.equal((await restored.json()).data.version, 3);
+    const restoredReplay = await call(restorePath, restoreBody, { session: admin });
+    assert.equal(restoredReplay.status, 200);
+    assert.equal((await restoredReplay.json()).meta.replayed, true);
+    const detail = await get(targetId);
+    assert.equal(detail.cancelledAt, null); assert.equal(detail.cancellationReason, null); assert.equal(detail.status, 'IN_PROGRESS');
+    const history = await call(`/${targetId}/history`, undefined, { method: 'GET' });
+    const entries = (await history.json()).data;
+    assert.deepEqual(entries.map((event) => event.action), ['RESTORED', 'CANCELLED', 'CREATED']);
+    assert.equal(entries[0].actor.username, 'admin'); assert.equal(entries[0].reason, restoreBody.reason);
+    assert.equal(entries[0].before.cancellationReason, body.reason); assert.equal(entries[0].after.cancelledAt, null);
+    assert.equal(entries[1].actor.username, 'transport'); assert.equal(entries[1].before.cancelledAt, null);
+    assert.equal(entries[1].after.cancellationReason, body.reason);
+    assert.equal((await call(restorePath, { version: 3, mutationId: randomUUID(), reason: 'Lagi' }, { session: admin })).status, 409);
+    const summary = await getDashboard(db, { query: {}, timeZone: config.timeZone, now: clock });
+    assert.equal(summary.snapshot.totalValid, countBefore);
   });
   await t.test('batal/ID hilang dan guard ukuran histori tidak menyimpan sebagian', async () => {
     assert.equal((await call(`/${new ObjectId()}`, undefined, { method: 'GET' })).status, 404);

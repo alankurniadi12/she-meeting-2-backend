@@ -64,3 +64,7 @@ Integrasi test_write memeriksa halaman progres lebih dari 10, audit CREATED dan 
 ## Validasi D0-07
 
 Uji browser lokal menjalankan alur pada PILOT: dashboard 17 valid sebelum uji, filter Camp+Transport 13 unik, create dummy 2 divisi tanpa target/foto, validasi alasan Tertunda, Selesai, 11 progres dan 12 audit yang dipaginasi, konflik progres/koreksi dua tab serta rebase. Bug `structuredClone` terhadap proxy Vue ditemukan, diperbaiki, dan diulang hingga save berhasil. API lokal dengan akun dummy ICT menguji koreksi lintas divisi dan actor/before/after audit. Tes frontend menambah regresi proxy reaktif. Batas: viewport browser uji tetap 841 px saat override 390/1440, sehingga uji responsif D0-07 tidak diklaim lulus; tidak ada uji fisik proyektor/HP, HTTPS, atau UAT perusahaan.
+
+## Validasi M-03 — 10 November 2026
+
+64 tes backend MongoDB lulus: validasi alasan/field, anonim/CSRF, role admin, transisi aktif-batal-pulih, replay idempoten, penolakan write saat batal, filter dan ringkasan, serta audit before/after/reason/actor. 7 tes frontend dan build lulus. Browser lokal menguji satu temuan dummy dibatalkan dan dipulihkan oleh akun admin; tampilan detail dan dua event audit diverifikasi. Role divisi untuk restore diuji lewat integrasi server. Belum uji layar fisik, hosting HTTPS atau data operasional.

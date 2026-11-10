@@ -2,7 +2,7 @@
 
 Backend Express.js + JavaScript dan driver MongoDB untuk aplikasi internal SHE Meeting. Folder docs/ merupakan sumber tunggal dokumen bersama frontend/backend.
 
-Status: D0-01 sampai D0-07 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Grafik/tren dashboard, mutasi admin, pembatalan/foto/PDF belum tersedia. Belum deployment.
+Status: D0-01 sampai D0-07 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Grafik/tren dashboard, mutasi admin, foto/PDF belum tersedia; pembatalan/pemulihan M-03 tersedia. Belum deployment.
 
 ## Menjalankan mandiri
 
@@ -37,9 +37,9 @@ npm test
 MONGODB_TEST_URI=mongodb://127.0.0.1:27027 npm test
 ```
 
-Tanpa MONGODB_TEST_URI, 15 tes unit/fondasi/config dijalankan dan empat suite integrasi dilewati secara eksplisit. Dengan URI test, seluruh 63 tes berjalan pada database unik she_meeting_test_auth_<uuid>, she_meeting_test_dashboard_<uuid>, she_meeting_test_findings_<uuid> dan she_meeting_test_write_<uuid>, lalu hanya database tersebut dihapus. DB development tidak dipakai sebagai fallback.
+Tanpa MONGODB_TEST_URI, 15 tes unit/fondasi/config dijalankan dan empat suite integrasi dilewati secara eksplisit. Dengan URI test, seluruh 64 tes berjalan pada database unik she_meeting_test_auth_<uuid>, she_meeting_test_dashboard_<uuid>, she_meeting_test_findings_<uuid> dan she_meeting_test_write_<uuid>, lalu hanya database tersebut dihapus. DB development tidak dipakai sebagai fallback.
 
-Startup mem-ping MongoDB dan menyiapkan indeks autentikasi/findings sebelum listen. Readiness internal jangan diteruskan reverse proxy internet. API anonim 401; akun divisi ditolak 403 dari /api/v1/admin/*; admin boleh GET /api/v1/admin/accounts (baca saja). Mutasi inti temuan sudah tersedia; mutasi admin, batal/pulihkan dan lampiran belum tersedia. Login/mutasi harus mengirim Origin allowlist; setelah login mutasi juga wajib X-CSRF-Token dari login/me. Sesi beberapa perangkat didukung, logout mencabut sesi saat ini.
+Startup mem-ping MongoDB dan menyiapkan indeks autentikasi/findings sebelum listen. Readiness internal jangan diteruskan reverse proxy internet. API anonim 401; akun divisi ditolak 403 dari /api/v1/admin/*; admin boleh GET /api/v1/admin/accounts (baca saja). Mutasi inti temuan sudah tersedia; mutasi admin dan lampiran belum tersedia; batal/pulihkan tersedia. Login/mutasi harus mengirim Origin allowlist; setelah login mutasi juga wajib X-CSRF-Token dari login/me. Sesi beberapa perangkat didukung, logout mencabut sesi saat ini.
 
 Cookie lokal she_session_dev (HttpOnly/SameSite=Lax, absolut 12 jam). Tambahkan COOKIE_SECURE=false hanya untuk lokal HTTP; APP_ENV=demo wajib Secure dan seluruh ALLOWED_ORIGINS HTTPS. Demo memakai __Host-she_session. trust proxy tetap false; konfigurasi proxy, cookie cross-subdomain HTTPS, Vercel/VPS harus diuji saat O-02. Jangan menaruh token atau sandi di localStorage.
 
@@ -79,3 +79,7 @@ Setiap perubahan wajib menyelaraskan dokumen relevan. Jangan commit .env, kreden
 GET `/api/v1/findings/:id/progress` dan `/api/v1/findings/:id/history` mengirim 10 terbaru per halaman secara default (`page`, `pageSize` maksimal 50), termasuk temuan batal. Riwayat audit memperlihatkan before/after, akun divisi, waktu, alasan koreksi dan snapshot nama divisi. Event seed lama ditandai sebagai metadata sistem tanpa before/after. Detail tetap memuat hanya 10 progres terbaru; receipt/hash tidak dikirim. Lihat `docs/API_CONTRACT.md`.
 
 D0-07 memverifikasi alur demo dummy; akun ICT mengoreksi temuan Camp lewat API lokal dan audit before/after terbukti. Lihat `docs/PILOT.md`. Tidak ada perubahan API/hosting pada tahap ini.
+
+## Pembatalan M-03
+
+POST `/api/v1/findings/:id/cancel` untuk akun login dan POST `/api/v1/findings/:id/restore` hanya ADMIN. Keduanya perlu `reason`, `version`, `mutationId`, Origin dan CSRF. Detail menampilkan pelaku/alasan batal; riwayat before/after menyimpan alasan aksi. Data batal read-only sampai dipulihkan, namun dapat dibuka lewat filter Batal. Status/progres lama tetap tersimpan. Pengujian lokal M-03: 64 backend MongoDB, 7 frontend dan build lulus; belum deployment.

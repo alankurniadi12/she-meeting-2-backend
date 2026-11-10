@@ -257,3 +257,7 @@ D0-06 menambahkan GET histori audit before/after dan progres paginasi, tampilan 
 ## 20. D0-07 — verifikasi demo lokal
 
 Pengguna meminta langkah berikutnya. Alur demo lokal data dummy diuji di browser: dashboard/list filter dua divisi, create tanpa target/foto, tunda beralasan, selesai, riwayat/progres dua halaman, konflik progres/koreksi dua tab. Bug rebase draf Vue reaktif ditemukan dan diperbaiki; tes regresi ditambah. Koreksi dummy akun ICT melalui API lokal membuktikan audit lintas divisi. Teks UI yang masih menyebut riwayat belum ada diperbarui. Ini verifikasi teknis demo, bukan presentasi leader atau persetujuan pilot. Browser uji tidak berhasil berubah dari 841 px, jadi responsif 390/1440 D0-07 dan perangkat kantor belum diverifikasi. Fitur D1/operasional tetap belum selesai; lanjutkan sesuai prioritas demo/pilot yang diputuskan setelah umpan balik nyata.
+
+## 21. M-03 — pembatalan dan pemulihan demo
+
+Setelah pengguna meninjau demo dan meminta lanjut, pembatalan beralasan serta pemulihan beralasan khusus ADMIN ditambahkan pada backend/frontend lokal. Audit before/after, actor akun divisi, snapshot divisi, versi/retry idempoten dan filter batal tetap konsisten. 64 tes backend MongoDB, 7 tes frontend/build dan alur browser dummy batal/pulih lulus. Kewenangan restore tetap asumsi R-08, bukan keputusan operasional perusahaan. D1 M-02 foto, M-04 dashboard lengkap, M-05 PDF, M-06 admin akun, serta kesiapan pilot belum selesai. Dev saja; prod/deployment tidak disentuh.

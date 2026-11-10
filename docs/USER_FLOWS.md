@@ -4,7 +4,7 @@ Keputusan produk dari putaran 1–3. Detail teknis mengikuti asumsi R-01–R-12 
 
 ## Status implementasi sampai D0-06
 
-Pencatatan/koreksi/progres/status berikut sudah tersedia dengan backend nyata. Audit, guard versi/retry, serta UI/endpoint riwayat lengkap paginasi tersedia melalui D0-06. Batal/pulihkan, foto/PDF dan mutasi admin tetap rencana. Konflik mempertahankan draf, memperlihatkan nilai semula/draf/terbaru, lalu menawarkan rebase manual atau buang draf; tidak otomatis menimpa data versi baru. Retry hasil tidak pasti mempertahankan ID/payload. Draft hanya memori tab, bukan penyimpanan offline/tahan refresh.
+Pencatatan/koreksi/progres/status berikut sudah tersedia dengan backend nyata. Audit, guard versi/retry, serta UI/endpoint riwayat lengkap paginasi tersedia melalui D0-06. Batal/pulihkan M-03 tersedia; foto/PDF dan mutasi admin tetap rencana. Konflik mempertahankan draf, memperlihatkan nilai semula/draf/terbaru, lalu menawarkan rebase manual atau buang draf; tidak otomatis menimpa data versi baru. Retry hasil tidak pasti mempertahankan ID/payload. Draft hanya memori tab, bukan penyimpanan offline/tahan refresh.
 
 ## Pencatatan
 
@@ -39,9 +39,9 @@ Progres ditambahkan sebagai catatan bertanggal, bukan persentase per divisi. Tid
 ## Pembatalan dan koreksi
 
 - Semua akun divisi dapat mengoreksi isi lintas divisi.
-- Usulan: semua akun divisi boleh membatalkan dengan alasan. Data diberi penanda batal terpisah dari status pekerjaan.
+- Prototipe M-03: semua akun login boleh membatalkan dengan alasan wajib; penanda batal terpisah dari status pekerjaan. Simpan memakai versi dan mutationId; konflik mempertahankan alasan draf untuk ditinjau.
 - Data batal tersembunyi dari daftar/ringkasan biasa, tetapi dapat dibuka melalui filter Batal.
-- Tidak tersedia hapus permanen. Hanya admin dapat memulihkan pembatalan dengan alasan, sebagai asumsi prototipe.
+- Tidak tersedia hapus permanen. Hanya admin dapat memulihkan dengan alasan wajib; status/progres lama tetap. Kewenangan ini masih asumsi R-08, bukan SOP yang disahkan.
 - Audit sebelum/sesudah tetap tersedia, termasuk setelah perubahan nama divisi/penugasan.
 - Bila dua akun mengubah versi yang sama, simpan pertama berhasil; simpan kedua mendapat konflik, menjaga drafnya, lalu memuat perubahan terbaru sebelum mencoba lagi.
 

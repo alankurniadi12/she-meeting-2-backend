@@ -89,3 +89,7 @@ Unggah: tulis file sementara, verifikasi, pindah ke lokasi final, lalu update fi
 ## Definisi waktu dan statistik
 
 Lihat [UI_SPEC](UI_SPEC.md). isNew, isOverdue dan angka dashboard dihitung dari data, bukan kolom boolean tersimpan. completedAt tidak pernah dianggap tanggal verifikasi. Koreksi COMPLETED ke status aktif mengosongkan completedAt; nilai lama tetap dalam audit. Penyelesaian berikutnya membuat waktu baru, sehingga statistik merupakan keadaan terkini, bukan ledger historis yang kebal koreksi.
+
+## M-03 — perubahan pembatalan
+
+`cancelledAt`, `cancellationReason` dan `cancelledBy` berubah bersama pada aksi CANCELLED; RESTORED mengosongkan ketiganya. Alasan restore tetap disimpan pada event audit `reason`, bukan field aktif temuan. Status, completedAt, progres dan audit lama dipertahankan. Mutasi memakai CAS `_id` + `version` + keadaan batal yang diharapkan, lalu append audit/receipt dan increment versi dalam satu update; replay identik mengembalikan acknowledgement semula. Data batal dikecualikan dari ringkasan valid tetapi tetap tersedia lewat filter dan detail.

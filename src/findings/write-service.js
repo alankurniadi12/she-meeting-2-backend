@@ -113,3 +113,40 @@ export async function updateFinding(database, { id, body, account, timeZone, now
   }
   return { data: acknowledgement(next), meta: { replayed: false } };
 }
+
+export async function changeCancellation(database, { id, body, account, now = new Date(), kind }) {
+  if (kind === 'RESTORE' && account.role !== 'ADMIN') throw findingError(403, 'FORBIDDEN', 'Hanya admin yang dapat memulihkan temuan.');
+  const _id = objectId(id);
+  envelope(body, ['reason'], true);
+  const reason = text(body.reason, 'reason', 1, 2000);
+  const mutationId = body.mutationId.toLowerCase();
+  const hash = requestHash(kind, body, account);
+  const collection = database.collection('findings');
+  const row = await collection.findOne({ _id });
+  if (!row) throw notFound();
+  const repeated = replay(row, mutationId, hash);
+  if (repeated) return repeated;
+  if (kind === 'CANCEL' && row.cancelledAt) throw findingError(409, 'ALREADY_CANCELLED', 'Temuan sudah dibatalkan.');
+  if (kind === 'RESTORE' && !row.cancelledAt) throw findingError(409, 'NOT_CANCELLED', 'Temuan tidak sedang dibatalkan.');
+  if (row.version !== body.version) throw conflict(row);
+  const actor = await actorSnapshot(database, account);
+  const changes = kind === 'CANCEL' ? { cancelledAt: now, cancellationReason: reason, cancelledBy: actor }
+    : { cancelledAt: null, cancellationReason: null, cancelledBy: null };
+  const next = { ...row, ...changes, version: row.version + 1, updatedBy: actor, updatedAt: now };
+  const before = { cancelledAt: row.cancelledAt ?? null, cancellationReason: row.cancellationReason ?? null, cancelledBy: row.cancelledBy ?? null };
+  const event = { id: randomUUID(), action: kind === 'CANCEL' ? 'CANCELLED' : 'RESTORED', actor, timestamp: now,
+    revision: next.version, mutationId, reason, before, after: changes, divisionSnapshots: await divisionSnapshots(database, row) };
+  const receipt = { mutationId, requestHash: hash, result: acknowledgement(next) };
+  capacity({ ...next, audit: [...(row.audit || []), event], mutationReceipts: [...(row.mutationReceipts || []), receipt] });
+  const saved = await collection.updateOne({ _id, version: row.version, cancelledAt: kind === 'CANCEL' ? null : { $ne: null } }, {
+    $set: { ...changes, updatedBy: actor, updatedAt: now }, $inc: { version: 1 }, $push: { audit: event, mutationReceipts: receipt },
+  });
+  if (!saved.matchedCount) {
+    const current = await collection.findOne({ _id });
+    if (!current) throw notFound();
+    const concurrentReplay = replay(current, mutationId, hash);
+    if (concurrentReplay) return concurrentReplay;
+    throw conflict(current);
+  }
+  return { data: acknowledgement(next), meta: { replayed: false } };
+}

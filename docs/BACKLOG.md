@@ -22,7 +22,7 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 | --- | --- | --- | --- |
 | M-01 (sebagian) | Validasi lengkap, default, filter lanjutan dan badge batas tanggal | 02,04,06 | D0-04: validasi kueri/badge. D0-05: validasi inti create/koreksi/progres dan status diuji; perluasan uji seluruh batas/input/edge case MVP tetap M-01. |
 | M-02 | Unggah/lihat foto opsional privat dan kegagalan unggah | 05 | Format/ukuran dibatasi; tanpa sesi ditolak; laporan teks tetap tersedia |
-| M-03 (sebagian) | Pembatalan, filter batal, pemulihan admin | 08 | D0-04: filter batal/semua dan hitungan terpisah sudah diuji. Aksi batal/pulihkan beserta alasan/audit belum tersedia. |
+| M-03 ✅ | Pembatalan, filter batal, pemulihan admin | 08 | Filter batal/semua dan hitungan terpisah, aksi batal beralasan untuk akun login, pulih beralasan oleh admin, audit before/after, versi/retry dan UI telah diuji lokal. |
 | M-04 (sebagian) | Dashboard lengkap dalam batas UI_SPEC | 07 | Kartu/indikator/scope sudah D0-03. Tren 6 bulan, grafik per-divisi dan daftar maksimal 5 tindak lanjut masih rencana. |
 | M-05 | PDF pagination/wrapping/filter | 09 | Semua hasil filter, ringkasan cocok, teks panjang terbaca, batas jelas |
 | M-06 | UI admin akun/divisi, reset dan revokasi sesi | 01,11 | Divisi tidak bisa akses admin; reset memutus semua sesi akun |
@@ -41,7 +41,7 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 
 ## Status dokumentasi dan cakupan saat ini
 
-README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes autentikasi/dashboard/seed/daftar/mutasi kritis tersedia. D0-07 selesai sebagai verifikasi teknis demo lokal; aksi pembatalan, foto/PDF dan seluruh MVP belum.
+README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes autentikasi/dashboard/seed/daftar/mutasi kritis tersedia. D0-07 selesai sebagai verifikasi teknis demo lokal; foto/PDF dan seluruh MVP belum.
 
 Tahap berikutnya: pilih pekerjaan D1 yang paling dibutuhkan setelah demo internal; belum ada keputusan leader/pilot. Audit/versi/retry tidak ditunda pada write pertama D0-05 agar tidak ada periode write tanpa jejak atau rawan overwrite. Tetap 18 fixture seed plus temuan dummy dari uji manual; akun/sandi tidak berubah. UI admin akun tetap M-06; metadata DEMO_SEED dibedakan dari audit akun.
 
@@ -61,3 +61,7 @@ Form publik, login pribadi, approval/verifikasi, status per divisi, import Word,
 ## Penyiapan Git sebelum D0-02
 
 Sesuai permintaan pengguna, repo frontend/backend disiapkan terpisah pada URL yang diberikan, dengan dev/prod dan dokumen bersama di backend/docs. Ini pekerjaan sinkronisasi fondasi, tidak mengubah status fitur D0-02 dan tidak menjalankan deployment. Prosedur serta pemeriksaan di GIT_WORKFLOW.md.
+
+## 10 November 2026 — M-03 selesai untuk demo lokal
+
+Pembatalan beralasan dan pemulihan beralasan oleh admin tersedia tanpa hapus permanen. Temuan batal read-only, dapat dicari dengan filter Batal, dan tidak masuk hitungan status/dashboard. Audit serta receipt idempoten mengikuti versi temuan. 64 tes backend MongoDB, 7 tes frontend dan build lulus; alur batal/pulih dan audit diperiksa di browser dengan data dummy. Ini implementasi asumsi R-08 untuk prototipe; belum ada keputusan kewenangan perusahaan atau penggunaan operasional.

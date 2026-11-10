@@ -134,3 +134,7 @@ Draft hanya memori tab keyed akun/resource; tidak localStorage. Hasil simpan net
 ## D0-06 — pembacaan riwayat dan konflik
 
 Riwayat audit/progres tetap tertanam agar write atomik D0-05 tidak berubah. Endpoint baca memotong halaman di agregasi MongoDB; terbaru dahulu dan maksimum 50 baris per request. Paginasi angka halaman sederhana cocok untuk volume demo, tetapi halaman bisa bergeser saat ada write baru. Event DEMO_SEED lama ditampilkan sebagai metadata tanpa mengarang before/after atau aktor akun. UI konflik melakukan rebase hanya setelah tindakan eksplisit: field draf yang berubah dipertahankan, field lain mengikuti versi server; penyimpanan berikutnya memakai versi terbaru dan mutationId baru. Tidak mengklaim merge otomatis, draft tahan refresh, atau pengujian perangkat kantor.
+
+## M-03 — 10 November 2026
+
+Asumsi R-08 kini diwujudkan pada prototipe: semua akun login dapat membatalkan temuan dengan alasan; pemulihan hanya ADMIN dan wajib alasan. Penjagaan peran ada di server. Batal adalah penanda terpisah dari status pekerjaan, tanpa hard delete; restore mempertahankan status/progres dan menyimpan alasan pada audit. Ini implementasi teknis untuk demo dummy, belum persetujuan kebijakan perusahaan. Aksi mengikuti fondasi versioning, idempotensi dan audit atomik D0-05.
