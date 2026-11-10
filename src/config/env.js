@@ -1,3 +1,4 @@
+import { resolve, isAbsolute } from 'node:path';
 const allowedEnvironments = new Set(['development', 'test', 'demo']);
 
 export function loadConfig(env = process.env) {
@@ -27,8 +28,10 @@ export function loadConfig(env = process.env) {
   const timeZone = env.APP_TIMEZONE || 'Asia/Jakarta';
   try { new Intl.DateTimeFormat('en', { timeZone }).format(new Date()); }
   catch { throw new Error('APP_TIMEZONE tidak valid. Gunakan zona IANA seperti Asia/Jakarta.'); }
+  if (env.UPLOAD_DIR && !isAbsolute(env.UPLOAD_DIR)) throw new Error('UPLOAD_DIR harus path absolut.');
+  const uploadDir = env.UPLOAD_DIR || resolve(process.cwd(), '.local/uploads');
   return Object.freeze({
     appEnv, port, host: env.HOST || '127.0.0.1', mongoUri, databaseName,
-    allowedOrigins: origins, timeZone, cookieSecure,
+    allowedOrigins: origins, timeZone, cookieSecure, uploadDir,
   });
 }

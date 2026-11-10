@@ -44,7 +44,7 @@ export function createApp({ config, checkDatabase, authRouter, dashboardRouter, 
   } }));
   app.use((req, res) => res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Endpoint tidak ditemukan.', requestId: req.requestId } }));
   app.use((error, req, res, _next) => {
-    const status = [400, 401, 403, 404, 409, 413, 422, 429].includes(error.status) ? error.status : 500;
+    const status = [400, 401, 403, 404, 409, 413, 422, 429, 503].includes(error.status) ? error.status : 500;
     if (error.publicMessage && status !== 500) {
       return res.status(status).json({ error: { code: error.code, message: error.publicMessage, requestId: req.requestId,
         ...(error.fields ? { fields: error.fields } : {}), ...(Number.isSafeInteger(error.currentVersion) ? { currentVersion: error.currentVersion } : {}),

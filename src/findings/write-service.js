@@ -6,31 +6,31 @@ import { coreFields, progressFields, envelope, objectId, text, validateCore, fin
 const businessFields = [...coreFields, 'status', 'holdReason', 'completedAt'];
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const notFound = () => findingError(404, 'NOT_FOUND', 'Temuan tidak ditemukan.');
-const conflict = (row) => findingError(409, 'VERSION_CONFLICT', 'Data sudah diubah akun lain. Draf Anda tetap tersedia; tinjau versi terbaru sebelum menyimpan ulang.', { currentVersion: row.version });
-const acknowledgement = (row) => ({ id: row._id.toString(), reference: row.reference, version: row.version, status: row.status, updatedAt: row.updatedAt });
+export const conflict = (row) => findingError(409, 'VERSION_CONFLICT', 'Data sudah diubah akun lain. Draf Anda tetap tersedia; tinjau versi terbaru sebelum menyimpan ulang.', { currentVersion: row.version });
+export const acknowledgement = (row) => ({ id: row._id.toString(), reference: row.reference, version: row.version, status: row.status, updatedAt: row.updatedAt });
 const snapshot = (row) => Object.fromEntries(businessFields.map((key) => [key, row[key] ?? null]));
-function requestHash(kind, body, account) {
+export function requestHash(kind, body, account) {
   const canonical = Object.fromEntries(Object.keys(body).filter((key) => key !== 'mutationId').sort().map((key) => [key, body[key]]));
   return createHash('sha256').update(JSON.stringify({ kind, account: String(account._id), body: canonical })).digest('hex');
 }
-function replay(row, mutationId, hash) {
+export function replay(row, mutationId, hash) {
   const receipt = (row.mutationReceipts || []).find((item) => item.mutationId === mutationId);
   if (!receipt) return null;
   if (receipt.requestHash !== hash) throw findingError(409, 'MUTATION_REUSED', 'ID operasi sudah dipakai untuk isian berbeda. Muat ulang data sebelum mencoba kembali.');
   return { data: receipt.result, meta: { replayed: true } };
 }
-async function actorSnapshot(database, account) {
+export async function actorSnapshot(database, account) {
   const division = account.divisionId ? await database.collection('divisions').findOne({ _id: account.divisionId }) : null;
   return { accountId: account._id, username: account.username, displayName: account.displayName,
     divisionId: account.divisionId ?? null, divisionName: division?.name ?? null, source: 'ACCOUNT' };
 }
-async function divisionSnapshots(database, ...rows) {
+export async function divisionSnapshots(database, ...rows) {
   const ids = [...new Map(rows.flatMap((row) => [row.reporterDivisionId, ...(row.responsibleDivisionIds || [])])
     .filter(Boolean).map((id) => [String(id), id])).values()];
   const divisions = await database.collection('divisions').find({ _id: { $in: ids } }, { projection: { code: 1, name: 1 } }).toArray();
   return divisions.map((division) => ({ id: division._id, code: division.code, name: division.name }));
 }
-function capacity(row) {
+export function capacity(row) {
   if (BSON.calculateObjectSize(row) > 8 * 1024 * 1024) throw findingError(409, 'HISTORY_CAPACITY_REACHED', 'Kapasitas riwayat temuan tercapai. Hubungi ICT; data tidak dihapus.');
 }
 export async function createFinding(database, { body, account, timeZone, now = new Date() }) {

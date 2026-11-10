@@ -4,7 +4,7 @@ Keputusan produk dari putaran 1–3. Detail teknis mengikuti asumsi R-01–R-12 
 
 ## Status implementasi sampai D0-06
 
-Pencatatan/koreksi/progres/status berikut sudah tersedia dengan backend nyata. Audit, guard versi/retry, serta UI/endpoint riwayat lengkap paginasi tersedia melalui D0-06. Batal/pulihkan M-03 tersedia; foto/PDF dan mutasi admin tetap rencana. Konflik mempertahankan draf, memperlihatkan nilai semula/draf/terbaru, lalu menawarkan rebase manual atau buang draf; tidak otomatis menimpa data versi baru. Retry hasil tidak pasti mempertahankan ID/payload. Draft hanya memori tab, bukan penyimpanan offline/tahan refresh.
+Pencatatan/koreksi/progres/status berikut sudah tersedia dengan backend nyata. Audit, guard versi/retry, serta UI/endpoint riwayat lengkap paginasi tersedia melalui D0-06. Batal/pulihkan M-03 dan foto privat M-02 tersedia; PDF dan mutasi admin tetap rencana. Konflik mempertahankan draf, memperlihatkan nilai semula/draf/terbaru, lalu menawarkan rebase manual atau buang draf; tidak otomatis menimpa data versi baru. Retry hasil tidak pasti mempertahankan ID/payload. Draft hanya memori tab, bukan penyimpanan offline/tahan refresh.
 
 ## Pencatatan
 
@@ -48,3 +48,7 @@ Progres ditambahkan sebagai catatan bertanggal, bukan persentase per divisi. Tid
 ## Keluar dan pergantian shift
 
 Pengguna keluar dari sesi perangkatnya. Pengguna shift lain masuk memakai akun divisi yang sama; beberapa sesi perangkat diperbolehkan. ICT dapat mereset sandi atau menonaktifkan akun dan mencabut sesi. Aplikasi tidak meminta nama orang yang sedang mengoperasikan akun.
+
+## Foto opsional M-02
+
+Setelah temuan tercatat, buka detail, pilih jenis dan satu foto. Backend memeriksa sesi, Origin/CSRF, isi gambar, ukuran, batas 10, versi dan status batal. Jika unggah gagal, teks temuan/progres yang sudah tersimpan tetap ada; pilih ulang file atau retry hasil tak pasti di tab yang sama. Foto yang berhasil tampil di galeri dan dapat dibuka akun login, termasuk bila temuan kemudian dibatalkan. Tidak ada hapus foto pada MVP.

@@ -1,6 +1,6 @@
 # Backlog implementasi dan batas demo
 
-Status: **D0-01 sampai D0-07 selesai untuk demo lokal**. Riwayat before/after dan progres dipaginasi; rebase draf konflik diperbaiki dan alur rapat dummy diverifikasi di browser. Dashboard lengkap M-04 masih sebagian. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
+Status: **D0-01 sampai D0-07, M-02 dan M-03 selesai untuk demo lokal**. Riwayat before/after dan progres dipaginasi; rebase draf konflik diperbaiki dan alur rapat dummy diverifikasi di browser. Dashboard lengkap M-04 masih sebagian. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
 
 ## D0 — demo alur utama, dikerjakan dahulu
 
@@ -21,7 +21,7 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 | ID | Pekerjaan | FR | Selesai bila |
 | --- | --- | --- | --- |
 | M-01 (sebagian) | Validasi lengkap, default, filter lanjutan dan badge batas tanggal | 02,04,06 | D0-04: validasi kueri/badge. D0-05: validasi inti create/koreksi/progres dan status diuji; perluasan uji seluruh batas/input/edge case MVP tetap M-01. |
-| M-02 | Unggah/lihat foto opsional privat dan kegagalan unggah | 05 | Format/ukuran dibatasi; tanpa sesi ditolak; laporan teks tetap tersedia |
+| M-02 ✅ | Unggah/lihat foto opsional privat dan kegagalan unggah | 05 | JPEG/PNG/WebP ≤5 MiB, maksimal 10/temuan; file diolah WebP tanpa metadata di folder privat, baca bersesi, tanpa foto tetap sah. Tes integrasi dan UI lokal. |
 | M-03 ✅ | Pembatalan, filter batal, pemulihan admin | 08 | Filter batal/semua dan hitungan terpisah, aksi batal beralasan untuk akun login, pulih beralasan oleh admin, audit before/after, versi/retry dan UI telah diuji lokal. |
 | M-04 (sebagian) | Dashboard lengkap dalam batas UI_SPEC | 07 | Kartu/indikator/scope sudah D0-03. Tren 6 bulan, grafik per-divisi dan daftar maksimal 5 tindak lanjut masih rencana. |
 | M-05 | PDF pagination/wrapping/filter | 09 | Semua hasil filter, ringkasan cocok, teks panjang terbaca, batas jelas |
@@ -65,3 +65,7 @@ Sesuai permintaan pengguna, repo frontend/backend disiapkan terpisah pada URL ya
 ## 10 November 2026 — M-03 selesai untuk demo lokal
 
 Pembatalan beralasan dan pemulihan beralasan oleh admin tersedia tanpa hapus permanen. Temuan batal read-only, dapat dicari dengan filter Batal, dan tidak masuk hitungan status/dashboard. Audit serta receipt idempoten mengikuti versi temuan. 64 tes backend MongoDB, 7 tes frontend dan build lulus; alur batal/pulih dan audit diperiksa di browser dengan data dummy. Ini implementasi asumsi R-08 untuk prototipe; belum ada keputusan kewenangan perusahaan atau penggunaan operasional.
+
+## 10 November 2026 — M-02 selesai untuk demo lokal
+
+Unggah dan baca foto privat di detail tersedia. Batas 5 MiB sumber/hasil, maksimal 10 foto, validasi decoder dan sesi/CSRF/Origin server; versi, audit dan retry mengikuti fondasi mutasi. File dummy disimpan di `.local/uploads` development. 65 tes backend MongoDB, 7 frontend dan build lulus. Penyimpanan volume persistent, backup/restore, HTTPS dan data nyata belum diuji; jangan anggap siap operasional.

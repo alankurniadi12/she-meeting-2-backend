@@ -1,6 +1,6 @@
 # Persiapan MVP SHE Meeting
 
-Status 9 November 2026: paket kebutuhan dari tiga putaran wawancara tersedia dan **fondasi D0-01, autentikasi D0-02, dashboard ringkas D0-03, daftar rapat D0-04 dan pencatatan/progres D0-05 sudah berjalan serta diuji lokal**. Riwayat lengkap masih D0-06; belum deployment atau persetujuan operasional.
+Status 10 November 2026: D0-01 sampai D0-07, M-02 foto opsional dan M-03 pembatalan/pemulihan sudah diuji untuk demo lokal. PDF, dashboard lengkap dan administrasi masih tahap berikutnya; belum deployment atau persetujuan operasional.
 
 ## Mulai membaca
 
@@ -40,9 +40,9 @@ Aturan teknis bernomor R-01 dan seterusnya di catatan keputusan adalah asumsi pr
 
 ## Kondisi workspace dan langkah berikutnya
 
-Kedua folder aplikasi berisi kode dan lockfile terpisah. Fondasi meliputi Vue/Vite JavaScript, Express, MongoDB, health/readiness, konfigurasi lokal; D0-02 menambah seed akun/divisi dummy, login/logout, sesi, CSRF/Origin, baca divisi/akun admin, dan tes akses; D0-03 menambah 18 fixture temuan, aggregate dashboard dan filter/indikator. D0-04 menambah daftar/summary, filter/pagination/badge, serta route Vue Router. D0-05 menambah detail/write/progres, audit atomik dasar/versi/retry dan draf. Total 62 tes backend dengan MongoDB nyata dan 5 tes frontend lulus. [README utama](../README.md) menjelaskan cara menjalankan.
+Kedua folder aplikasi berisi kode dan lockfile terpisah. Fondasi meliputi Vue/Vite JavaScript, Express, MongoDB, health/readiness, konfigurasi lokal; D0-02 menambah seed akun/divisi dummy, login/logout, sesi, CSRF/Origin, baca divisi/akun admin, dan tes akses; D0-03 menambah 18 fixture temuan, aggregate dashboard dan filter/indikator. D0-04 menambah daftar/summary, filter/pagination/badge, serta route Vue Router. D0-05 menambah detail/write/progres, audit atomik dasar/versi/retry dan draf; D0-06/07 melengkapi riwayat dan memverifikasi demo. M-02/M-03 menambah foto privat serta pembatalan. Total 65 tes backend dengan MongoDB nyata dan 7 tes frontend lulus. [README utama](../README.md) menjelaskan cara menjalankan.
 
-**Selanjutnya D0-06:** API/UI riwayat lengkap, pagination progres/audit dan peninjauan konflik yang lebih baik. Fondasi audit/versi/retry sudah D0-05. Daftar rapat serta dashboard ringkas tersedia; grafik/tren/tindak lanjut M-04, riwayat lengkap, pembatalan/foto/PDF dan mutasi admin masih rencana. Tidak mengklaim seluruh D0 atau MVP selesai.
+**Berikutnya dalam D1:** PDF M-05, dashboard lanjutan M-04, admin akun M-06, dan uji operasional. Riwayat, foto opsional dan pembatalan sudah tersedia untuk demo lokal. Belum mengklaim seluruh MVP atau kesiapan operasional.
 
 Perubahan kode wajib memperbarui dokumentasi yang relevan, termasuk backlog dan catatan pengembangan, sesuai instruksi pengguna saat memulai coding.
 

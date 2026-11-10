@@ -40,6 +40,7 @@ export async function findingHistory(database, { id, query, kind }) {
     id: entry.id ?? null, action: entry.action, actor: actor(entry.actor), timestamp: entry.timestamp,
     revision: entry.revision ?? null, before: convert(entry.before ?? null), after: convert(entry.after ?? null),
     correctionReason: entry.correctionReason ?? null, reason: entry.reason ?? null, progressEntryId: entry.progressEntryId ?? null,
+    attachmentId: entry.attachmentId ?? null,
     divisionSnapshots: (entry.divisionSnapshots || []).map((division) => ({ id: division.id?.toString() ?? null, code: division.code ?? null, name: division.name ?? null })),
   });
   return { data, meta: { page, pageSize, total: row.total, totalPages: Math.ceil(row.total / pageSize) } };

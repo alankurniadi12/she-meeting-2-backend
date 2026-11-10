@@ -138,3 +138,7 @@ Riwayat audit/progres tetap tertanam agar write atomik D0-05 tidak berubah. Endp
 ## M-03 — 10 November 2026
 
 Asumsi R-08 kini diwujudkan pada prototipe: semua akun login dapat membatalkan temuan dengan alasan; pemulihan hanya ADMIN dan wajib alasan. Penjagaan peran ada di server. Batal adalah penanda terpisah dari status pekerjaan, tanpa hard delete; restore mempertahankan status/progres dan menyimpan alasan pada audit. Ini implementasi teknis untuk demo dummy, belum persetujuan kebijakan perusahaan. Aksi mengikuti fondasi versioning, idempotensi dan audit atomik D0-05.
+
+## M-02 — 10 November 2026
+
+R-07 diterapkan pada demo lokal: sumber JPEG/PNG/WebP ≤5 MiB, hasil WebP ≤5 MiB, maksimal 10 foto/temuan, folder privat tanpa static URL atau aksi hapus. Konversi WebP menghapus metadata sumber dan membatasi dimensi; nama sumber hanya label bersih. Foto dipasang setelah temuan dicatat agar kegagalan file tidak membatalkan laporan teks. Foto dan DB tidak transaksional bersama; backup/restore dan pemeriksaan orphan harus diuji sebelum pilot. Batas ini masih asumsi prototipe, bukan kebijakan perusahaan.

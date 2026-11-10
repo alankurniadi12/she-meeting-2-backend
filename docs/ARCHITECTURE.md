@@ -121,3 +121,7 @@ Tabel di atas merupakan arah versi pada perencanaan; hasil bootstrap aktual ada 
 ## Keterbatasan
 
 RAM 4 GB dan 2 vCPU dapat menjadi titik awal demo ringan, tetapi layanan yang sudah berjalan, kapasitas kosong, OS, dan performa belum diperiksa. MongoDB satu instance tidak menyediakan failover. PDF serial terbatas dan batas foto perlu diuji. Tidak mengklaim siap produksi.
+
+## M-02 — penyimpanan foto lokal privat
+
+Busboy membatasi satu file dan tiga field multipart; Sharp memverifikasi serta mengolah gambar menjadi WebP tanpa metadata sumber. Backend menyimpan file di UPLOAD_DIR absolut atau `.local/uploads` development dengan mode privat, tidak di bawah public/static. GET file memeriksa sesi dan referensi metadata MongoDB. Write foto memakai guard versi, receipt idempoten dan audit atomik, dengan pembersihan file pada kegagalan write. Filesystem dan MongoDB tidak transaksional bersama; backup/restore keduanya dan pemeriksaan orphan tetap pekerjaan operasi sebelum pilot. Deployment belum dilakukan.

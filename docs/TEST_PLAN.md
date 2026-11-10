@@ -68,3 +68,7 @@ Uji browser lokal menjalankan alur pada PILOT: dashboard 17 valid sebelum uji, f
 ## Validasi M-03 — 10 November 2026
 
 64 tes backend MongoDB lulus: validasi alasan/field, anonim/CSRF, role admin, transisi aktif-batal-pulih, replay idempoten, penolakan write saat batal, filter dan ringkasan, serta audit before/after/reason/actor. 7 tes frontend dan build lulus. Browser lokal menguji satu temuan dummy dibatalkan dan dipulihkan oleh akun admin; tampilan detail dan dua event audit diverifikasi. Role divisi untuk restore diuji lewat integrasi server. Belum uji layar fisik, hosting HTTPS atau data operasional.
+
+## Validasi M-02 — 10 November 2026
+
+65 tes backend MongoDB lulus. Tes baru memakai PNG dummy: tanpa sesi 401, tanpa CSRF 403, isi palsu 422, berkas terlalu besar 413, unggah 201, retry 200 tanpa file kedua, versi stale 409 dan batas 10 foto 409, GET privat WebP 200, audit ATTACHMENT_ADDED, baca setelah batal 200 dan unggah saat batal 409. 7 tes frontend dan build lulus. Browser lokal menampilkan foto dummy yang berhasil dimuat serta event auditnya. Uji volume persistent/backup/restore dan HTTPS belum dilakukan; M-02 hanya dinyatakan selesai untuk demo lokal.

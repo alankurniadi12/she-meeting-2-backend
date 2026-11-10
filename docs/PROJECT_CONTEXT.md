@@ -261,3 +261,7 @@ Pengguna meminta langkah berikutnya. Alur demo lokal data dummy diuji di browser
 ## 21. M-03 — pembatalan dan pemulihan demo
 
 Setelah pengguna meninjau demo dan meminta lanjut, pembatalan beralasan serta pemulihan beralasan khusus ADMIN ditambahkan pada backend/frontend lokal. Audit before/after, actor akun divisi, snapshot divisi, versi/retry idempoten dan filter batal tetap konsisten. 64 tes backend MongoDB, 7 tes frontend/build dan alur browser dummy batal/pulih lulus. Kewenangan restore tetap asumsi R-08, bukan keputusan operasional perusahaan. D1 M-02 foto, M-04 dashboard lengkap, M-05 PDF, M-06 admin akun, serta kesiapan pilot belum selesai. Dev saja; prod/deployment tidak disentuh.
+
+## 22. M-02 — foto opsional privat demo
+
+Setelah M-03, pengguna meminta pengembangan diteruskan. M-02 menambah unggah dan lihat foto di detail dengan sesi, Origin/CSRF, validasi decoder/batas, WebP privat, versi/audit/retry dan batas 10. Foto tetap opsional, data batal hanya dapat membaca. 65 tes backend MongoDB, 7 frontend/build lulus; browser lokal memuat foto dummy dan event audit. Folder lokal `.local/uploads` tidak ikut Git. Volume/backup/restore/HTTPS/perangkat kantor/data nyata belum diverifikasi, tanpa deployment atau promosi prod.

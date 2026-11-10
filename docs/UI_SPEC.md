@@ -98,3 +98,7 @@ D0-07: alur riwayat/progres lebih dari 10 item dan konflik koreksi/progres diuji
 ## M-03 — layar pembatalan
 
 Detail aktif menampilkan form Batalkan temuan untuk akun login dengan alasan wajib. Setelah batal, detail menunjukkan pelaku, waktu, alasan, badge Dibatalkan, riwayat tetap terbaca, dan progres/koreksi tertutup. Admin melihat form Pulihkan temuan dengan alasan wajib. Konflik versi menahan draf alasan sampai pengguna memuat versi terbaru dan secara eksplisit memilih mencoba lagi; hasil jaringan tidak pasti memakai retry idempotensi yang sama. Daftar memakai filter Batal/Semua dan memisahkan hitungan batal dari status valid.
+
+## M-02 — galeri foto detail
+
+Detail menampilkan foto privat berisi jenis, nama berkas dan akun pengunggah; data batal masih dapat melihat. Akun login dapat menambah satu foto JPEG/PNG/WebP maksimal 5 MiB pada temuan aktif, dengan pilihan kondisi awal/progres/penyelesaian. Setelah 10 foto, form ditutup. Konflik versi meminta tinjau data terbaru; hasil jaringan tidak pasti dapat dicoba lagi dengan file/mutationId yang sama selama tab tetap terbuka. Form catat dan status Selesai tetap tanpa foto wajib.

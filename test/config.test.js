@@ -7,6 +7,8 @@ test('default memakai database dan port development terpisah', () => {
   assert.equal(config.databaseName, 'she_meeting_dev');
   assert.equal(config.mongoUri, 'mongodb://127.0.0.1:27027');
   assert.equal(config.host, '127.0.0.1');
+  assert.match(config.uploadDir, /\.local\/uploads$/);
+  assert.throws(() => loadConfig({ UPLOAD_DIR: 'public/uploads' }));
 });
 test('zona waktu tidak valid ditolak sebelum layanan dibuka', () => {
   assert.throws(() => loadConfig({ APP_TIMEZONE: 'Invalid/Zone' }));

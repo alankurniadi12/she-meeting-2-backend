@@ -93,3 +93,7 @@ Lihat [UI_SPEC](UI_SPEC.md). isNew, isOverdue dan angka dashboard dihitung dari 
 ## M-03 — perubahan pembatalan
 
 `cancelledAt`, `cancellationReason` dan `cancelledBy` berubah bersama pada aksi CANCELLED; RESTORED mengosongkan ketiganya. Alasan restore tetap disimpan pada event audit `reason`, bukan field aktif temuan. Status, completedAt, progres dan audit lama dipertahankan. Mutasi memakai CAS `_id` + `version` + keadaan batal yang diharapkan, lalu append audit/receipt dan increment versi dalam satu update; replay identik mengembalikan acknowledgement semula. Data batal dikecualikan dari ringkasan valid tetapi tetap tersedia lewat filter dan detail.
+
+## M-02 — foto yang diimplementasikan
+
+`attachments[]` menyimpan id UUID, storageKey acak, originalName bersih, mime hasil image/webp, sizeBytes, kind INITIAL/PROGRESS/COMPLETION, uploadedAt dan uploadedBy snapshot akun. Berkas asli tidak disimpan; decoder memvalidasi JPEG/PNG/WebP dan hasil WebP dibatasi 5 MiB, 4096 px sisi, 40 juta piksel sumber. Folder default development `.local/uploads`; UPLOAD_DIR absolut dapat menunjuk volume privat. Tidak ada URL statik. Metadata/audit/receipt/versi ditulis satu CAS; kegagalan write menghapus file baru. Crash pada celah file dan DB dapat menyisakan orphan; operasi/backup perlu memeriksanya sebelum pilot. Foto tidak wajib, tidak dihapus saat batal, dan tidak ada aksi hapus MVP.
