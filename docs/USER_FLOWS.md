@@ -4,7 +4,7 @@ Keputusan produk dari putaran 1–3. Detail teknis mengikuti asumsi R-01–R-12 
 
 ## Status implementasi sampai D0-06
 
-Pencatatan/koreksi/progres/status berikut sudah tersedia dengan backend nyata. Audit, guard versi/retry, serta UI/endpoint riwayat lengkap paginasi tersedia melalui D0-06. Batal/pulihkan M-03 dan foto privat M-02 tersedia; PDF dan mutasi admin tetap rencana. Konflik mempertahankan draf, memperlihatkan nilai semula/draf/terbaru, lalu menawarkan rebase manual atau buang draf; tidak otomatis menimpa data versi baru. Retry hasil tidak pasti mempertahankan ID/payload. Draft hanya memori tab, bukan penyimpanan offline/tahan refresh.
+Pencatatan/koreksi/progres/status berikut sudah tersedia dengan backend nyata. Audit, guard versi/retry, serta UI/endpoint riwayat lengkap paginasi tersedia melalui D0-06. Batal/pulihkan M-03 dan foto privat M-02 tersedia; PDF masih rencana; administrasi akun/divisi M-06 tersedia. Konflik mempertahankan draf, memperlihatkan nilai semula/draf/terbaru, lalu menawarkan rebase manual atau buang draf; tidak otomatis menimpa data versi baru. Retry hasil tidak pasti mempertahankan ID/payload. Draft hanya memori tab, bukan penyimpanan offline/tahan refresh.
 
 ## Pencatatan
 
@@ -55,4 +55,4 @@ Setelah temuan tercatat, buka detail, pilih jenis dan satu foto. Backend memerik
 
 ## Admin ICT mengelola akun divisi — M-06 sebagian
 
-Admin masuk lalu membuka Kelola akun. Ia dapat membuat akun DIVISION pada master divisi aktif, menyalin sandi sementara yang tampil sekali, mereset sandi, atau menonaktifkan/mengaktifkan akun divisi. Reset/nonaktif segera mengakhiri sesi akun target. Akun divisi tidak melihat menu dan server menolak endpoint admin. Menambah admin lain atau mengubah master divisi masih belum tersedia.
+Admin masuk lalu membuka Kelola akun. Ia dapat membuat akun DIVISION pada master divisi aktif, menyalin sandi sementara yang tampil sekali, mereset sandi, atau menonaktifkan/mengaktifkan akun divisi. Reset/nonaktif segera mengakhiri sesi akun target. Akun divisi tidak melihat menu dan server menolak endpoint admin. Admin juga dapat membuka Kelola divisi, membuat kode/nama baru, mengganti nama dan mengaktifkan/nonaktifkan. Divisi dengan akun aktif harus menonaktifkan akun terkait terlebih dahulu. Kode dan riwayat master tidak dihapus. Menambah/mengubah akun ADMIN belum tersedia.

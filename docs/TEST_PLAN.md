@@ -76,3 +76,7 @@ Uji browser lokal menjalankan alur pada PILOT: dashboard 17 valid sebelum uji, f
 ## Validasi M-06 sebagian — 10 November 2026
 
 66 tes backend MongoDB dan 7 tes frontend/build lulus. Tes integrasi auth memakai DB test terpisah: divisi POST admin 403, pembuatan admin tambahan 403, create akun divisi 201 dan retry 200 tanpa duplikasi, login akun baru, reset sandi mencabut sesi dan sandi lama, nonaktif mencabut sesi, retry tanpa audit ganda, audit tidak memuat sandi/hash. Browser lokal Admin ICT menampilkan menu Kelola akun dan empat akun dummy. Uji mutasi browser terhadap akun development tidak dilakukan agar kredensial demo yang sudah dipakai pengguna tetap utuh. Master divisi, perubahan admin, dan perangkat kantor masih terbuka.
+
+## Validasi M-06 master divisi — 10 November 2026
+
+67 tes backend MongoDB dan 7 tes frontend/build lulus. Tes integrasi menolak akun divisi pada endpoint admin, memeriksa create/retry/duplikat nama case-insensitive, rename dengan CAS version, audit before/after, larangan nonaktif saat akun DIVISION aktif, lalu nonaktif setelah akun dimatikan. Aktivasi ulang akun saat master nonaktif juga ditolak. Halaman frontend dibangun dan rute login internal diuji; setelah seed dummy lokal login Admin ICT dan GET master divisi berhasil 200; tampilan setelah login dan mutasi UI belum diuji. Perangkat kantor dan kewenangan akun ADMIN lain belum diuji.

@@ -2,7 +2,7 @@
 
 Backend Express.js + JavaScript dan driver MongoDB untuk aplikasi internal SHE Meeting. Folder docs/ merupakan sumber tunggal dokumen bersama frontend/backend.
 
-Status: D0-01 sampai D0-07 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Grafik/tren dashboard, master divisi dan PDF belum tersedia; mutasi akun divisi oleh admin sebagian M-06 tersedia; foto M-02 tersedia; pembatalan/pemulihan M-03 tersedia. Belum deployment.
+Status: D0-01 sampai D0-07 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Grafik/tren dashboard dan PDF belum tersedia; mutasi akun divisi dan master divisi oleh admin tersedia pada M-06; foto M-02 dan pembatalan/pemulihan M-03 tersedia. Belum deployment.
 
 ## Menjalankan mandiri
 
@@ -39,7 +39,7 @@ MONGODB_TEST_URI=mongodb://127.0.0.1:27027 npm test
 
 Tanpa MONGODB_TEST_URI, 15 tes unit/fondasi/config dijalankan dan empat suite integrasi dilewati secara eksplisit. Dengan URI test, seluruh 66 tes berjalan pada database unik she_meeting_test_auth_<uuid>, she_meeting_test_dashboard_<uuid>, she_meeting_test_findings_<uuid> dan she_meeting_test_write_<uuid>, lalu hanya database tersebut dihapus. DB development tidak dipakai sebagai fallback.
 
-Startup mem-ping MongoDB dan menyiapkan indeks autentikasi/findings sebelum listen. Readiness internal jangan diteruskan reverse proxy internet. API anonim 401; akun divisi ditolak 403 dari /api/v1/admin/*; admin boleh membaca dan mengelola akun divisi melalui /api/v1/admin/accounts. Mutasi inti temuan sudah tersedia; master divisi belum tersedia; lampiran foto dan batal/pulihkan tersedia. Login/mutasi harus mengirim Origin allowlist; setelah login mutasi juga wajib X-CSRF-Token dari login/me. Sesi beberapa perangkat didukung, logout mencabut sesi saat ini.
+Startup mem-ping MongoDB dan menyiapkan indeks autentikasi/findings sebelum listen. Readiness internal jangan diteruskan reverse proxy internet. API anonim 401; akun divisi ditolak 403 dari /api/v1/admin/*; admin boleh mengelola akun divisi dan master divisi melalui /api/v1/admin/accounts dan /api/v1/admin/divisions. Mutasi inti temuan, lampiran foto dan batal/pulihkan tersedia. Login/mutasi harus mengirim Origin allowlist; setelah login mutasi juga wajib X-CSRF-Token dari login/me. Sesi beberapa perangkat didukung, logout mencabut sesi saat ini.
 
 Cookie lokal she_session_dev (HttpOnly/SameSite=Lax, absolut 12 jam). Tambahkan COOKIE_SECURE=false hanya untuk lokal HTTP; APP_ENV=demo wajib Secure dan seluruh ALLOWED_ORIGINS HTTPS. Demo memakai __Host-she_session. trust proxy tetap false; konfigurasi proxy, cookie cross-subdomain HTTPS, Vercel/VPS harus diuji saat O-02. Jangan menaruh token atau sandi di localStorage.
 

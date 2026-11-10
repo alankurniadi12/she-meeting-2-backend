@@ -1,6 +1,6 @@
 # Backlog implementasi dan batas demo
 
-Status: **D0-01 sampai D0-07, M-02 dan M-03 selesai untuk demo lokal; M-06 administrasi akun sebagian**. Riwayat before/after dan progres dipaginasi; rebase draf konflik diperbaiki dan alur rapat dummy diverifikasi di browser. Dashboard lengkap M-04 masih sebagian. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
+Status: **D0-01 sampai D0-07, M-02 dan M-03 selesai untuk demo lokal; M-06 administrasi akun dan master divisi**. Riwayat before/after dan progres dipaginasi; rebase draf konflik diperbaiki dan alur rapat dummy diverifikasi di browser. Dashboard lengkap M-04 masih sebagian. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
 
 ## D0 — demo alur utama, dikerjakan dahulu
 
@@ -25,7 +25,7 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 | M-03 ✅ | Pembatalan, filter batal, pemulihan admin | 08 | Filter batal/semua dan hitungan terpisah, aksi batal beralasan untuk akun login, pulih beralasan oleh admin, audit before/after, versi/retry dan UI telah diuji lokal. |
 | M-04 (sebagian) | Dashboard lengkap dalam batas UI_SPEC | 07 | Kartu/indikator/scope sudah D0-03. Tren 6 bulan, grafik per-divisi dan daftar maksimal 5 tindak lanjut masih rencana. |
 | M-05 | PDF pagination/wrapping/filter | 09 | Semua hasil filter, ringkasan cocok, teks panjang terbaca, batas jelas |
-| M-06 (sebagian) | UI admin akun/divisi, reset dan revokasi sesi | 01,11 | Akun divisi kini dapat dibuat, dilihat, direset, dinonaktifkan/diaktifkan oleh ADMIN; sesi dicabut saat reset/nonaktif. Master divisi dan perubahan akun admin masih belum. |
+| M-06 ✅ | UI admin akun/divisi, reset dan revokasi sesi | 01,11 | ADMIN dapat mengelola akun DIVISION dan master divisi aktif/nonaktif; audit, versi dan retry dijaga server. Akun ADMIN lain atau perubahan akun ADMIN bukan cakupan MVP yang disetujui. |
 | M-07 | Responsif, keyboard, state kosong/galat/sesi berakhir | 10 | Rapat desktop dan alur HP dapat dicoba tanpa kehilangan data |
 | M-08 | Konfigurasi lokal dan contoh env; smoke/integrasi kritis | 01–12 | Pengembang dapat menjalankan dari README tanpa secret di git |
 
@@ -43,7 +43,7 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 
 README root, contoh env, dan script lokal tersedia. M-08 baru sebagian; tes autentikasi/dashboard/seed/daftar/mutasi kritis tersedia. D0-07 selesai sebagai verifikasi teknis demo lokal; foto/PDF dan seluruh MVP belum.
 
-Tahap berikutnya: pilih pekerjaan D1 yang paling dibutuhkan setelah demo internal; belum ada keputusan leader/pilot. Audit/versi/retry tidak ditunda pada write pertama D0-05 agar tidak ada periode write tanpa jejak atau rawan overwrite. Tetap 18 fixture seed plus temuan dummy dari uji manual; akun/sandi tidak berubah. UI admin akun tetap M-06; metadata DEMO_SEED dibedakan dari audit akun.
+Tahap berikutnya: pilih pekerjaan D1 yang paling dibutuhkan setelah demo internal; belum ada keputusan leader/pilot. Audit/versi/retry tidak ditunda pada write pertama D0-05 agar tidak ada periode write tanpa jejak atau rawan overwrite. Tetap 18 fixture seed plus temuan dummy dari uji manual; akun/sandi tidak berubah. UI admin akun dan master divisi tersedia pada M-06; metadata DEMO_SEED dibedakan dari audit akun.
 
 ## Definition of Done
 
@@ -69,3 +69,7 @@ Pembatalan beralasan dan pemulihan beralasan oleh admin tersedia tanpa hapus per
 ## 10 November 2026 — M-02 selesai untuk demo lokal
 
 Unggah dan baca foto privat di detail tersedia. Batas 5 MiB sumber/hasil, maksimal 10 foto, validasi decoder dan sesi/CSRF/Origin server; versi, audit dan retry mengikuti fondasi mutasi. File dummy disimpan di `.local/uploads` development. 65 tes backend MongoDB, 7 frontend dan build lulus. Penyimpanan volume persistent, backup/restore, HTTPS dan data nyata belum diuji; jangan anggap siap operasional.
+
+## 10 November 2026 — M-06 master divisi demo lokal
+
+Admin ICT dapat melihat, membuat, mengubah nama, mengaktifkan dan menonaktifkan master divisi di `/admin/divisions`. Kode tetap, nama unik tanpa membedakan huruf besar/kecil, tidak ada hard delete. Nonaktif ditolak selama ada akun DIVISION aktif; riwayat temuan memakai snapshot yang sudah ada. Audit before/after, CAS version, receipt idempoten dan guard kapasitas diterapkan. 67 tes backend MongoDB, 7 tes frontend dan build lulus. Route browser terverifikasi mengarah ke login; setelah seed dummy lokal, login Admin ICT dan GET master divisi menghasilkan 200 dengan tiga divisi. Tampilan setelah login dan mutasi UI belum diuji. Tes mutasi memakai database test terpisah. Akun ADMIN lain dan pengubahan akun ADMIN belum diperlukan untuk demo; bila dibutuhkan kelak, tentukan aturan kewenangannya terlebih dahulu.

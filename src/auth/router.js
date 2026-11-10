@@ -3,6 +3,7 @@ import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { hashPassword, verifyPassword } from './password.js';
 import { publicAccount } from './store.js';
 import { createAccount, updateAccount } from './admin-accounts.js';
+import { listAdminDivisions, createDivision, updateDivision } from './admin-divisions.js';
 
 const SESSION_MS = 12 * 60 * 60 * 1000;
 const WINDOW_MS = 15 * 60 * 1000;
@@ -136,5 +137,11 @@ export async function createAuthRouter({ database, config, now = () => new Date(
   });
   router.patch('/admin/accounts/:id', async (req, res) => res.json(await updateAccount(database, { id: req.params.id, body: req.body, admin: req.auth.account, now: now() })));
   router.post('/admin/accounts/:id/reset-password', async (req, res) => res.json(await updateAccount(database, { id: req.params.id, body: req.body, admin: req.auth.account, now: now(), reset: true })));
+  router.get('/admin/divisions', async (req, res) => res.json(await listAdminDivisions(database, req.query)));
+  router.post('/admin/divisions', async (req, res) => {
+    const result = await createDivision(database, { body: req.body, admin: req.auth.account, now: now() });
+    res.status(result.meta.replayed ? 200 : 201).json(result);
+  });
+  router.patch('/admin/divisions/:id', async (req, res) => res.json(await updateDivision(database, { id: req.params.id, body: req.body, admin: req.auth.account, now: now() })));
   return router;
 }

@@ -6,6 +6,8 @@ export async function prepareAuthStore(database) {
   });
   await database.collection('divisions').createIndex({ code: 1 }, { unique: true });
   await database.collection('divisions').createIndex({ name: 1 }, { unique: true });
+  await database.collection('divisions').createIndex({ name: 1 }, { unique: true, collation: { locale: 'en', strength: 2 }, name: 'division_name_ci' });
+  await database.collection('divisions').createIndex({ createMutationId: 1 }, { unique: true, partialFilterExpression: { createMutationId: { $type: 'string' } } });
   await database.collection('sessions').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
   await database.collection('loginAttempts').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 }

@@ -151,6 +151,39 @@ test('autentikasi HTTP dan MongoDB nyata', { skip: !uri }, async (t) => {
     assert.ok(!auditText.includes(initialPassword) && !auditText.includes(resetPassword) && !auditText.includes('passwordHash'));
     assert.equal((await request('/admin/accounts', admin)).status, 200);
   });
+  await t.test('master divisi: akses admin, unik, audit, versi dan nonaktif terjaga', async () => {
+    assert.equal((await request('/admin/divisions', camp)).status, 403);
+    assert.equal((await request('/admin/divisions', { ...camp, method: 'POST', body: {} })).status, 403);
+    assert.equal((await request('/admin/divisions?unexpected=1', admin)).status, 400);
+    const body = { code: 'DEMO', name: 'Unit Demo', mutationId: randomUUID() };
+    const created = await request('/admin/divisions', { ...admin, method: 'POST', body });
+    assert.equal(created.status, 201);
+    const division = (await created.json()).data;
+    assert.equal(division.code, 'DEMO'); assert.equal(division.version, 1);
+    assert.equal((await request('/admin/divisions', { ...admin, method: 'POST', body })).status, 200);
+    assert.equal((await request('/admin/divisions', { ...admin, method: 'POST', body: { ...body, name: 'Berbeda' } })).status, 409);
+    assert.equal((await request('/admin/divisions', { ...admin, method: 'POST', body: { ...body, code: 'OTHER', name: 'unit demo', mutationId: randomUUID() } })).status, 409);
+    const rename = { version: 1, mutationId: randomUUID(), name: 'Unit Demo Baru' };
+    assert.equal((await request(`/admin/divisions/${division.id}`, { ...admin, method: 'PATCH', body: rename })).status, 200);
+    assert.equal((await request(`/admin/divisions/${division.id}`, { ...admin, method: 'PATCH', body: rename })).status, 200);
+    assert.equal((await request(`/admin/divisions/${division.id}`, { ...admin, method: 'PATCH', body: { ...rename, mutationId: randomUUID() } })).status, 409);
+    const createAccountBody = { username: 'demo.unit', displayName: 'Unit Demo', role: 'DIVISION', divisionId: division.id,
+      initialPassword: randomUUID(), mutationId: randomUUID() };
+    const accountCreated = await request('/admin/accounts', { ...admin, method: 'POST', body: createAccountBody });
+    assert.equal(accountCreated.status, 201);
+    const accountId = (await accountCreated.json()).data.id;
+    const disable = { version: 2, mutationId: randomUUID(), active: false };
+    assert.equal((await request(`/admin/divisions/${division.id}`, { ...admin, method: 'PATCH', body: disable })).status, 409);
+    assert.equal((await request(`/admin/accounts/${accountId}`, { ...admin, method: 'PATCH', body: { version: 1, mutationId: randomUUID(), active: false } })).status, 200);
+    assert.equal((await request(`/admin/divisions/${division.id}`, { ...admin, method: 'PATCH', body: disable })).status, 200);
+    assert.equal((await request(`/admin/accounts/${accountId}`, { ...admin, method: 'PATCH', body: { version: 2, mutationId: randomUUID(), active: true } })).status, 409);
+    const listing = await request('/admin/divisions', admin);
+    assert.equal(listing.status, 200);
+    assert.ok((await listing.json()).data.some((item) => item.id === division.id && item.active === false));
+    const stored = await db.collection('divisions').findOne({ code: 'DEMO' });
+    assert.deepEqual(stored.audit.map((event) => event.action), ['DIVISION_CREATED', 'DIVISION_UPDATED', 'DIVISION_UPDATED']);
+    assert.equal(stored.audit[1].before.name, 'Unit Demo'); assert.equal(stored.audit[1].after.name, 'Unit Demo Baru');
+  });
   await t.test('beberapa perangkat: logout mencabut satu sesi saja', async () => {
     const other = await login();
     assert.notEqual(other.cookie, camp.cookie);
@@ -168,7 +201,7 @@ test('autentikasi HTTP dan MongoDB nyata', { skip: !uri }, async (t) => {
   });
   await t.test('fitur belum tersedia 404 bagi pengguna login', async () => {
     assert.equal((await request('/findings', camp)).status, 404);
-    assert.equal((await request('/admin/divisions', { ...admin, method: 'POST', body: {} })).status, 404);
+    assert.equal((await request('/exports/findings.pdf', admin)).status, 404);
   });
   await t.test('sesi kedaluwarsa ditolak walau TTL MongoDB belum menghapus', async () => {
     clock = new Date(clock.getTime() + 12 * 60 * 60 * 1000);

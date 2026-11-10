@@ -74,6 +74,7 @@ export async function updateAccount(database, { id, body, admin, now = new Date(
       changes.active = body.active;
     }
     if (!Object.keys(changes).length || Object.entries(changes).every(([key, value]) => row[key] === value)) throw fail(422, 'NO_CHANGES', 'Tidak ada perubahan akun.');
+    if (changes.active === true && !await database.collection('divisions').findOne({ _id: row.divisionId, active: true })) throw fail(409, 'DIVISION_INACTIVE', 'Aktifkan master divisi terlebih dahulu.');
     if (changes.active === true && await accounts.findOne({ role: 'DIVISION', divisionId: row.divisionId, active: true, _id: { $ne: _id } })) throw fail(409, 'DIVISION_ACCOUNT_EXISTS', 'Sudah ada akun aktif untuk divisi ini.');
   }
   const revoke = reset || (changes.active === false && row.active);

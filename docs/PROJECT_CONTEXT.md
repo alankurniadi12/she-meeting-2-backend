@@ -269,3 +269,7 @@ Setelah M-03, pengguna meminta pengembangan diteruskan. M-02 menambah unggah dan
 ## 23. Admin ICT dan akun divisi — M-06 sebagian
 
 Pengguna melihat admin ICT tampak sama dengan akun divisi. Faktanya sebelumnya role ADMIN hanya berbeda di server untuk baca akun dan restore temuan batal; UI admin belum tersedia. Sekarang `/admin/accounts` dan mutasi akun DIVISION ditambahkan: buat, reset, aktif/nonaktif, audit, versi/retry serta revokasi sesi. Browser Admin ICT melihat menu dan daftar akun dummy; akun divisi ditolak 403 di server. 66 tes backend MongoDB dan 7 frontend/build lulus. Master divisi dan perubahan akun ADMIN belum, sehingga M-06 sebagian. Data dummy/dev saja, tanpa promosi prod/deploy.
+
+## 25. M-06 — master divisi demo lokal
+
+Admin ICT kini memiliki `/admin/divisions` untuk daftar, tambah, ubah nama, aktif/nonaktif master. Endpoint server ADMIN-only dengan audit before/after, version CAS dan retry idempoten; nama unik tanpa membedakan kapitalisasi, kode tetap, no hard delete. Nonaktif ditolak bila akun DIVISION aktif. 67 tes backend MongoDB test terpisah, 7 frontend/build lulus; route browser mengarah ke login tetapi setelah seed dummy lokal login Admin ICT dan GET master divisi berhasil 200; tampilan setelah login dan mutasi UI belum diuji. Akun ADMIN lain/perubahan akun ADMIN belum diputuskan. Data dummy/dev, tanpa prod/deploy.
