@@ -52,3 +52,7 @@ Pengguna keluar dari sesi perangkatnya. Pengguna shift lain masuk memakai akun d
 ## Foto opsional M-02
 
 Setelah temuan tercatat, buka detail, pilih jenis dan satu foto. Backend memeriksa sesi, Origin/CSRF, isi gambar, ukuran, batas 10, versi dan status batal. Jika unggah gagal, teks temuan/progres yang sudah tersimpan tetap ada; pilih ulang file atau retry hasil tak pasti di tab yang sama. Foto yang berhasil tampil di galeri dan dapat dibuka akun login, termasuk bila temuan kemudian dibatalkan. Tidak ada hapus foto pada MVP.
+
+## Admin ICT mengelola akun divisi — M-06 sebagian
+
+Admin masuk lalu membuka Kelola akun. Ia dapat membuat akun DIVISION pada master divisi aktif, menyalin sandi sementara yang tampil sekali, mereset sandi, atau menonaktifkan/mengaktifkan akun divisi. Reset/nonaktif segera mengakhiri sesi akun target. Akun divisi tidak melihat menu dan server menolak endpoint admin. Menambah admin lain atau mengubah master divisi masih belum tersedia.

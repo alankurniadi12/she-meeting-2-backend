@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { hashPassword, verifyPassword } from './password.js';
 import { publicAccount } from './store.js';
+import { createAccount, updateAccount } from './admin-accounts.js';
 
 const SESSION_MS = 12 * 60 * 60 * 1000;
 const WINDOW_MS = 15 * 60 * 1000;
@@ -125,9 +126,15 @@ export async function createAuthRouter({ database, config, now = () => new Date(
     }
     const rows = await accounts.find({}, { projection: { passwordHash: 0, audit: 0 } })
       .sort({ username: 1 }).skip((Number(page) - 1) * Number(pageSize)).limit(Number(pageSize)).toArray();
-    res.json({ data: await Promise.all(rows.map(identity)), meta: {
+    res.json({ data: await Promise.all(rows.map(async (row) => ({ ...await identity(row), version: row.version }))), meta: {
       page: Number(page), pageSize: Number(pageSize), total: await accounts.countDocuments(),
     } });
   });
+  router.post('/admin/accounts', async (req, res) => {
+    const result = await createAccount(database, { body: req.body, admin: req.auth.account, now: now() });
+    res.status(result.meta.replayed ? 200 : 201).json(result);
+  });
+  router.patch('/admin/accounts/:id', async (req, res) => res.json(await updateAccount(database, { id: req.params.id, body: req.body, admin: req.auth.account, now: now() })));
+  router.post('/admin/accounts/:id/reset-password', async (req, res) => res.json(await updateAccount(database, { id: req.params.id, body: req.body, admin: req.auth.account, now: now(), reset: true })));
   return router;
 }

@@ -265,3 +265,7 @@ Setelah pengguna meninjau demo dan meminta lanjut, pembatalan beralasan serta pe
 ## 22. M-02 — foto opsional privat demo
 
 Setelah M-03, pengguna meminta pengembangan diteruskan. M-02 menambah unggah dan lihat foto di detail dengan sesi, Origin/CSRF, validasi decoder/batas, WebP privat, versi/audit/retry dan batas 10. Foto tetap opsional, data batal hanya dapat membaca. 65 tes backend MongoDB, 7 frontend/build lulus; browser lokal memuat foto dummy dan event audit. Folder lokal `.local/uploads` tidak ikut Git. Volume/backup/restore/HTTPS/perangkat kantor/data nyata belum diverifikasi, tanpa deployment atau promosi prod.
+
+## 23. Admin ICT dan akun divisi — M-06 sebagian
+
+Pengguna melihat admin ICT tampak sama dengan akun divisi. Faktanya sebelumnya role ADMIN hanya berbeda di server untuk baca akun dan restore temuan batal; UI admin belum tersedia. Sekarang `/admin/accounts` dan mutasi akun DIVISION ditambahkan: buat, reset, aktif/nonaktif, audit, versi/retry serta revokasi sesi. Browser Admin ICT melihat menu dan daftar akun dummy; akun divisi ditolak 403 di server. 66 tes backend MongoDB dan 7 frontend/build lulus. Master divisi dan perubahan akun ADMIN belum, sehingga M-06 sebagian. Data dummy/dev saja, tanpa promosi prod/deploy.

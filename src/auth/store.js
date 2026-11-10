@@ -1,5 +1,6 @@
 export async function prepareAuthStore(database) {
   await database.collection('accounts').createIndex({ username: 1 }, { unique: true });
+  await database.collection('accounts').createIndex({ createMutationId: 1 }, { unique: true, partialFilterExpression: { createMutationId: { $type: 'string' } } });
   await database.collection('accounts').createIndex({ divisionId: 1 }, {
     unique: true, partialFilterExpression: { role: 'DIVISION', active: true },
   });

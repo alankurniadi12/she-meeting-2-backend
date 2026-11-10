@@ -72,3 +72,7 @@ Uji browser lokal menjalankan alur pada PILOT: dashboard 17 valid sebelum uji, f
 ## Validasi M-02 — 10 November 2026
 
 65 tes backend MongoDB lulus. Tes baru memakai PNG dummy: tanpa sesi 401, tanpa CSRF 403, isi palsu 422, berkas terlalu besar 413, unggah 201, retry 200 tanpa file kedua, versi stale 409 dan batas 10 foto 409, GET privat WebP 200, audit ATTACHMENT_ADDED, baca setelah batal 200 dan unggah saat batal 409. 7 tes frontend dan build lulus. Browser lokal menampilkan foto dummy yang berhasil dimuat serta event auditnya. Uji volume persistent/backup/restore dan HTTPS belum dilakukan; M-02 hanya dinyatakan selesai untuk demo lokal.
+
+## Validasi M-06 sebagian — 10 November 2026
+
+66 tes backend MongoDB dan 7 tes frontend/build lulus. Tes integrasi auth memakai DB test terpisah: divisi POST admin 403, pembuatan admin tambahan 403, create akun divisi 201 dan retry 200 tanpa duplikasi, login akun baru, reset sandi mencabut sesi dan sandi lama, nonaktif mencabut sesi, retry tanpa audit ganda, audit tidak memuat sandi/hash. Browser lokal Admin ICT menampilkan menu Kelola akun dan empat akun dummy. Uji mutasi browser terhadap akun development tidak dilakukan agar kredensial demo yang sudah dipakai pengguna tetap utuh. Master divisi, perubahan admin, dan perangkat kantor masih terbuka.

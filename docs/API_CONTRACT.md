@@ -1,6 +1,6 @@
 # Kontrak API MVP
 
-Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai M-02:** GET `/health`, GET `/ready` internal, POST `/auth/login`, GET `/auth/me`, POST `/auth/logout`, GET `/divisions`, GET `/admin/accounts`, GET `/dashboard` ringkas, GET `/findings`, dan GET `/findings/summary` tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. GET `/findings/:id`, GET `/findings/:id/progress`, GET `/findings/:id/history`, POST `/findings`, PATCH `/findings/:id`, POST `/findings/:id/progress` juga tersedia. Pembatalan/pemulihan M-03 tersedia; ekspor, mutasi admin dan dashboard lengkap masih rencana; foto M-02 tersedia. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
+Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai M-06 sebagian:** GET `/health`, GET `/ready` internal, POST `/auth/login`, GET `/auth/me`, POST `/auth/logout`, GET `/divisions`, GET `/admin/accounts`, GET `/dashboard` ringkas, GET `/findings`, dan GET `/findings/summary` tersedia. Path pada tabel di bawah berawalan `/api/v1` kecuali health/ready. GET `/findings/:id`, GET `/findings/:id/progress`, GET `/findings/:id/history`, POST `/findings`, PATCH `/findings/:id`, POST `/findings/:id/progress` juga tersedia. Pembatalan/pemulihan M-03 tersedia; ekspor, master divisi, dan dashboard lengkap masih rencana; mutasi akun divisi oleh admin sebagian M-06 dan foto M-02 tersedia. Path belum tersedia mengembalikan 401 tanpa login, 403 untuk divisi pada namespace admin, atau 404 setelah pemeriksaan akses lolos. Galat minimal saat ini berisi code, message, requestId; fields ditambahkan saat validasi bisnis diimplementasikan. Aturan produk pada [PRD](PRD.md), field/validasi pada [model data](DATA_MODEL.md). API menerima dan mengembalikan kode status IN_PROGRESS, ON_HOLD, COMPLETED; terjemahan dilakukan UI.
 
 ## Konvensi
 
@@ -36,9 +36,9 @@ Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai M-02:** GET `/health
 | GET /dashboard | responsibleDivisionIds, month | D0-03: snapshot/status + indikator bulan. Tren 6 bulan, per-divisi dan 5 tindak lanjut masih M-04. |
 | GET /exports/findings.pdf | Filter list tanpa page/pageSize | application/pdf, attachment, private/no-store; semua hasil filter, batas eksplisit |
 | GET /admin/accounts | pagination | ADMIN; tanpa passwordHash |
-| POST /admin/accounts | username, displayName, divisionId, role, initialPassword | ADMIN; 201; audit akun |
-| PATCH /admin/accounts/:id | active/displayName, version, mutationId | ADMIN; tidak boleh menonaktifkan admin terakhir/dirinya secara tidak sengaja |
-| POST /admin/accounts/:id/reset-password | newPassword, version, mutationId | ADMIN; sessionVersion naik, audit, jangan log password |
+| POST /admin/accounts | username, displayName, divisionId, role=DIVISION, initialPassword, mutationId | ADMIN; 201 akun divisi; audit/receipt. Pembuatan admin tambahan 403 |
+| PATCH /admin/accounts/:id | active/displayName, version, mutationId | ADMIN; akun divisi saja; audit, revokasi sesi saat nonaktif |
+| POST /admin/accounts/:id/reset-password | newPassword, version, mutationId | ADMIN; akun divisi saja; sessionVersion naik dan sesi dicabut; audit tanpa sandi |
 | POST /admin/divisions | code, name | ADMIN; unik, aktif |
 | PATCH /admin/divisions/:id | name/active, version, mutationId | ADMIN; tidak hard delete; nama lama dipertahankan pada audit |
 | GET /health | Tidak ada | Publik hanya status proses; tanpa konfigurasi internal |
@@ -54,7 +54,7 @@ Daftarkan route statis `/findings/summary` sebelum `/:id` untuk menghindari tert
 - Logout mewajibkan Origin allowlist dan `X-CSRF-Token` sesi tersebut, menghapus sesi dan cookie lalu 204. Semua mutasi setelah login melalui guard yang sama. Login memerlukan Origin allowlist, tanpa CSRF pra-login.
 - Batas login fixed window 15 menit: 10 percobaan/username dan 30/IP (termasuk sukses/input tidak valid); 429 `LOGIN_RATE_LIMITED` + `Retry-After`. Counter MongoDB tetap berlaku setelah API restart; batas dapat mencapai dua kali kuota di sekitar pergantian window. Tidak mempercayai X-Forwarded-For; proxy hosting belum dikonfigurasi.
 - GET divisions hanya menerima `activeOnly=true|false`; default true. GET admin/accounts hanya `page`/`pageSize` (default 1/20, maksimal 100), tanpa rahasia. Query lain 400.
-- Akun nonaktif/sessionVersion tidak cocok/expired selalu 401 meskipun TTL belum membersihkan record. Endpoint reset/nonaktif/ubah peran beserta auditnya masih M-06.
+- Akun nonaktif/sessionVersion tidak cocok/expired selalu 401 meskipun TTL belum membersihkan record. Reset/nonaktif akun divisi beserta auditnya tersedia pada M-06 sebagian; ubah peran/akun admin dan master divisi belum.
 
 ## Dashboard ringkas D0-03
 
@@ -168,3 +168,7 @@ POST `/findings/:id/cancel` untuk semua akun login dan POST `/findings/:id/resto
 ## M-02 — lampiran foto
 
 POST multipart/form-data menerima tepat satu `file` serta field string `kind=INITIAL|PROGRESS|COMPLETION`, `version`, `mutationId` UUID v4; field lain ditolak. JPEG/PNG/WebP sumber maksimal 5 MiB dan isi harus cocok dengan MIME; animasi dan foto rusak ditolak 422, terlalu besar 413. Decoder membatasi 40 juta piksel, hasil diputar mengikuti orientasi, dibatasi sisi 4096 dan ditulis WebP maksimal 5 MiB tanpa metadata sumber. Maksimal 10 foto; 409 PHOTO_LIMIT bila penuh. Data batal 409 FINDING_CANCELLED. Versi stale 409 VERSION_CONFLICT; retry identik 200 `meta.replayed=true` tanpa duplikasi. Hasil baru 201 `{data:{id,reference,version,status,updatedAt,attachment:{id,originalName,mime,sizeBytes,kind,uploadedAt,uploadedBy}},meta:{replayed:false}}`. `storageKey` tidak dikirim. GET daftar mengirim `{data:[attachment]}`. GET file memerlukan sesi, mengirim image/webp dengan Cache-Control no-store dan X-Content-Type-Options nosniff; file hilang 503 PHOTO_UNAVAILABLE. Foto pada temuan batal tetap bisa dibaca. Tidak ada endpoint hapus. Field metadata/audit/receipt dan versi disimpan atomik; file dan MongoDB tidak memiliki transaksi bersama, sehingga crash di sela perpindahan file dan write dapat menyisakan orphan yang harus diperiksa ICT.
+
+## M-06 sebagian — administrasi akun divisi
+
+GET `/admin/accounts` mengirim `version` bersama field identitas aman, tidak mengirim passwordHash, sessionVersion, receipt atau audit. POST membuat role `DIVISION` saja dengan username 3–64 karakter, displayName 1–120, divisionId aktif, initialPassword 12–128, mutationId UUID v4; satu akun aktif per divisi. 201 baru/200 retry. PATCH `/:id` menerima active/displayName dan version+mutationId; POST `/:id/reset-password` menerima newPassword 12–128 dan version+mutationId. Keduanya 200, versi kondisional 409 VERSION_CONFLICT, replay identik tanpa audit ganda. Reset/nonaktif menaikkan sessionVersion serta menghapus sesi akun terkait; sesi lama 401. Seluruh endpoint /admin/* memeriksa role ADMIN pada server dan mutasi memerlukan Origin/CSRF. Perubahan akun ADMIN serta pembuatan admin tambahan ditolak 403; master divisi masih 404. Kata sandi hanya masuk hash Argon2id, tidak disimpan pada audit/receipt/response. UI menampilkan sandi baru sekali di memori tab agar admin bisa menyalurkannya melalui kanal internal yang disepakati.

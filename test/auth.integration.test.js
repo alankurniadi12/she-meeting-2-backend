@@ -116,6 +116,41 @@ test('autentikasi HTTP dan MongoDB nyata', { skip: !uri }, async (t) => {
     }
     assert.equal((await request('/auth/me', camp)).status, 200);
   });
+  await t.test('admin mengelola akun divisi dummy; reset dan nonaktif mencabut sesi', async () => {
+    const secondDivisionId = (await db.collection('divisions').insertOne({ code: 'TRANSPORT', name: 'Transport', active: true })).insertedId;
+    const initialPassword = randomUUID(); const mutationId = randomUUID();
+    const body = { username: 'transport', displayName: 'Transport', role: 'DIVISION', divisionId: String(secondDivisionId), initialPassword, mutationId };
+    assert.equal((await request('/admin/accounts', { ...camp, method: 'POST', body })).status, 403);
+    assert.equal((await request('/admin/accounts', { ...admin, method: 'POST', body: { ...body, role: 'ADMIN' } })).status, 403);
+    assert.equal((await request('/admin/accounts', { ...admin, method: 'POST', body: { ...body, mutationId: randomUUID(), initialPassword: { invalid: true } } })).status, 422);
+    const created = await request('/admin/accounts', { ...admin, method: 'POST', body });
+    assert.equal(created.status, 201);
+    const account = (await created.json()).data;
+    assert.equal(account.version, 1);
+    assert.equal((await request('/admin/accounts', { ...admin, method: 'POST', body })).status, 200);
+    assert.equal(await db.collection('accounts').countDocuments({ username: 'transport' }), 1);
+    const firstLogin = await request('/auth/login', { method: 'POST', body: { username: 'transport', password: initialPassword } });
+    assert.equal(firstLogin.status, 200);
+    const divisionCookie = firstLogin.headers.get('set-cookie').split(';')[0];
+    const resetPassword = randomUUID();
+    const resetBody = { version: 1, mutationId: randomUUID(), newPassword: resetPassword };
+    assert.equal((await request(`/admin/accounts/${account.id}/reset-password`, { ...admin, method: 'POST', body: { ...resetBody, newPassword: { invalid: true } } })).status, 422);
+    assert.equal((await request(`/admin/accounts/${account.id}/reset-password`, { ...admin, method: 'POST', body: resetBody })).status, 200);
+    assert.equal((await request('/auth/me', { cookie: divisionCookie })).status, 401);
+    assert.equal((await request('/auth/login', { method: 'POST', body: { username: 'transport', password: initialPassword } })).status, 401);
+    const secondLogin = await request('/auth/login', { method: 'POST', body: { username: 'transport', password: resetPassword } });
+    assert.equal(secondLogin.status, 200);
+    const secondCookie = secondLogin.headers.get('set-cookie').split(';')[0];
+    const disableBody = { version: 2, mutationId: randomUUID(), active: false };
+    assert.equal((await request(`/admin/accounts/${account.id}`, { ...admin, method: 'PATCH', body: disableBody })).status, 200);
+    assert.equal((await request('/auth/me', { cookie: secondCookie })).status, 401);
+    assert.equal((await request(`/admin/accounts/${account.id}`, { ...admin, method: 'PATCH', body: disableBody })).status, 200);
+    const stored = await db.collection('accounts').findOne({ username: 'transport' });
+    assert.deepEqual(stored.audit.map((event) => event.action), ['ACCOUNT_CREATED', 'PASSWORD_RESET', 'ACCOUNT_UPDATED']);
+    const auditText = JSON.stringify(stored.audit);
+    assert.ok(!auditText.includes(initialPassword) && !auditText.includes(resetPassword) && !auditText.includes('passwordHash'));
+    assert.equal((await request('/admin/accounts', admin)).status, 200);
+  });
   await t.test('beberapa perangkat: logout mencabut satu sesi saja', async () => {
     const other = await login();
     assert.notEqual(other.cookie, camp.cookie);
@@ -133,7 +168,7 @@ test('autentikasi HTTP dan MongoDB nyata', { skip: !uri }, async (t) => {
   });
   await t.test('fitur belum tersedia 404 bagi pengguna login', async () => {
     assert.equal((await request('/findings', camp)).status, 404);
-    assert.equal((await request('/admin/accounts', { ...admin, method: 'POST', body: {} })).status, 404);
+    assert.equal((await request('/admin/divisions', { ...admin, method: 'POST', body: {} })).status, 404);
   });
   await t.test('sesi kedaluwarsa ditolak walau TTL MongoDB belum menghapus', async () => {
     clock = new Date(clock.getTime() + 12 * 60 * 60 * 1000);

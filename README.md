@@ -2,7 +2,7 @@
 
 Backend Express.js + JavaScript dan driver MongoDB untuk aplikasi internal SHE Meeting. Folder docs/ merupakan sumber tunggal dokumen bersama frontend/backend.
 
-Status: D0-01 sampai D0-07 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Grafik/tren dashboard, mutasi admin dan PDF belum tersedia; foto M-02 tersedia; pembatalan/pemulihan M-03 tersedia. Belum deployment.
+Status: D0-01 sampai D0-07 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Grafik/tren dashboard, master divisi dan PDF belum tersedia; mutasi akun divisi oleh admin sebagian M-06 tersedia; foto M-02 tersedia; pembatalan/pemulihan M-03 tersedia. Belum deployment.
 
 ## Menjalankan mandiri
 
@@ -37,9 +37,9 @@ npm test
 MONGODB_TEST_URI=mongodb://127.0.0.1:27027 npm test
 ```
 
-Tanpa MONGODB_TEST_URI, 15 tes unit/fondasi/config dijalankan dan empat suite integrasi dilewati secara eksplisit. Dengan URI test, seluruh 65 tes berjalan pada database unik she_meeting_test_auth_<uuid>, she_meeting_test_dashboard_<uuid>, she_meeting_test_findings_<uuid> dan she_meeting_test_write_<uuid>, lalu hanya database tersebut dihapus. DB development tidak dipakai sebagai fallback.
+Tanpa MONGODB_TEST_URI, 15 tes unit/fondasi/config dijalankan dan empat suite integrasi dilewati secara eksplisit. Dengan URI test, seluruh 66 tes berjalan pada database unik she_meeting_test_auth_<uuid>, she_meeting_test_dashboard_<uuid>, she_meeting_test_findings_<uuid> dan she_meeting_test_write_<uuid>, lalu hanya database tersebut dihapus. DB development tidak dipakai sebagai fallback.
 
-Startup mem-ping MongoDB dan menyiapkan indeks autentikasi/findings sebelum listen. Readiness internal jangan diteruskan reverse proxy internet. API anonim 401; akun divisi ditolak 403 dari /api/v1/admin/*; admin boleh GET /api/v1/admin/accounts (baca saja). Mutasi inti temuan sudah tersedia; mutasi admin belum tersedia; lampiran foto dan batal/pulihkan tersedia. Login/mutasi harus mengirim Origin allowlist; setelah login mutasi juga wajib X-CSRF-Token dari login/me. Sesi beberapa perangkat didukung, logout mencabut sesi saat ini.
+Startup mem-ping MongoDB dan menyiapkan indeks autentikasi/findings sebelum listen. Readiness internal jangan diteruskan reverse proxy internet. API anonim 401; akun divisi ditolak 403 dari /api/v1/admin/*; admin boleh membaca dan mengelola akun divisi melalui /api/v1/admin/accounts. Mutasi inti temuan sudah tersedia; master divisi belum tersedia; lampiran foto dan batal/pulihkan tersedia. Login/mutasi harus mengirim Origin allowlist; setelah login mutasi juga wajib X-CSRF-Token dari login/me. Sesi beberapa perangkat didukung, logout mencabut sesi saat ini.
 
 Cookie lokal she_session_dev (HttpOnly/SameSite=Lax, absolut 12 jam). Tambahkan COOKIE_SECURE=false hanya untuk lokal HTTP; APP_ENV=demo wajib Secure dan seluruh ALLOWED_ORIGINS HTTPS. Demo memakai __Host-she_session. trust proxy tetap false; konfigurasi proxy, cookie cross-subdomain HTTPS, Vercel/VPS harus diuji saat O-02. Jangan menaruh token atau sandi di localStorage.
 
@@ -87,3 +87,7 @@ POST `/api/v1/findings/:id/cancel` untuk akun login dan POST `/api/v1/findings/:
 ## Foto opsional M-02
 
 POST `/api/v1/findings/:id/attachments` menerima multipart satu foto JPEG/PNG/WebP maksimal 5 MiB, `kind`, `version` dan `mutationId`; hasil disimpan WebP privat di `.local/uploads` secara default. GET daftar metadata dan GET file memerlukan sesi. Unggah juga memerlukan Origin/CSRF. Batas 10 foto, status batal hanya bisa membaca, foto tidak wajib untuk menyimpan/menyelesaikan temuan. Set `UPLOAD_DIR` ke path absolut volume privat persisten saat menyiapkan lingkungan lain; folder ini tidak dipublikasi dan harus ikut backup bersama DB. Belum diuji untuk hosting/backup/restore.
+
+## Admin ICT — M-06 sebagian
+
+Role ADMIN (`admin.ict` pada seed demo) punya `/api/v1/admin/accounts` untuk daftar, buat akun DIVISION, PATCH aktif/nama, dan reset sandi. Endpoint memeriksa role server, Origin dan CSRF; reset/nonaktif mencabut sesi target. Audit tidak mengandung sandi/hash; response hanya metadata akun aman. Akun divisi tidak dapat membuka namespace admin. Master divisi serta pembuatan/perubahan akun ADMIN belum tersedia.

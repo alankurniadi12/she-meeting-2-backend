@@ -142,3 +142,7 @@ Asumsi R-08 kini diwujudkan pada prototipe: semua akun login dapat membatalkan t
 ## M-02 — 10 November 2026
 
 R-07 diterapkan pada demo lokal: sumber JPEG/PNG/WebP ≤5 MiB, hasil WebP ≤5 MiB, maksimal 10 foto/temuan, folder privat tanpa static URL atau aksi hapus. Konversi WebP menghapus metadata sumber dan membatasi dimensi; nama sumber hanya label bersih. Foto dipasang setelah temuan dicatat agar kegagalan file tidak membatalkan laporan teks. Foto dan DB tidak transaksional bersama; backup/restore dan pemeriksaan orphan harus diuji sebelum pilot. Batas ini masih asumsi prototipe, bukan kebijakan perusahaan.
+
+## M-06 sebagian — pembeda admin ICT
+
+Sesuai R-10, admin ICT terpisah dari akun bersama ICT. Karena pengguna melihat UI keduanya hampir sama, tahap ini membuka halaman khusus admin untuk mengelola akun divisi dengan guard role server. Pembuatan admin tambahan dan mutasi akun admin sengaja belum disediakan agar tidak menambah kewenangan baru tanpa kebutuhan jelas. Reset/nonaktif akun divisi mencabut semua sesi. Master divisi tetap pekerjaan M-06 berikutnya; pembeda akses bukan berarti admin menilai keselamatan atau memverifikasi penyelesaian.

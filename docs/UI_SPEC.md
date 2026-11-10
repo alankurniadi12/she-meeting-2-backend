@@ -102,3 +102,7 @@ Detail aktif menampilkan form Batalkan temuan untuk akun login dengan alasan waj
 ## M-02 — galeri foto detail
 
 Detail menampilkan foto privat berisi jenis, nama berkas dan akun pengunggah; data batal masih dapat melihat. Akun login dapat menambah satu foto JPEG/PNG/WebP maksimal 5 MiB pada temuan aktif, dengan pilihan kondisi awal/progres/penyelesaian. Setelah 10 foto, form ditutup. Konflik versi meminta tinjau data terbaru; hasil jaringan tidak pasti dapat dicoba lagi dengan file/mutationId yang sama selama tab tetap terbuka. Form catat dan status Selesai tetap tanpa foto wajib.
+
+## M-06 sebagian — halaman admin ICT
+
+Sidebar menampilkan Kelola akun hanya bagi role ADMIN. Halaman `/admin/accounts` berisi daftar akun dan status, form akun DIVISION, tombol reset sandi dan aktif/nonaktif. Password acak dapat dibuat di form dan hanya ditampilkan di memori tab setelah operasi sukses; admin perlu menyalurkannya lewat kanal internal. Akun DIVISION yang membuka rute langsung dialihkan ke dashboard, sedangkan API tetap menolak 403. Pengelolaan master divisi belum ada.

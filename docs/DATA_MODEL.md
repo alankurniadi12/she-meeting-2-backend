@@ -97,3 +97,7 @@ Lihat [UI_SPEC](UI_SPEC.md). isNew, isOverdue dan angka dashboard dihitung dari 
 ## M-02 — foto yang diimplementasikan
 
 `attachments[]` menyimpan id UUID, storageKey acak, originalName bersih, mime hasil image/webp, sizeBytes, kind INITIAL/PROGRESS/COMPLETION, uploadedAt dan uploadedBy snapshot akun. Berkas asli tidak disimpan; decoder memvalidasi JPEG/PNG/WebP dan hasil WebP dibatasi 5 MiB, 4096 px sisi, 40 juta piksel sumber. Folder default development `.local/uploads`; UPLOAD_DIR absolut dapat menunjuk volume privat. Tidak ada URL statik. Metadata/audit/receipt/versi ditulis satu CAS; kegagalan write menghapus file baru. Crash pada celah file dan DB dapat menyisakan orphan; operasi/backup perlu memeriksanya sebelum pilot. Foto tidak wajib, tidak dihapus saat batal, dan tidak ada aksi hapus MVP.
+
+## M-06 sebagian — audit akun
+
+Akun DIVISION yang dibuat admin memakai version=1, createMutationId unik, sessionVersion=1, audit ACCOUNT_CREATED dan receipt idempotensi. PATCH displayName/active dan reset sandi memakai CAS `_id+version`, audit akun dan receipt dalam satu update. Reset/nonaktif menaikkan sessionVersion, sehingga sesi lama gagal meski TTL belum membersihkan; sesi juga dihapus setelah write. Audit reset tidak menyimpan sandi/hash lama atau baru. Pembuatan/perubahan akun ADMIN serta mutasi master divisi belum diimplementasikan.
