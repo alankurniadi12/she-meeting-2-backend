@@ -47,6 +47,10 @@ test('dashboard HTTP, agregasi MongoDB dan seed temuan nyata', { skip: !uri }, a
     const { data } = await response.json();
     assert.deepEqual(data.snapshot, { totalValid: 0, counts: { IN_PROGRESS: 0, ON_HOLD: 0, COMPLETED: 0 }, open: 0, overdue: 0 });
     assert.deepEqual(data.period, { month: '2026-11', reported: 0, completed: 0 });
+    assert.equal(data.trend.length, 6);
+    assert.ok(data.trend.every((row) => row.reported === 0 && row.completed === 0));
+    assert.deepEqual(data.byDivision, []);
+    assert.deepEqual(data.followUps, []);
     assert.equal(data.dataMode, 'DEMO');
     assert.equal(data.today, '2026-11-01');
   });
@@ -68,6 +72,12 @@ test('dashboard HTTP, agregasi MongoDB dan seed temuan nyata', { skip: !uri }, a
     assert.equal(scope.snapshot.totalValid, 4); // TEST-1 appears once, not twice.
     assert.equal(scope.snapshot.overdue, 1);
     assert.equal(scope.scope.responsibleDivisionIds.length, 2);
+    assert.deepEqual(scope.byDivision.map((row) => [row.name, row.total]), [['CAMP', 3], ['TRANSPORT', 2]]);
+    assert.equal(scope.trend.at(-1).reported, scope.period.reported);
+    assert.equal(scope.trend.at(-1).completed, scope.period.completed);
+    assert.equal(scope.followUps[0].reference, 'TEST-1');
+    assert.equal(scope.followUps[0].isOverdue, true);
+    assert.ok(scope.followUps.every((row) => !['TEST-4', 'TEST-5'].includes(row.reference)));
     assert.equal((await (await get(`?responsibleDivisionIds=${transport}`)).json()).data.snapshot.totalValid, 2);
     const serialized = JSON.stringify(result);
     for (const hidden of ['do-not-expose', 'private-test', 'passwordHash', 'audit', 'csrfToken']) assert.ok(!serialized.includes(hidden));

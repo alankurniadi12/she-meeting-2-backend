@@ -2,7 +2,7 @@
 
 Backend Express.js + JavaScript dan driver MongoDB untuk aplikasi internal SHE Meeting. Folder docs/ merupakan sumber tunggal dokumen bersama frontend/backend.
 
-Status: D0-01 sampai D0-07 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard ringkas dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. Grafik/tren dashboard dan PDF belum tersedia; mutasi akun divisi dan master divisi oleh admin tersedia pada M-06; foto M-02 dan pembatalan/pemulihan M-03 tersedia. Belum deployment.
+Status: D0-01 sampai D0-07, M-02, M-03, M-04 dan M-06 selesai untuk demo lokal. Login/sesi/CSRF, seed akun/divisi dan 18 temuan dummy, baca akun admin, dashboard lengkap dan daftar/ringkasan temuan tersedia. Tambah/detail/koreksi/progres, audit atomik/versi/retry dan GET riwayat paginasi tersedia. PDF M-05 belum tersedia; mutasi akun divisi dan master divisi oleh admin, foto opsional dan pembatalan/pemulihan tersedia. Belum deployment.
 
 ## Menjalankan mandiri
 
@@ -47,7 +47,7 @@ Cookie lokal she_session_dev (HttpOnly/SameSite=Lax, absolut 12 jam). Tambahkan 
 
 GET /api/v1/dashboard memerlukan sesi divisi/admin. Query hanya month=YYYY-MM dan responsibleDivisionIds=<ID dipisah koma, maksimal 50>. Default semua divisi dan bulan kalender APP_TIMEZONE. Snapshot semua tanggal; pilihan bulan hanya memengaruhi dua indikator masuk/selesai. Data batal tidak dihitung, temuan bersama tetap unik. Respons berisi snapshot/period/scope/asOf/today/timeZone/dataMode; kontrak lengkap di docs/API_CONTRACT.md. Endpoint tulis inti tersedia pada D0-05 di bawah; dashboard tetap pembacaan ringkasan.
 
-Dashboard kosong sah mengembalikan nol; galat pembacaan 500 tidak diganti angka nol. APP_TIMEZONE divalidasi sebelum startup; default Asia/Jakarta. Filter, batas bulan/zona/target, seed idempotent, fail-closed dan kegagalan agregasi termasuk pengujian. Grafik/tren/tindak lanjut tetap tahap M-04.
+Dashboard kosong sah mengembalikan nol; galat pembacaan 500 tidak diganti angka nol. APP_TIMEZONE divalidasi sebelum startup; default Asia/Jakarta. Filter, batas bulan/zona/target, seed idempotent, fail-closed dan kegagalan agregasi termasuk pengujian. M-04 menambah tren enam bulan, status per divisi dan lima tindak lanjut; pembacaan agregat terpisah dapat berbeda sesaat jika ada edit serentak.
 
 ## Daftar rapat D0-04
 

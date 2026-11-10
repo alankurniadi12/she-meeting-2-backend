@@ -2,7 +2,7 @@
 
 Nama sementara pilihan pengguna: **SHE Meeting**. Warna dominan merah dan biru. Dashboard halaman pembuka; sidebar kiri dan header berisi Home, status login/nama akun, avatar dan keluar. Referensi logo, kode warna resmi, perangkat kantor dan resolusi proyektor belum diberikan; gunakan placeholder tanpa mengarang identitas perusahaan.
 
-## Implementasi saat ini — tahap 05
+## Implementasi saat ini — M-04
 
 Route /login, /dashboard, /findings, /findings/new, /findings/:id dan /findings/:id/edit tersedia; root tetap redirect dashboard. Sidebar/judul tab mengikuti halaman, filter daftar tersimpan pada returnTo yang dibatasi ke route daftar internal. Tujuan login kini juga mengizinkan form/detail/koreksi internal dengan ID valid, tanpa redirect eksternal. Detail membedakan pelapor, divisi asal, penanggung jawab bersama, akun pencatat/pengubah dan waktu server.
 
@@ -39,7 +39,7 @@ Tidak menambahkan menu persetujuan, pengguna pribadi, jadwal rapat, billing, ata
 
 ## Dashboard
 
-Dashboard lengkap dalam batas MVP: empat kartu utama (Total valid, Diproses, Tertunda, Selesai), indikator pekerjaan terbuka dan terlambat, grafik status per divisi, tren laporan masuk/selesai enam bulan, dan daftar tindak lanjut (tertunda/terlambat) beserta update terakhir. Tidak perlu banyak grafik yang mengulang angka.
+Dashboard M-04 sudah menampilkan empat kartu utama (Total valid, Diproses, Tertunda, Selesai), indikator pekerjaan terbuka dan terlambat, grafik status per divisi, tren laporan masuk/selesai enam bulan, dan daftar maksimal lima tindak lanjut beserta update terakhir. Visual ini telah dicoba di Chrome lokal dengan data dummy dan filter Camp+ICT; HP/proyektor kantor belum diuji.
 
 Filter bersama dashboard: beberapa divisi penanggung jawab. Default semua divisi. Dashboard snapshot tidak diberi filter tanggal secara default; bulan terpilih hanya untuk dua angka periodik dan tren. Tampilkan periode dan cakupan di dekat angka.
 

@@ -51,6 +51,10 @@ Seed minimal 18 temuan sintetik: masing-masing status, satu dan beberapa penangg
 - Visual manual PDF dan layar: jangan menyatakan PDF rapi hanya dari respons HTTP 200; buka/render PDF fixture panjang dan beberapa halaman.
 - Operasi: uji pemulihan, restart proses, persistensi foto/database, dan deep link/cookie sesudah deployment dummy.
 
+## Validasi M-04
+
+Tes integrasi MongoDB memeriksa nol saat kosong, scope multi-divisi unik, tren enam bulan, kontribusi per divisi, prioritas lima tindak lanjut dan proyeksi tanpa isi privat. Chrome lokal Admin ICT memeriksa 16 valid semua divisi dan 12 unik untuk Camp+ICT; tren dan daftar berubah mengikuti scope. Uji HP/proyektor kantor dan pembacaan serentak saat ada edit masih terbuka.
+
 ## UAT dan kriteria pilot
 
 ICT menyiapkan data; calon perwakilan Camp/Transport/ICT bila bersedia mencoba tugas nyata dengan data dummy. Catat waktu pencatatan/pencarian, kebutuhan bantuan, galat, dan informasi yang membingungkan. Target numerik dan durasi pilot belum disepakati. Tidak ada kelulusan jika hak akses gagal, data hilang, angka salah, atau perubahan menimpa diam-diam.

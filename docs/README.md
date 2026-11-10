@@ -1,6 +1,6 @@
 # Persiapan MVP SHE Meeting
 
-Status 10 November 2026: D0-01 sampai D0-07, M-02 foto opsional dan M-03 pembatalan/pemulihan sudah diuji untuk demo lokal. PDF, dashboard lengkap dan administrasi masih tahap berikutnya; belum deployment atau persetujuan operasional.
+Status 10 November 2026: D0-01 sampai D0-07, M-02 foto opsional, M-03 pembatalan/pemulihan, M-04 dashboard lengkap dan M-06 admin akun/master divisi sudah diuji untuk demo lokal. PDF M-05 masih tahap berikutnya; belum deployment atau persetujuan operasional.
 
 ## Mulai membaca
 

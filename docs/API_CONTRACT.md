@@ -33,7 +33,7 @@ Rancangan REST `/api/v1`, JSON UTF-8. **Implementasi sampai M-06 master divisi:*
 | GET /findings/:id/attachments | ID | M-02: daftar metadata foto untuk akun login |
 | GET /findings/:id/attachments/:attachmentId | ID | M-02: WebP privat, sesi wajib, no-store/nosniff |
 | GET /findings/summary | Filter tanpa pagination | totalMatched, totalValid, counts per status, open, overdue, cancelled; satu aggregate untuk counts |
-| GET /dashboard | responsibleDivisionIds, month | D0-03: snapshot/status + indikator bulan. Tren 6 bulan, per-divisi dan 5 tindak lanjut masih M-04. |
+| GET /dashboard | responsibleDivisionIds, month | M-04: snapshot/status, indikator bulan, tren 6 bulan, status per divisi, maksimal 5 tindak lanjut. |
 | GET /exports/findings.pdf | Filter list tanpa page/pageSize | application/pdf, attachment, private/no-store; semua hasil filter, batas eksplisit |
 | GET /admin/accounts | pagination | ADMIN; tanpa passwordHash |
 | POST /admin/accounts | username, displayName, divisionId, role=DIVISION, initialPassword, mutationId | ADMIN; 201 akun divisi; audit/receipt. Pembuatan admin tambahan 403 |
@@ -57,7 +57,7 @@ Daftarkan route statis `/findings/summary` sebelum `/:id` untuk menghindari tert
 - GET divisions hanya menerima `activeOnly=true|false`; default true. GET admin/accounts hanya `page`/`pageSize` (default 1/20, maksimal 100), tanpa rahasia. Query lain 400.
 - Akun nonaktif/sessionVersion tidak cocok/expired selalu 401 meskipun TTL belum membersihkan record. Reset/nonaktif akun divisi beserta auditnya dan mutasi master divisi tersedia pada M-06; ubah peran/akun ADMIN belum.
 
-## Dashboard ringkas D0-03
+## Dashboard M-04
 
 Endpoint GET `/api/v1/dashboard` memerlukan sesi aktif divisi atau admin, tanpa pembatasan data berdasarkan divisi akun. Filter `responsibleDivisionIds` adalah OR penanggung jawab, maksimal 50 ID ObjectId heksadesimal dipisah koma; duplikat dihapus, tanpa parameter berarti semua divisi. ID valid yang tidak ditemukan memberi hasil nol. String kosong, array/parameter berulang, format ID salah dan query di luar allowlist ditolak 400 INVALID_QUERY. `month` memakai YYYY-MM (tahun 1000–9999), default bulan kalender server pada APP_TIMEZONE; bulan mendatang sah dan dapat nol.
 
@@ -81,7 +81,7 @@ Respons saat ini (contoh struktur, angka bukan konstanta):
 }
 ```
 
-Semua angka memakai satu aggregate MongoDB: data batal dikecualikan, tanpa unwind penanggung jawab agar temuan bersama tetap unik. Snapshot semua tanggal; `month` hanya memengaruhi period.reported (reportedDate) dan period.completed (status kini COMPLETED + completedAt pada zona aplikasi). Target kosong/hari ini dan status Selesai tidak terlambat. Respons tidak mengirim pelapor, uraian, audit atau dokumen akun. Database kosong memberi nol; kegagalan pembacaan memberi 500 tanpa data/angka nol palsu. `asOf` adalah waktu request, bukan jaminan snapshot historis resmi.
+Respons juga mengirim `trend` berisi enam `{month, reported, completed}` sampai bulan terpilih, `byDivision` berisi `{id, name, total, counts}` untuk penanggung jawab dalam scope, serta `followUps` maksimal lima `{id, reference, reportedDate, location, status, targetDate, updatedAt, isOverdue}`. Data batal dikecualikan. Snapshot dan tren menghitung temuan bersama sekali; grafik per divisi menghitungnya pada setiap divisi terkait. Tindak lanjut hanya status terbuka, terlambat didahulukan, lalu tertunda dan tanggal laporan lama. Snapshot semua tanggal; `month` hanya memengaruhi period dan tren. Target kosong/hari ini dan status Selesai tidak terlambat. Respons tidak mengirim pelapor, uraian, audit atau dokumen akun. Database kosong memberi nol; kegagalan pembacaan memberi 500 tanpa data/angka nol palsu. `asOf` adalah waktu request, bukan jaminan snapshot historis resmi; agregat dibaca melalui beberapa query sehingga edit serentak bisa membuat bagian respons berbeda sesaat.
 
 ## Filter bersama
 

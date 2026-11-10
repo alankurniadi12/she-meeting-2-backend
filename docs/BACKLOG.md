@@ -1,6 +1,6 @@
 # Backlog implementasi dan batas demo
 
-Status: **D0-01 sampai D0-07, M-02 dan M-03 selesai untuk demo lokal; M-06 administrasi akun dan master divisi**. Riwayat before/after dan progres dipaginasi; rebase draf konflik diperbaiki dan alur rapat dummy diverifikasi di browser. Dashboard lengkap M-04 masih sebagian. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
+Status: **D0-01 sampai D0-07, M-02, M-03, M-04 dan M-06 selesai untuk demo lokal**. Riwayat before/after dan progres dipaginasi; rebase draf konflik diperbaiki dan alur rapat dummy diverifikasi di browser. PDF M-05 belum tersedia. Target demo pertama pengguna: **9 November 2026**. Waktu pemeliharaan yang tersedia sekitar 1–2 jam waktu luang kerja; tidak ada estimasi pasti seluruh MVP sebelum mulai mengukur pengerjaan.
 
 ## D0 — demo alur utama, dikerjakan dahulu
 
@@ -23,7 +23,7 @@ D0 adalah demo lokal dengan backend nyata dan data dummy. Jika waktu tidak cukup
 | M-01 (sebagian) | Validasi lengkap, default, filter lanjutan dan badge batas tanggal | 02,04,06 | D0-04: validasi kueri/badge. D0-05: validasi inti create/koreksi/progres dan status diuji; perluasan uji seluruh batas/input/edge case MVP tetap M-01. |
 | M-02 ✅ | Unggah/lihat foto opsional privat dan kegagalan unggah | 05 | JPEG/PNG/WebP ≤5 MiB, maksimal 10/temuan; file diolah WebP tanpa metadata di folder privat, baca bersesi, tanpa foto tetap sah. Tes integrasi dan UI lokal. |
 | M-03 ✅ | Pembatalan, filter batal, pemulihan admin | 08 | Filter batal/semua dan hitungan terpisah, aksi batal beralasan untuk akun login, pulih beralasan oleh admin, audit before/after, versi/retry dan UI telah diuji lokal. |
-| M-04 (sebagian) | Dashboard lengkap dalam batas UI_SPEC | 07 | Kartu/indikator/scope sudah D0-03. Tren 6 bulan, grafik per-divisi dan daftar maksimal 5 tindak lanjut masih rencana. |
+| M-04 ✅ | Dashboard lengkap dalam batas UI_SPEC | 07 | Kartu/indikator/scope D0-03 ditambah tren 6 bulan, status per divisi dan maksimal 5 tindak lanjut. Filter multi-divisi dan angka unik diuji di Chrome; 67 tes backend, 7 frontend dan build lulus. |
 | M-05 | PDF pagination/wrapping/filter | 09 | Semua hasil filter, ringkasan cocok, teks panjang terbaca, batas jelas |
 | M-06 ✅ | UI admin akun/divisi, reset dan revokasi sesi | 01,11 | ADMIN dapat mengelola akun DIVISION dan master divisi aktif/nonaktif; audit, versi dan retry dijaga server. Akun ADMIN lain atau perubahan akun ADMIN bukan cakupan MVP yang disetujui. |
 | M-07 | Responsif, keyboard, state kosong/galat/sesi berakhir | 10 | Rapat desktop dan alur HP dapat dicoba tanpa kehilangan data |

@@ -273,3 +273,7 @@ Pengguna melihat admin ICT tampak sama dengan akun divisi. Faktanya sebelumnya r
 ## 25. M-06 — master divisi demo lokal
 
 Admin ICT kini memiliki `/admin/divisions` untuk daftar, tambah, ubah nama, aktif/nonaktif master. Endpoint server ADMIN-only dengan audit before/after, version CAS dan retry idempoten; nama unik tanpa membedakan kapitalisasi, kode tetap, no hard delete. Nonaktif ditolak bila akun DIVISION aktif. 67 tes backend MongoDB test terpisah, 7 frontend/build lulus; route browser mengarah ke login tetapi setelah seed dummy lokal login Admin ICT dan GET master divisi berhasil 200; tampilan setelah login dan mutasi UI belum diuji. Akun ADMIN lain/perubahan akun ADMIN belum diputuskan. Data dummy/dev, tanpa prod/deploy.
+
+## 26. Uji Chrome master divisi dan dashboard M-04
+
+Halaman Kelola divisi diuji lewat Chrome lokal dengan Admin ICT: tambah divisi dummy DEMO-RAPAT, ubah nama, lalu nonaktifkan. M-04 dashboard lengkap menambah tren enam bulan, status per divisi penanggung jawab dan maksimal lima tindak lanjut di backend/UI. Filter Camp+ICT diuji: 12 temuan unik walau kontribusi per divisi 8+8; data batal dikecualikan. 67 tes backend MongoDB test, 7 frontend dan build lulus. Semua dev/data dummy; PDF M-05, HP/proyektor kantor dan deployment belum. Data agregat dashboard dibaca beberapa kali per request sehingga edit bersamaan dapat memberi perbedaan sesaat.

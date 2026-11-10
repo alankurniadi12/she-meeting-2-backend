@@ -34,7 +34,7 @@ Startup menyiapkan indeks read/fixture findings. Seed diperluas menjadi 18 temua
 
 DashboardView Vue menampilkan kartu status/indikator, filter beberapa divisi dan bulan, refresh manual, state loading/kosong/galat, timestamp dan label demo. Data gagal tidak dirender sebagai nol; respons sebelum component unmount diabaikan. Filter sukses disimpan pada query URL dan dipulihkan setelah refresh. Pilihan bulan hanya untuk indikator periodik; angka status diberi cakupan semua tanggal. Master divisi dibaca dengan activeOnly=false agar riwayat divisi nonaktif dapat difilter.
 
-Masih memakai route `/` untuk login atau dashboard berdasarkan sesi. Router halaman baru ditambahkan ketika daftar/detail diperlukan pada D0-04, bukan route bisnis placeholder sekarang. Grafik tren/per-divisi dan daftar tindak lanjut tetap M-04. Hosting/deep link HTTPS belum diuji.
+Router halaman Vue tersedia untuk login, dashboard, daftar/detail temuan dan admin. Route `/` mengarah ke dashboard, lalu guard sesi mengalihkan ke login bila perlu. M-04 sudah menambah tren/per-divisi dan daftar tindak lanjut dari beberapa agregat MongoDB; nilainya dapat berbeda sesaat saat edit serentak. Hosting/deep link HTTPS belum diuji.
 
 ## Implementasi tahap 04 — daftar rapat dan navigasi
 
